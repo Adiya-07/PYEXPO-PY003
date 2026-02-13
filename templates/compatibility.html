@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <div class="section-header">
+        <h2 id="compatTitle">{{ translations.compatTitle }}</h2>
+        <p>Authentic 10 Porutham (Dashakoota) Vedic compatibility analysis - 36 Points</p>
+    </div>
+    
+    <div class="compat-form">
+        <div class="glass-card">
+            <h3 style="font-family: 'Cinzel', serif; color: var(--primary-gold); margin-bottom: 1.5rem;">
+                <i class="fas fa-male"></i> Boy's Details
+            </h3>
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="compatName1" placeholder="Enter name">
+            </div>
+            <div class="input-group">
+                <label>Date of Birth</label>
+                <input type="date" id="compatDob1" required>
+            </div>
+            <div class="input-group">
+                <label>Birth Time</label>
+                <input type="time" id="compatTime1" required>
+            </div>
+        </div>
+        <div class="glass-card">
+            <h3 style="font-family: 'Cinzel', serif; color: var(--primary-gold); margin-bottom: 1.5rem;">
+                <i class="fas fa-female"></i> Girl's Details
+            </h3>
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="compatName2" placeholder="Enter name">
+            </div>
+            <div class="input-group">
+                <label>Date of Birth</label>
+                <input type="date" id="compatDob2" required>
+            </div>
+            <div class="input-group">
+                <label>Birth Time</label>
+                <input type="time" id="compatTime2" required>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <button class="btn-primary" onclick="calculateCompatibility()" id="calcBtn">
+            <i class="fas fa-heart"></i>
+            <span id="checkBtn">{{ translations.checkBtn }}</span>
+        </button>
+    </div>
+    
+    <div id="compatResult" style="display: none;">
+        <div class="compat-card-large">
+            <div class="compat-score-circle" id="scoreCircle" style="--score-deg: 0deg;">
+                <div class="compat-score-value" id="compatScore">0/36</div>
+            </div>
+            <h3 style="font-family: 'Cinzel', serif; color: var(--primary-gold); margin-bottom: 0.5rem;" id="compatVerdict">-</h3>
+            <p style="color: var(--text-secondary);" id="compatDesc">-</p>
+        </div>
+        
+        <h3 style="font-family: 'Cinzel', serif; color: var(--primary-gold); margin: 2rem 0 1rem; text-align: center;">
+            {{ 'பத்து பொருத்தங்கள் (தசகூடம்)' if language == 'ta' else '10 Poruthams (Dashakoota)' }}
+        </h3>
+        <div class="koota-grid" id="kootaGrid"></div>
+        
+        <div id="doshaSection"></div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 10 Poruthams data with max points
+const poruthamData = [
+    { key: 'dina', nameEn: 'Dina (Tara)', nameTa: 'தினம் (தாரா)', max: 3, descEn: 'Health & Longevity', descTa: 'ஆரோக்கியம் & ஆயுள்' },
+    { key: 'gana', nameEn: 'Gana', nameTa: 'கணம்', max: 4, descEn: 'Temperament', descTa: 'இயல்பு' },
+    { key: 'yoni', nameEn: 'Yoni', nameTa: 'யோனி', max: 4, descEn: 'Physical Compatibility', descTa: 'உடல் பொருத்தம்' },
+    { key: 'rasi', nameEn: 'Rasi', nameTa: 'ராசி', max: 7, descEn: 'Family & Prosperity', descTa: 'குடும்பம் & செழிப்பு' },
+    { key: 'rasyadhipati', nameEn: 'Rasyadhipati', nameTa: 'ராசியதிபதி', max: 5, descEn: 'Mental Rapport', descTa: 'மனநிலை ஒற்றுமை' },
+    { key: 'rajju', nameEn: 'Rajju', nameTa: 'ரஜ்ஜு', max: 5, descEn: 'Longevity (Critical)', descTa: 'ஆயுள் (முக்கியம்)' },
+    { key: 'vedha', nameEn: 'Vedha', nameTa: 'வேதா', max: 2, descEn: 'Obstacles', descTa: 'தடைகள்' },
+    { key: 'vashya', nameEn: 'Vashya', nameTa: 'வசியம்', max: 2, descEn: 'Mutual Attraction', descTa: 'இணக்கம்' },
+    { key: 'mahendra', nameEn: 'Mahendra', nameTa: 'மகேந்திரம்', max: 2, descEn: 'Progeny', descTa: 'சந்தானம்' },
+    { key: 'streedeergha', nameEn: 'Stree Deergha', nameTa: 'ஸ்திரீ தீர்க்கம்', max: 2, descEn: "Wife's Wellbeing", descTa: 'மனைவி நலன்' }
+];
+
+const lang = '{{ language }}';
+
+async function calculateCompatibility() {
+    const dob1 = document.getElementById('compatDob1').value;
+    const time1 = document.getElementById('compatTime1').value;
+    const dob2 = document.getElementById('compatDob2').value;
+    const time2 = document.getElementById('compatTime2').value;
+    
+    if (!dob1 || !time1 || !dob2 || !time2) {
+        showAlert(lang === 'ta' ? 'அனைத்து விவரங்களையும் நிரப்பவும்' : 'Please fill all details', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('calcBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (lang === 'ta' ? 'கணக்கிடுகிறது...' : 'Calculating...');
+    btn.disabled = true;
+    
+    try {
+        const response = await fetch('/api/calculate-compatibility', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dob1, time1, dob2, time2 })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayResults(data.result);
+        } else {
+            showAlert(data.error || (lang === 'ta' ? 'பொருத்தம் கணக்கிடுவதில் பிழை' : 'Error calculating compatibility'), 'error');
+        }
+    } catch (error) {
+        console.error('Compatibility error:', error);
+        showAlert(lang === 'ta' ? 'பிழை: சர்வர் இணைப்பு தோல்வி' : 'Error: Server connection failed', 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+function displayResults(result) {
+    document.getElementById('compatResult').style.display = 'block';
+    
+    // Update score circle
+    const circle = document.getElementById('scoreCircle');
+    const percentage = result.percentage || 0;
+    circle.style.setProperty('--score-deg', `${(percentage / 100) * 360}deg`);
+    document.getElementById('compatScore').textContent = `${result.total}/${result.max}`;
+    document.getElementById('compatVerdict').textContent = result.verdict;
+    document.getElementById('compatDesc').textContent = result.description;
+    
+    // Build koota grid - ensure all 10 poruthams are displayed
+    const kootaGrid = document.getElementById('kootaGrid');
+    kootaGrid.innerHTML = '';
+    
+    poruthamData.forEach(porutham => {
+        const resultData = result[porutham.key];
+        const score = resultData ? resultData[0] : 0;
+        const description = resultData ? resultData[1] : '-';
+        const name = lang === 'ta' ? porutham.nameTa : porutham.nameEn;
+        const shortDesc = lang === 'ta' ? porutham.descTa : porutham.descEn;
+        
+        // Determine status color
+        let statusClass = '';
+        if (score === porutham.max) {
+            statusClass = 'excellent';
+        } else if (score >= porutham.max * 0.5) {
+            statusClass = 'good';
+        } else if (score > 0) {
+            statusClass = 'average';
+        } else {
+            statusClass = 'poor';
+        }
+        
+        const item = document.createElement('div');
+        item.className = `koota-item ${statusClass}`;
+        item.innerHTML = `
+            <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="koota-name">${name}</span>
+                    <span class="koota-score">${score}/${porutham.max}</span>
+                </div>
+                <small style="color: var(--text-secondary); font-size: 0.7rem; display: block; margin-top: 2px;">${shortDesc}</small>
+                <small style="color: var(--text-secondary); font-size: 0.75rem; display: block; margin-top: 4px; line-height: 1.4;">${description}</small>
+            </div>
+        `;
+        kootaGrid.appendChild(item);
+    });
+    
+    // Dosha section
+    const doshaSection = document.getElementById('doshaSection');
+    if (result.doshas && result.doshas.length > 0) {
+        const doshaTitle = lang === 'ta' ? 'தோஷங்கள் கண்டறியப்பட்டன' : 'Doshas Detected';
+        doshaSection.innerHTML = `
+            <div class="dosha-warning">
+                <h4><i class="fas fa-exclamation-triangle"></i> ${doshaTitle}</h4>
+                ${result.doshas.map(d => `
+                    <div class="dosha-remedy">
+                        <strong>${d.name}:</strong> ${d.remedy}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } else {
+        const noDoshaMsg = lang === 'ta' ? 'தோஷங்கள் எதுவும் இல்லை - மிகவும் சாதகமானது!' : 'No doshas detected - Highly auspicious!';
+        doshaSection.innerHTML = `
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 12px; padding: 1rem; margin-top: 1rem; text-align: center;">
+                <i class="fas fa-check-circle" style="color: #22c55e; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p style="color: #22c55e; font-weight: 600;">${noDoshaMsg}</p>
+            </div>
+        `;
+    }
+    
+    // Scroll to results
+    document.getElementById('compatResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+<style>
+.koota-item.excellent { border-left: 4px solid #22c55e; }
+.koota-item.good { border-left: 4px solid #3b82f6; }
+.koota-item.average { border-left: 4px solid #f59e0b; }
+.koota-item.poor { border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.05); }
+</style>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page active" id="home">
+    <div class="hero">
+        <div class="hero-content">
+            <h1 id="heroTitle">{{ translations.heroTitle }}</h1>
+            <p class="hero-subtitle" id="heroSubtitle">{{ translations.heroSubtitle }}</p>
+            <div class="datetime-display">
+                <i class="fas fa-moon"></i>
+                <span id="datetime"></span>
+            </div>
+            <div class="glass-card form-section">
+                <h2 id="formTitle">{{ translations.formTitle }}</h2>
+                <form id="userForm" onsubmit="saveUser(event)">
+                    <div class="input-group">
+                        <label id="labelName">{{ translations.labelName }}</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="userName" required placeholder="Enter your name">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group">
+                            <label id="labelDob">{{ translations.labelDob }}</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar"></i>
+                                <input type="date" id="userDob" required>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label id="labelTime">{{ translations.labelTime }}</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-clock"></i>
+                                <input type="time" id="userTime" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label id="labelPlace">{{ translations.labelPlace }}</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" id="userPlace" required placeholder="City, Country">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group">
+                            <label id="labelGender">{{ translations.labelGender }}</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-venus-mars"></i>
+                                <select id="userGender" required>
+                                    <option value="">Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label id="labelPhone">{{ translations.labelPhone }}</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="userPhone" placeholder="For reminders">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" style="margin-top: 2rem;">
+                        <span id="btnText">{{ translations.btnText }}</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+                <p id="welcomeMsg" style="margin-top: 1.5rem; color: var(--primary-gold); font-family: 'Cinzel', serif;"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card" onclick="window.location.href='/horoscope'">
+            <div class="feature-icon">🌙</div>
+            <h3 id="feat1">{{ translations.feat1 }}</h3>
+            <p>Personalized daily horoscope based on your moon sign</p>
+        </div>
+        <div class="feature-card" onclick="window.location.href='/birthchart'">
+            <div class="feature-icon">🪐</div>
+            <h3 id="feat2">{{ translations.feat2 }}</h3>
+            <p>Complete Vedic Jathagam with planetary positions</p>
+        </div>
+        <div class="feature-card" onclick="window.location.href='/predictions'">
+            <div class="feature-icon">🔮</div>
+            <h3 id="feat3">{{ translations.feat3 }}</h3>
+            <p>Weekly and monthly forecasts for all life aspects</p>
+        </div>
+        <div class="feature-card" onclick="window.location.href='/compatibility'">
+            <div class="feature-icon">💑</div>
+            <h3 id="feat4">{{ translations.feat4 }}</h3>
+            <p>Ashtakoota matching for relationships</p>
+        </div>
+        <div class="feature-card" onclick="window.location.href='/finance'">
+            <div class="feature-icon">💰</div>
+            <h3 id="feat5">{{ translations.feat5 }}</h3>
+            <p>Wealth predictions and investment guidance</p>
+        </div>
+        <div class="feature-card" onclick="window.location.href='/remedies'">
+            <div class="feature-icon">🕉️</div>
+            <h3 id="feat6">{{ translations.feat6 }}</h3>
+            <p>Authentic pariharams and planetary remedies</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize datetime display
+function updateDateTime() {
+    const now = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    };
+    const lang = '{{ language }}';
+    document.getElementById('datetime').textContent = now.toLocaleDateString(
+        lang === 'ta' ? 'ta-IN' : 'en-US', 
+        options
+    );
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+// Save user function
+async function saveUser(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('userName').value;
+    const dob = document.getElementById('userDob').value;
+    const time = document.getElementById('userTime').value;
+    const place = document.getElementById('userPlace').value;
+    const gender = document.getElementById('userGender').value;
+    
+    if (!name || !dob || !time || !place || !gender) {
+        showAlert('{{ "Please fill all required details" if language == "en" else "அனைத்து விவரங்களையும் நிரப்பவும்" }}', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/calculate-chart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, dob, time, place, gender })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const lang = '{{ language }}';
+            const msg = lang === 'ta' 
+                ? `🙏 வரவேற்கிறோம் ${name}! உங்கள் ராசி: ${data.chart.rasi.tamil_name}, நட்சத்திரம்: ${data.chart.nakshatra.tamil_name}`
+                : `🙏 Welcome ${name}! Your Rasi: ${data.chart.rasi.english_name}, Nakshatra: ${data.chart.nakshatra.name}`;
+            
+            document.getElementById('welcomeMsg').textContent = msg;
+            
+            setTimeout(() => {
+                window.location.href = '/horoscope';
+            }, 1500);
+        } else {
+            showAlert(data.error || 'Error calculating chart', 'error');
+        }
+    } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+    }
+}
+
+// Load saved user data on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch('/api/get-user-data');
+        const data = await response.json();
+        
+        if (data.profile) {
+            document.getElementById('userName').value = data.profile.name || '';
+            document.getElementById('userDob').value = data.profile.dob || '';
+            document.getElementById('userTime').value = data.profile.time || '';
+            document.getElementById('userPlace').value = data.profile.place || '';
+            document.getElementById('userGender').value = data.profile.gender || '';
+        }
+    } catch (e) {
+        console.log('No saved user data');
+    }
+});
+</script>
+{% endblock %}

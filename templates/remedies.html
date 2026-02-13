@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <div class="section-header">
+        <h2 id="remedyTitle">{{ translations.remedyTitle }}</h2>
+        <p>Authentic Vedic remedies for planetary afflictions</p>
+    </div>
+    
+    <div class="remedy-grid" id="remedyGrid">
+        {% for remedy in remedies %}
+        <div class="remedy-card">
+            <div class="remedy-planet">
+                <div class="remedy-icon">{{ remedy.symbol }}</div>
+                <div>
+                    <div class="remedy-title">
+                        {% if language == 'ta' %}
+                            {{ remedy.planetTa }}
+                        {% else %}
+                            {{ remedy.planet }}
+                        {% endif %}
+                    </div>
+                    <div class="remedy-tamil">
+                        {% if language == 'ta' %}
+                            {{ remedy.planet }}
+                        {% else %}
+                            {{ remedy.planetTa }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="remedy-details">
+                <div class="remedy-item">
+                    <div class="remedy-label">{{ 'சிறந்த நாள்:' if language == 'ta' else 'Best Day:' }}</div>
+                    <div class="remedy-value">
+                        {% if language == 'ta' %}
+                            {{ remedy.dayTa }}
+                        {% else %}
+                            {{ remedy.day }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="remedy-item">
+                    <div class="remedy-label">{{ 'நிறம்:' if language == 'ta' else 'Color:' }}</div>
+                    <div class="remedy-value">
+                        {% if language == 'ta' %}
+                            {{ remedy.colorTa }}
+                        {% else %}
+                            {{ remedy.color }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="remedy-item">
+                    <div class="remedy-label">{{ 'ரத்தினம்:' if language == 'ta' else 'Gemstone:' }}</div>
+                    <div class="remedy-value">
+                        {% if language == 'ta' %}
+                            {{ remedy.gemstoneTa }}
+                        {% else %}
+                            {{ remedy.gemstone }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="remedy-item">
+                    <div class="remedy-label">{{ 'பரிகாரம்:' if language == 'ta' else 'Remedy:' }}</div>
+                    <div class="remedy-value">
+                        {% if language == 'ta' %}
+                            {{ remedy.remedyTa }}
+                        {% else %}
+                            {{ remedy.remedy }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="mantra-box">{{ remedy.mantra }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

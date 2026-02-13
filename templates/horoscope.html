@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section>
+    <div class="section-header">
+        <h2 id="rasiTitle">{{ translations.rasiTitle }}</h2>
+        <p>Based on authentic Vedic calculations from your birth details</p>
+    </div>
+    
+    {% if user_chart %}
+    <div id="rasiDisplay" style="display: grid;">
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="dashboard-icon" id="rasiIcon">{{ rasi_symbols[user_chart.rasi.number] }}</div>
+                <div class="dashboard-info">
+                    <h4 id="rasiLabel">{{ translations.rasiLabel }}</h4>
+                    <p id="rasiName">
+                        {% if language == 'ta' %}
+                            {{ user_chart.rasi.tamil_name }} ({{ user_chart.rasi.degrees }}°)
+                        {% else %}
+                            {{ user_chart.rasi.english_name }} ({{ user_chart.rasi.degrees }}°)
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-icon">⭐</div>
+                <div class="dashboard-info">
+                    <h4 id="nakshatraLabel">{{ translations.nakshatraLabel }}</h4>
+                    <p id="nakshatraName">
+                        {% if language == 'ta' %}
+                            {{ user_chart.nakshatra.tamil_name }} - பாதம் {{ user_chart.nakshatra.pada }}
+                        {% else %}
+                            {{ user_chart.nakshatra.name }} - Pada {{ user_chart.nakshatra.pada }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-icon">🌅</div>
+                <div class="dashboard-info">
+                    <h4 id="lagnaLabel">{{ translations.lagnaLabel }}</h4>
+                    <p id="lagnaName">{{ user_chart.lagna.name }}</p>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-icon">📐</div>
+                <div class="dashboard-info">
+                    <h4 id="ayanamsaLabel">{{ translations.ayanamsaLabel }}</h4>
+                    <p id="ayanamsaValue">{{ user_chart.ayanamsa }}°</p>
+                </div>
+            </div>
+        </div>
+        <div class="calculation-info" id="calculationInfo">
+            {% if language == 'ta' %}
+                <strong>கணக்கீடு விவரங்கள்:</strong><br>
+                சந்திர நிலை: {{ user_chart.moon_longitude }}° | சூரிய நிலை: {{ user_chart.sun_longitude }}°<br>
+                நட்சத்திர அதிபதி: {{ user_chart.nakshatra.lord }} | குணம்: {{ user_chart.nakshatra.gana }} | நாடி: {{ user_chart.nakshatra.nadi }}
+            {% else %}
+                <strong>Calculation Details:</strong><br>
+                Moon: {{ user_chart.moon_longitude }}° | Sun: {{ user_chart.sun_longitude }}°<br>
+                Nakshatra Lord: {{ user_chart.nakshatra.lord }} | Gana: {{ user_chart.nakshatra.gana }} | Nadi: {{ user_chart.nakshatra.nadi }}
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if horoscope_data %}
+    <div class="horoscope-display" id="horoscopeDisplay">
+        <div class="horoscope-header">
+            <span class="horoscope-icon" id="horoIcon">{{ rasi_symbols[user_chart.rasi.number] }}</span>
+            <div>
+                <div class="horoscope-title" id="horoTitle">
+                    {% if language == 'ta' %}
+                        {{ user_chart.rasi.tamil_name }}
+                    {% else %}
+                        {{ user_chart.rasi.english_name }}
+                    {% endif %}
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;" id="horoSubtitle">
+                    {% if language == 'ta' %}
+                        அதிபதி: {{ horoscope_data.ruler }} | தத்துவம்: {{ horoscope_data.element }} | நட்சத்திரம்: {{ user_chart.nakshatra.tamil_name }}
+                    {% else %}
+                        Ruler: {{ horoscope_data.ruler }} | Element: {{ horoscope_data.element }} | Nakshatra: {{ user_chart.nakshatra.name }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="horoscope-content" id="horoContent">
+            {% set lang_data = horoscope_data[language] %}
+            <p><strong>{{ 'பொது:' if language == 'ta' else 'General:' }}</strong> {{ lang_data.general }}</p>
+            <p style="margin-top: 1rem;"><strong>{{ 'தொழில்:' if language == 'ta' else 'Career:' }}</strong> {{ lang_data.career }}</p>
+            <p style="margin-top: 1rem;"><strong>{{ 'காதல்:' if language == 'ta' else 'Love:' }}</strong> {{ lang_data.love }}</p>
+            <p style="margin-top: 1rem;"><strong>{{ 'ஆரோக்கியம்:' if language == 'ta' else 'Health:' }}</strong> {{ lang_data.health }}</p>
+            <p style="margin-top: 1rem;"><strong>{{ 'நிதி:' if language == 'ta' else 'Finance:' }}</strong> {{ lang_data.finance }}</p>
+        </div>
+        <div class="horoscope-tags" id="horoTags">
+            <span class="tag">{{ 'அதிர்ஷ்ட நிறம்: ' if language == 'ta' else 'Lucky Color: ' }}{{ lang_data.lucky.color }}</span>
+            <span class="tag">{{ 'அதிர்ஷ்ட எண்: ' if language == 'ta' else 'Lucky Number: ' }}{{ lang_data.lucky.number }}</span>
+            <span class="tag">{{ 'அதிர்ஷ்ட நாள்: ' if language == 'ta' else 'Lucky Day: ' }}{{ lang_data.lucky.day }}</span>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="glass-card" style="text-align: center; padding: 3rem;">
+        <p style="color: var(--text-secondary); font-size: 1.1rem;">
+            {{ 'உங்கள் ராசியைக் காண, தயவுசெய்து முதல் பக்கத்தில் உங்கள் பிறந்த விவரங்களை உள்ளிடவும்.' if language == 'ta' else 'Please enter your birth details on the home page to see your Rasi.' }}
+        </p>
+        <a href="/" class="btn-primary" style="margin-top: 1.5rem; display: inline-block; text-decoration: none;">
+            {{ 'விவரங்களை உள்ளிடவும்' if language == 'ta' else 'Enter Details' }}
+        </a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
