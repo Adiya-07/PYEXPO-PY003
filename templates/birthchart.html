@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section" style="max-width:800px;margin:0 auto;padding:2rem 1rem">
+    <h1 style="font-family:Cinzel,serif;color:#FFD700;text-align:center;margin-bottom:2rem">
+        📊 {% if language=="ta" %}வேத பிறப்பு சக்கரம்{% else %}Vedic Birth Chart{% endif %}
+    </h1>
+    {% if user_chart %}
+    <div style="display:flex;justify-content:center;margin-bottom:1.5rem">
+        {{ svg_chart | safe }}
+    </div>
+    <div id="housePanel" style="display:none;margin:1rem auto;max-width:500px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.25);border-radius:14px;padding:1.2rem 1.5rem">
+        <div style="font-family:Cinzel,serif;color:#FFD700;margin-bottom:.5rem" id="houseTitle"></div>
+        <div style="color:rgba(255,255,255,0.7);font-size:.88rem" id="houseBody"></div>
+    </div>
+    <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:.8rem;margin-top:1rem">
+        {% if language=="ta" %}வீட்டை கிளிக் செய்து கிரக தகவல் பெறவும்{% else %}Click any house to see planet details{% endif %}
+    </p>
+    {% else %}
+    <div style="text-align:center;padding:3rem">
+        <div style="font-size:3rem;margin-bottom:1rem">📊</div>
+        <p style="color:rgba(255,255,255,0.6);margin-bottom:1.5rem">
+            {% if language=="ta" %}முதலில் முகப்பு பக்கத்தில் உங்கள் விவரங்களை உள்ளிடவும்{% else %}Enter your birth details on the home page first{% endif %}
+        </p>
+        <a href="/" style="display:inline-block;padding:.8rem 2rem;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border-radius:25px;font-weight:700;text-decoration:none">
+            {% if language=="ta" %}முகப்பு{% else %}Go to Home{% endif %}
+        </a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+function showHouseInfo(h,rasi,rasiNum,planets,meaning){
+    document.getElementById('houseTitle').textContent='House '+h+' — '+rasi;
+    document.getElementById('houseBody').innerHTML='<strong>Planets:</strong> '+planets+'<br><strong>Meaning:</strong> '+meaning;
+    const p=document.getElementById('housePanel');
+    p.style.display='block';
+    p.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+{% endblock %}

@@ -1,0 +1,198 @@
+"""
+AstroGuy AI — Vedic Astrology Calculator
+Ported faithfully from the original working index.html JavaScript.
+Uses Lahiri ayanamsa, Julian Day calculations.
+"""
+import math
+from typing import Dict
+
+J2000 = 2451545.0
+
+RASIS = [
+    {"number":1,"englishName":"Mesham","tamilName":"மேஷம்","symbol":"♈","lord":"Mars","element":"Fire"},
+    {"number":2,"englishName":"Rishabam","tamilName":"ரிஷபம்","symbol":"♉","lord":"Venus","element":"Earth"},
+    {"number":3,"englishName":"Midhunam","tamilName":"மிதுனம்","symbol":"♊","lord":"Mercury","element":"Air"},
+    {"number":4,"englishName":"Katakam","tamilName":"கடகம்","symbol":"♋","lord":"Moon","element":"Water"},
+    {"number":5,"englishName":"Simmam","tamilName":"சிம்மம்","symbol":"♌","lord":"Sun","element":"Fire"},
+    {"number":6,"englishName":"Kanni","tamilName":"கன்னி","symbol":"♍","lord":"Mercury","element":"Earth"},
+    {"number":7,"englishName":"Thulam","tamilName":"துலாம்","symbol":"♎","lord":"Venus","element":"Air"},
+    {"number":8,"englishName":"Viruchigam","tamilName":"விருச்சிகம்","symbol":"♏","lord":"Mars","element":"Water"},
+    {"number":9,"englishName":"Dhanusu","tamilName":"தனுசு","symbol":"♐","lord":"Jupiter","element":"Fire"},
+    {"number":10,"englishName":"Makaram","tamilName":"மகரம்","symbol":"♑","lord":"Saturn","element":"Earth"},
+    {"number":11,"englishName":"Kumbam","tamilName":"கும்பம்","symbol":"♒","lord":"Saturn","element":"Air"},
+    {"number":12,"englishName":"Meenam","tamilName":"மீனம்","symbol":"♓","lord":"Jupiter","element":"Water"},
+]
+
+NAKSHATRAS = [
+    {"name":"Ashwini","tamilName":"அஸ்வினி","lord":"Ketu","pada":4,"gana":"Deva","nadi":"Vata"},
+    {"name":"Bharani","tamilName":"பரணி","lord":"Venus","pada":4,"gana":"Manushya","nadi":"Pitta"},
+    {"name":"Krittika","tamilName":"கிருத்திகை","lord":"Sun","pada":4,"gana":"Rakshasa","nadi":"Kapha"},
+    {"name":"Rohini","tamilName":"ரோகிணி","lord":"Moon","pada":4,"gana":"Manushya","nadi":"Kapha"},
+    {"name":"Mrigashira","tamilName":"மிருகசீரிஷம்","lord":"Mars","pada":4,"gana":"Deva","nadi":"Pitta"},
+    {"name":"Ardra","tamilName":"திருவாதிரை","lord":"Rahu","pada":4,"gana":"Manushya","nadi":"Vata"},
+    {"name":"Punarvasu","tamilName":"புனர்பூசம்","lord":"Jupiter","pada":4,"gana":"Deva","nadi":"Vata"},
+    {"name":"Pushya","tamilName":"பூசம்","lord":"Saturn","pada":4,"gana":"Deva","nadi":"Pitta"},
+    {"name":"Ashlesha","tamilName":"ஆயில்யம்","lord":"Mercury","pada":4,"gana":"Rakshasa","nadi":"Kapha"},
+    {"name":"Magha","tamilName":"மகம்","lord":"Ketu","pada":4,"gana":"Rakshasa","nadi":"Vata"},
+    {"name":"Purva Phalguni","tamilName":"பூரம்","lord":"Venus","pada":4,"gana":"Manushya","nadi":"Pitta"},
+    {"name":"Uttara Phalguni","tamilName":"உத்திரம்","lord":"Sun","pada":4,"gana":"Manushya","nadi":"Kapha"},
+    {"name":"Hasta","tamilName":"ஹஸ்தம்","lord":"Moon","pada":4,"gana":"Deva","nadi":"Pitta"},
+    {"name":"Chitra","tamilName":"சித்திரை","lord":"Mars","pada":4,"gana":"Rakshasa","nadi":"Pitta"},
+    {"name":"Swati","tamilName":"சுவாதி","lord":"Rahu","pada":4,"gana":"Deva","nadi":"Kapha"},
+    {"name":"Vishakha","tamilName":"விசாகம்","lord":"Jupiter","pada":4,"gana":"Rakshasa","nadi":"Vata"},
+    {"name":"Anuradha","tamilName":"அனுஷம்","lord":"Saturn","pada":4,"gana":"Deva","nadi":"Pitta"},
+    {"name":"Jyeshtha","tamilName":"கேட்டை","lord":"Mercury","pada":4,"gana":"Rakshasa","nadi":"Kapha"},
+    {"name":"Mula","tamilName":"மூலம்","lord":"Ketu","pada":4,"gana":"Rakshasa","nadi":"Kapha"},
+    {"name":"Purva Ashadha","tamilName":"பூராடம்","lord":"Venus","pada":4,"gana":"Manushya","nadi":"Pitta"},
+    {"name":"Uttara Ashadha","tamilName":"உத்திராடம்","lord":"Sun","pada":4,"gana":"Manushya","nadi":"Vata"},
+    {"name":"Shravana","tamilName":"திருவோணம்","lord":"Moon","pada":4,"gana":"Deva","nadi":"Kapha"},
+    {"name":"Dhanishta","tamilName":"அவிட்டம்","lord":"Mars","pada":4,"gana":"Rakshasa","nadi":"Pitta"},
+    {"name":"Shatabhisha","tamilName":"சதயம்","lord":"Rahu","pada":4,"gana":"Rakshasa","nadi":"Vata"},
+    {"name":"Purva Bhadrapada","tamilName":"பூரட்டாதி","lord":"Jupiter","pada":4,"gana":"Manushya","nadi":"Vata"},
+    {"name":"Uttara Bhadrapada","tamilName":"உத்திரட்டாதி","lord":"Saturn","pada":4,"gana":"Manushya","nadi":"Pitta"},
+    {"name":"Revati","tamilName":"ரேவதி","lord":"Mercury","pada":4,"gana":"Deva","nadi":"Kapha"},
+]
+
+LUCKY = {
+    "Mesham":    {"color":"Red","gem":"Red Coral","day":"Tuesday","number":9},
+    "Rishabam":  {"color":"White","gem":"Diamond","day":"Friday","number":6},
+    "Midhunam":  {"color":"Green","gem":"Emerald","day":"Wednesday","number":5},
+    "Katakam":   {"color":"White","gem":"Pearl","day":"Monday","number":2},
+    "Simmam":    {"color":"Orange","gem":"Ruby","day":"Sunday","number":1},
+    "Kanni":     {"color":"Green","gem":"Emerald","day":"Wednesday","number":5},
+    "Thulam":    {"color":"Pink","gem":"Diamond","day":"Friday","number":6},
+    "Viruchigam":{"color":"Red","gem":"Red Coral","day":"Tuesday","number":9},
+    "Dhanusu":   {"color":"Yellow","gem":"Yellow Sapphire","day":"Thursday","number":3},
+    "Makaram":   {"color":"Blue","gem":"Blue Sapphire","day":"Saturday","number":8},
+    "Kumbam":    {"color":"Blue","gem":"Blue Sapphire","day":"Saturday","number":8},
+    "Meenam":    {"color":"Yellow","gem":"Yellow Sapphire","day":"Thursday","number":3},
+}
+
+HOROSCOPE = {
+    "Mesham":    {"en":{"general":"You radiate with natural leadership. Mars energizes your ambitions this period.","career":"New opportunities arise. Take initiative — success follows bold action.","love":"Passionate connections deepen. Single Meshams attract admirers naturally.","health":"High energy but watch for headaches. Stay hydrated and sleep well.","finance":"Favorable for investments. Avoid impulsive purchases mid-week."},"ta":{"general":"இயற்கையான தலைமைத்துவம் மிளிர்கிறது. செவ்வாய் உங்கள் லட்சியங்களை ஊக்குவிக்கிறது.","career":"புதிய வாய்ப்புகள் வருகின்றன. துணிந்து செயல்படுங்கள் — வெற்றி உங்களை தேடி வரும்.","love":"ஆழமான இணைப்புகள் வலுப்படுகின்றன.","health":"அதிக ஆற்றல் இருக்கும் ஆனால் தலைவலியை கவனியுங்கள்.","finance":"முதலீட்டிற்கு சாதகமான காலம்."}},
+    "Rishabam":  {"en":{"general":"Venus blesses you with charm and creativity. A period of comfort and beauty.","career":"Steady progress. Your patience and persistence pay off significantly.","love":"Deep emotional bonds form. Existing relationships reach new levels of understanding.","health":"Generally good. Watch for throat issues. Include more greens in diet.","finance":"Financial stability improves. Good time for savings and property matters."},"ta":{"general":"சுக்ரன் உங்களுக்கு அழகும் படைப்பாற்றலும் தருகிறார்.","career":"நிலையான முன்னேற்றம். பொறுமையும் விடாமுயற்சியும் பலன் தரும்.","love":"ஆழமான உணர்வு பிணைப்புகள் உருவாகின்றன.","health":"பொதுவாக நல்லது. தொண்டை பிரச்சினைகளை கவனியுங்கள்.","finance":"நிதி நிலைத்தன்மை மேம்படுகிறது."}},
+    "Midhunam":  {"en":{"general":"Mercury sharpens your wit and communication. A busy, mentally stimulating period.","career":"Excellent for networking, writing, and presentations. Multiple opportunities emerge.","love":"Intellectual connections flourish. Communication is key to harmony.","health":"Mental activity is high. Ensure adequate rest. Practice meditation.","finance":"Mixed signals — research thoroughly before any major financial decision."},"ta":{"general":"புதன் உங்கள் புத்திசாலித்தனத்தை கூர்மையாக்குகிறார்.","career":"நெட்வொர்க்கிங், எழுத்து, விளக்கக்காட்சிகளுக்கு சிறப்பு.","love":"அறிவு ரீதியான தொடர்புகள் மலர்கின்றன.","health":"மன செயல்பாடு அதிகமாக இருக்கும். போதுமான ஓய்வு எடுங்கள்.","finance":"முக்கிய நிதி முடிவுகளுக்கு முன் நன்றாக ஆராயுங்கள்."}},
+    "Katakam":   {"en":{"general":"The Moon heightens your intuition and emotional depth. Family connections are highlighted.","career":"Trust your instincts — they lead to the right decisions. Home-based work flourishes.","love":"Deeply nurturing period. Emotional bonds with partner strengthen beautifully.","health":"Emotional health needs attention. Journaling and water therapies help greatly.","finance":"Conservative approach works best. Protect existing assets before expanding."},"ta":{"general":"சந்திரன் உங்கள் உள்ளுணர்வையும் உணர்வு ஆழத்தையும் அதிகரிக்கிறார்.","career":"உங்கள் உள்ளுணர்வை நம்புங்கள் — அது சரியான முடிவுகளுக்கு வழிகாட்டும்.","love":"உணர்வு ரீதியான பிணைப்புகள் அழகாக வலுப்படுகின்றன.","health":"உணர்வு ஆரோக்கியத்திற்கு கவனம் தேவை.","finance":"பழமைவாத அணுகுமுறை சிறப்பாக செயல்படுகிறது."}},
+    "Simmam":    {"en":{"general":"The Sun illuminates your natural charisma. A time to shine and lead with confidence.","career":"Leadership roles beckon. Your creative solutions impress superiors and peers alike.","love":"Romantic and passionate period. Grand gestures of love are well received.","health":"Vitality is high. Heart health needs attention. Regular cardio recommended.","finance":"Generous spending tendency — budget carefully. Investments in entertainment thrive."},"ta":{"general":"சூரியன் உங்கள் இயற்கையான கவர்ச்சியை ஒளிரச்செய்கிறார்.","career":"தலைமை பாத்திரங்கள் அழைக்கின்றன. படைப்பாற்றல் நிறைந்த தீர்வுகள் ஈர்க்கின்றன.","love":"காதல் நிறைந்த காலம். அன்பின் பெரிய சைகைகள் நல்ல வரவேற்பு பெறுகின்றன.","health":"உயிர்ப்பு அதிகமாக உள்ளது. இதய ஆரோக்கியத்திற்கு கவனம்.","finance":"வரவுசெலவு கவனமாக திட்டமிடுங்கள்."}},
+    "Kanni":     {"en":{"general":"Mercury brings analytical precision. A period for detailed work and self-improvement.","career":"Excellent for research, analysis, and perfecting skills. Recognition comes through hard work.","love":"Thoughtful gestures matter more than grand ones. Open communication strengthens bonds.","health":"Digestive system needs care. Eat mindfully and establish healthy routines.","finance":"Excellent for detailed financial planning. Avoid major risks — steady gains favored."},"ta":{"general":"புதன் பகுப்பாய்வு துல்லியத்தை கொண்டு வருகிறார்.","career":"ஆராய்ச்சி, பகுப்பாய்வு மற்றும் திறன்களை மெருகேற்றுவதற்கு சிறப்பு.","love":"சிந்தனையான சைகைகள் முக்கியம். திறந்த தொடர்பு பிணைப்புகளை வலுப்படுத்துகிறது.","health":"செரிமான அமைப்பு கவனிப்பு தேவை.","finance":"விரிவான நிதி திட்டமிடலுக்கு சிறப்பு."}},
+    "Thulam":    {"en":{"general":"Venus bestows grace, balance, and social charm. Partnerships of all kinds are highlighted.","career":"Collaborative projects thrive. Diplomacy and negotiation skills are your greatest assets.","love":"Harmonious and beautiful period for relationships. Balance give-and-take gracefully.","health":"Lower back needs attention. Yoga and stretching recommended. Balance work and rest.","finance":"Partnerships bring financial benefits. Joint ventures show promise this period."},"ta":{"general":"சுக்ரன் நேர்மையும் சமநிலையும் சமூக கவர்ச்சியும் தருகிறார்.","career":"கூட்டு திட்டங்கள் வளர்கின்றன. தூதுவர் திறன்கள் சிறந்த சொத்துக்கள்.","love":"உறவுகளுக்கு இணக்கமான மற்றும் அழகான காலம்.","health":"முதுகின் கீழ் பகுதிக்கு கவனம் தேவை. யோகா பரிந்துரைக்கப்படுகிறது.","finance":"கூட்டாண்மைகள் நிதி நன்மைகளை கொண்டு வருகின்றன."}},
+    "Viruchigam":{"en":{"general":"Mars and Ketu intensify your focus and determination. Transformation is your theme.","career":"Deep research and investigative work excel. Hidden talents surface remarkably.","love":"Intense and transformative connections. Depth over surface — authenticity wins.","health":"Regenerative energy is strong. Avoid overexertion. Sleep patterns need regulation.","finance":"Unexpected financial insights emerge. Inheritance and insurance matters are favorable."},"ta":{"general":"செவ்வாயும் கேதுவும் உங்கள் கவனத்தையும் உறுதிப்பாட்டையும் தீவிரப்படுத்துகின்றனர்.","career":"ஆழமான ஆராய்ச்சி மற்றும் விசாரணை பணி சிறந்து விளங்குகிறது.","love":"தீவிரமான மற்றும் மாற்றும் தொடர்புகள். ஆழம் முக்கியம்.","health":"புத்துணர்வு ஆற்றல் வலுவாக உள்ளது. அதிக உழைப்பை தவிர்க்கவும்.","finance":"எதிர்பாராத நிதி நுண்ணறிவு வெளிப்படுகிறது."}},
+    "Dhanusu":   {"en":{"general":"Jupiter expands your horizons. Philosophy, travel, and higher learning call to you.","career":"Teaching, publishing, international work, and entrepreneurship all flourish greatly.","love":"Freedom-loving yet committed — balance independence with togetherness beautifully.","health":"Hips and thighs need attention. Outdoor activities and sports greatly benefit you.","finance":"Expansion brings opportunity. Long-term investments show excellent promise now."},"ta":{"general":"குரு உங்கள் அடிவானங்களை விரிவுபடுத்துகிறார். தத்துவம், பயணம் அழைக்கின்றன.","career":"கற்பித்தல், வெளியீடு, சர்வதேச பணி மற்றும் தொழில்முனைவு வளர்கின்றன.","love":"சுதந்திரத்தை விரும்பும் ஆனால் அர்ப்பணிப்புடன் — சமநிலை காண்க.","health":"இடுப்பு மற்றும் தொடைகளுக்கு கவனம். வெளிப்புற நடவடிக்கைகள் நன்மை தரும்.","finance":"நீண்டகால முதலீடுகள் சிறந்த வாய்ப்பை காட்டுகின்றன."}},
+    "Makaram":   {"en":{"general":"Saturn rewards discipline and structure. Hard work now plants seeds for future abundance.","career":"Career advancement through persistence. Seniors and authority figures offer key support.","love":"Committed and loyal — relationships built on trust and mutual respect truly flourish.","health":"Bones and joints need care. Regular exercise and calcium-rich diet are essential.","finance":"Conservative financial management pays dividends. Real estate is especially favored."},"ta":{"general":"சனி ஒழுக்கம் மற்றும் கட்டமைப்பை வெகுமதி அளிக்கிறார்.","career":"விடாமுயற்சியின் மூலம் தொழில் முன்னேற்றம். மூத்தோர் முக்கிய ஆதரவு தருகிறார்கள்.","love":"நம்பிக்கை மற்றும் பரஸ்பர மரியாதையில் கட்டப்பட்ட உறவுகள் மலர்கின்றன.","health":"எலும்புகள் மற்றும் மூட்டுகளுக்கு கவனம். வழக்கமான உடற்பயிற்சி அவசியம்.","finance":"பழமைவாத நிதி மேலாண்மை பலன் தரும். ரியல் எஸ்டேட் சாதகமானது."}},
+    "Kumbam":    {"en":{"general":"Saturn and Rahu bring innovation and humanitarian ideals. Think beyond conventional limits.","career":"Technology, research, social causes, and unconventional fields are your natural domain.","love":"Friendship forms the foundation of your best relationships. Community connects you to love.","health":"Circulation and nervous system need attention. Regular walks and breathing exercises help.","finance":"Innovative investment ideas show promise. Group ventures and tech-related stocks favor you."},"ta":{"general":"சனியும் ராகுவும் புதுமை மற்றும் மனிதநேய இலட்சியங்களை கொண்டு வருகின்றனர்.","career":"தொழில்நுட்பம், ஆராய்ச்சி, சமூக காரணங்கள் உங்கள் இயல்பான களம்.","love":"நட்பு உங்கள் சிறந்த உறவுகளுக்கு அடித்தளம். சமூகம் உங்களை அன்புடன் இணைக்கிறது.","health":"சுழற்சி மற்றும் நரம்பு மண்டலத்திற்கு கவனம்.","finance":"புதுமையான முதலீட்டு யோசனைகள் வாய்ப்பை காட்டுகின்றன."}},
+    "Meenam":    {"en":{"general":"Jupiter and Neptune bathe you in spiritual depth and creative imagination. Dream and manifest.","career":"Arts, healing, spirituality, and service professions are deeply rewarding for you now.","love":"Deeply empathetic and romantic — your love is boundless and healing to those around you.","health":"Feet and immune system need care. Rest is essential. Avoid substances and overindulgence.","finance":"Intuitive financial decisions work surprisingly well. Charity brings unexpected returns."},"ta":{"general":"குருவும் நெப்டியூனும் உங்களை ஆன்மீக ஆழம் மற்றும் படைப்பு கற்பனையில் நனைக்கிறார்கள்.","career":"கலை, குணப்படுத்துதல், ஆன்மீகம் மற்றும் சேவை தொழில்கள் ஆழமாக வெகுமதி அளிக்கின்றன.","love":"ஆழமான அனுதாப காதல் — உங்கள் அன்பு எல்லையற்றது மற்றும் குணப்படுத்துவது.","health":"பாதங்கள் மற்றும் நோயெதிர்ப்பு அமைப்புக்கு கவனம். ஓய்வு அவசியம்.","finance":"உள்ளுணர்வு நிதி முடிவுகள் ஆச்சரியமாக நன்றாக செயல்படுகின்றன."}},
+}
+
+def _to_rad(d): return d * math.pi / 180
+def _norm(d):   return d % 360
+
+def _julian_day(year, month, day, hour=12, minute=0):
+    y, m = year, month
+    if m <= 2: y -= 1; m += 12
+    A = int(y / 100); B = 2 - A + int(A / 4)
+    return int(365.25*(y+4716)) + int(30.6001*(m+1)) + day + (hour+minute/60)/24 + B - 1524.5
+
+def _ayanamsa(year): return 23.8581 + (year - 2000) * 0.013976
+
+def _moon_longitude(jd):
+    T = (jd - J2000) / 36525
+    L = 218.3164477 + 481267.88123421*T
+    M = 134.9633964 + 477198.8675055*T
+    D = 297.8501921 + 445267.1114034*T
+    Ms= 357.5291092 + 35999.0502909*T
+    F = 93.2720950  + 483202.0175233*T
+    dL= (6.289*math.sin(_to_rad(M)) + 1.274*math.sin(_to_rad(2*D-M))
+       + 0.658*math.sin(_to_rad(2*D)) + 0.214*math.sin(_to_rad(2*M))
+       - 0.186*math.sin(_to_rad(Ms)) - 0.114*math.sin(_to_rad(2*F)))
+    return _norm(L + dL)
+
+def _sun_longitude(jd):
+    T = (jd - J2000) / 36525
+    L0= 280.46646 + 36000.76983*T
+    M = 357.52911 + 35999.05029*T
+    C = (1.914602 - 0.004817*T)*math.sin(_to_rad(M)) + 0.019993*math.sin(_to_rad(2*M))
+    return _norm(L0 + C)
+
+def _planet_lon(jd, planet):
+    T = (jd - J2000) / 36525
+    d = {"Mars":(355.4598,686.971,1.8497,286.5),"Mercury":(252.2509,87.969,7.0048,77.46),
+         "Jupiter":(34.3515,4332.589,1.3053,14.33),"Venus":(181.9798,224.701,3.3947,131.54),
+         "Saturn":(50.0774,10759.22,2.4886,92.43)}
+    if planet not in d: return 0
+    L0,period,inc,peri = d[planet]
+    L = _norm(L0 + 360*T*365.25/period)
+    M = _norm(L - peri)
+    return _norm(L + 2*inc*math.sin(_to_rad(M)))
+
+def calculate_birth_chart(year, month, day, hour, minute, place="Chennai"):
+    jd = _julian_day(year, month, day, hour, minute)
+    ay = _ayanamsa(year + (month-1)/12 + day/365)
+    moon_sid = _norm(_moon_longitude(jd) - ay)
+    sun_sid  = _norm(_sun_longitude(jd)  - ay)
+    moon_rasi= int(moon_sid/30)+1
+    sun_rasi = int(sun_sid/30)+1
+    nak_idx  = int(moon_sid/(360/27))
+    nak_pada = int((moon_sid % (360/27))/(360/108))+1
+    lagna_l  = _norm(sun_sid + (hour+minute/60)*15)
+    lagna_r  = int(lagna_l/30)+1
+    planets  = {}
+    for p in ["Mars","Mercury","Jupiter","Venus","Saturn"]:
+        l = _norm(_planet_lon(jd,p)-ay)
+        planets[p] = {"rasi":int(l/30)+1,"longitude":round(l,2)}
+    rahu_l = _norm(125.0445 - 1934.136*(jd-J2000)/36525 - ay)
+    rahu_r = int(rahu_l/30)+1
+    ketu_r = ((rahu_r+5)%12)+1
+    rasi   = RASIS[moon_rasi-1]
+    nak    = NAKSHATRAS[nak_idx]
+    lucky  = LUCKY.get(rasi["englishName"],{})
+    return {
+        "rasi":     {**rasi,"longitude":round(moon_sid,2)},
+        "nakshatra":{**nak,"index":nak_idx,"pada":nak_pada},
+        "lagna":    {**RASIS[lagna_r-1],"longitude":round(lagna_l,2)},
+        "sun":      {"rasi":sun_rasi,"longitude":round(sun_sid,2)},
+        "moon":     {"rasi":moon_rasi,"longitude":round(moon_sid,2)},
+        "mars":     planets["Mars"],
+        "mercury":  planets["Mercury"],
+        "jupiter":  planets["Jupiter"],
+        "venus":    planets["Venus"],
+        "saturn":   planets["Saturn"],
+        "rahu":     {"rasi":rahu_r,"longitude":round(rahu_l,2)},
+        "ketu":     {"rasi":ketu_r},
+        "ayanamsa": round(ay,4),
+        "lucky":    lucky,
+        "place":    place,
+    }
+
+YONI_MAP = {"Ashwini":"Horse","Bharani":"Elephant","Krittika":"Goat","Rohini":"Serpent","Mrigashira":"Serpent","Ardra":"Dog","Punarvasu":"Cat","Pushya":"Goat","Ashlesha":"Cat","Magha":"Rat","Purva Phalguni":"Rat","Uttara Phalguni":"Cow","Hasta":"Buffalo","Chitra":"Tiger","Swati":"Buffalo","Vishakha":"Tiger","Anuradha":"Deer","Jyeshtha":"Deer","Mula":"Dog","Purva Ashadha":"Monkey","Uttara Ashadha":"Mongoose","Shravana":"Monkey","Dhanishta":"Lion","Shatabhisha":"Horse","Purva Bhadrapada":"Lion","Uttara Bhadrapada":"Cow","Revati":"Elephant"}
+FRIENDLY = {"Sun":["Moon","Mars","Jupiter"],"Moon":["Sun","Mercury"],"Mars":["Sun","Moon","Jupiter"],"Mercury":["Sun","Venus"],"Jupiter":["Sun","Moon","Mars"],"Venus":["Mercury","Saturn"],"Saturn":["Mercury","Venus"],"Rahu":["Venus","Saturn"],"Ketu":["Mars","Venus"]}
+
+def calculate_compatibility(c1,c2):
+    n1=c1["nakshatra"]; n2=c2["nakshatra"]; r1=c1["rasi"]; r2=c2["rasi"]
+    s={}
+    brahmin=["Katakam","Viruchigam","Meenam"]; kshatriya=["Mesham","Simmam","Dhanusu"]; vaishya=["Rishabam","Thulam","Makaram"]
+    def varna(r): return 4 if r in brahmin else 3 if r in kshatriya else 2 if r in vaishya else 1
+    s["varna"]=1 if varna(r1["englishName"])>=varna(r2["englishName"]) else 0
+    def vashya(r):
+        if r in ["Midhunam","Kanni","Thulam","Dhanusu","Kumbam"]: return "Manava"
+        if r in ["Mesham","Rishabam","Makaram"]: return "Chatushpada"
+        if r in ["Katakam","Meenam"]: return "Jalachara"
+        if r=="Simmam": return "Vanachara"
+        return "Keeta"
+    s["vashya"]=2 if vashya(r1["englishName"])==vashya(r2["englishName"]) else 0
+    diff=(n2["index"]-n1["index"])%27; tara=(diff%9)+1
+    s["tara"]=3 if tara in [1,3,5,7] else 1 if tara in [2,4,6] else 0
+    y1=YONI_MAP.get(n1["name"],"Cat"); y2=YONI_MAP.get(n2["name"],"Cat")
+    s["yoni"]=4 if y1==y2 else 2 if y1[0]==y2[0] else 1
+    l1=r1["lord"]; l2=r2["lord"]
+    s["grahaMaitri"]=5 if (l2 in FRIENDLY.get(l1,[]) and l1 in FRIENDLY.get(l2,[])) else 3 if (l2 in FRIENDLY.get(l1,[]) or l1 in FRIENDLY.get(l2,[])) else 1
+    g1=n1["gana"]; g2=n2["gana"]
+    s["gana"]=6 if g1==g2 else 3 if {g1,g2}=={"Deva","Manushya"} else 0
+    rd=abs(r1["number"]-r2["number"])
+    s["bhakoot"]=7 if rd in [0,1,3,5,7,9,11] else 0
+    same_nadi=n1["nadi"]==n2["nadi"]; s["nadi"]=0 if same_nadi else 8
+    total=sum(s.values()); pct=round(total/36*100,1)
+    doshas=[]
+    if same_nadi: doshas.append({"name":"Nadi Dosha","severity":"High","remedy":"Perform Nadi Nivarana Puja. Chant Mahamrityunjaya Mantra 108 times daily."})
+    if s["bhakoot"]==0: doshas.append({"name":"Bhakoot Dosha","severity":"Medium","remedy":"Worship Lord Vishnu on Ekadashi. Donate clothes on Fridays."})
+    verdict="Excellent Match ✨" if total>=28 else "Good Match 💑" if total>=20 else "Acceptable Match" if total>=18 else "Needs Remedies ⚠️"
+    return {"scores":s,"total":total,"max":36,"percentage":pct,"verdict":verdict,"doshas":doshas,"chart1":{"rasi":r1["englishName"],"nakshatra":n1["name"]},"chart2":{"rasi":r2["englishName"],"nakshatra":n2["name"]}}

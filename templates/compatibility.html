@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section" style="max-width:800px;margin:0 auto;padding:2rem 1rem">
+    <h1 style="font-family:Cinzel,serif;color:#FFD700;text-align:center;margin-bottom:0.5rem">
+        💑 {% if language=="ta" %}திருமண பொருத்தம்{% else %}Marriage Compatibility{% endif %}
+    </h1>
+    <p style="text-align:center;color:rgba(255,255,255,0.5);margin-bottom:2rem">
+        {% if language=="ta" %}அஷ்டகூட பொருத்தம் — 36 மதிப்பெண்களில்{% else %}Ashtakoota Matching — out of 36 points{% endif %}
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <div class="form-card">
+            <h3 style="color:#FFD700;margin-bottom:1rem;font-family:Cinzel,serif">
+                {% if language=="ta" %}நபர் 1{% else %}Person 1{% endif %}
+            </h3>
+            <div class="form-group"><label>{% if language=="ta" %}பிறந்த தேதி{% else %}Date of Birth{% endif %}</label><input type="date" id="dob1"></div>
+            <div class="form-group"><label>{% if language=="ta" %}பிறந்த நேரம்{% else %}Birth Time{% endif %}</label><input type="time" id="time1"></div>
+            <div class="form-group"><label>{% if language=="ta" %}பிறந்த இடம்{% else %}Place{% endif %}</label><input type="text" id="place1" placeholder="Chennai"></div>
+        </div>
+        <div class="form-card">
+            <h3 style="color:#FFD700;margin-bottom:1rem;font-family:Cinzel,serif">
+                {% if language=="ta" %}நபர் 2{% else %}Person 2{% endif %}
+            </h3>
+            <div class="form-group"><label>{% if language=="ta" %}பிறந்த தேதி{% else %}Date of Birth{% endif %}</label><input type="date" id="dob2"></div>
+            <div class="form-group"><label>{% if language=="ta" %}பிறந்த நேரம்{% else %}Birth Time{% endif %}</label><input type="time" id="time2"></div>
+            <div class="form-group"><label>{% if language=="ta" %}பிறந்த இடம்{% else %}Place{% endif %}</label><input type="text" id="place2" placeholder="Chennai"></div>
+        </div>
+    </div>
+    <div style="text-align:center;margin-bottom:2rem">
+        <button class="btn btn-primary" id="compatBtn" onclick="checkCompatibility()">
+            <i class="fas fa-heart"></i> {% if language=="ta" %}பொருத்தம் பார்{% else %}Check Compatibility{% endif %}
+        </button>
+    </div>
+    <div id="compatResult" style="display:none"></div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+async function checkCompatibility(){
+    const dob1=document.getElementById('dob1').value,time1=document.getElementById('time1').value;
+    const dob2=document.getElementById('dob2').value,time2=document.getElementById('time2').value;
+    const place1=document.getElementById('place1').value||'Chennai';
+    const place2=document.getElementById('place2').value||'Chennai';
+    if(!dob1||!time1||!dob2||!time2){showAlert('Please fill all fields','error');return;}
+    const btn=document.getElementById('compatBtn');
+    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Calculating...';
+    const res=await fetch('/api/calculate-compatibility',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dob1,time1,dob2,time2,place1,place2})});
+    const data=await res.json();
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-heart"></i> Check Compatibility';
+    if(!data.success){showAlert('Error: '+data.error,'error');return;}
+    const r=data.result;
+    const kNames={varna:'Varna',vashya:'Vashya',tara:'Tara',yoni:'Yoni',grahaMaitri:'Graha Maitri',gana:'Gana',bhakoot:'Bhakoot',nadi:'Nadi'};
+    const kMax={varna:1,vashya:2,tara:3,yoni:4,grahaMaitri:5,gana:6,bhakoot:7,nadi:8};
+    const color=r.total>=28?'#44BB44':r.total>=18?'#FFD700':'#FF6644';
+    document.getElementById('compatResult').style.display='block';
+    document.getElementById('compatResult').innerHTML=`
+    <div class="result-card" style="text-align:center;margin-bottom:1.5rem">
+        <div style="font-size:3rem;margin-bottom:.5rem">${r.total>=28?"💑":r.total>=18?"💛":"⚠️"}</div>
+        <div style="font-family:Cinzel,serif;font-size:2rem;color:${color}">${r.total}/${r.max}</div>
+        <div style="color:${color};font-size:1.1rem;margin:.5rem 0">${r.verdict}</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:.85rem">${r.chart1.rasi} × ${r.chart2.rasi}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-bottom:1.5rem">
+        ${Object.entries(r.scores).map(([k,v])=>`
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,215,0,0.15);border-radius:10px;padding:.8rem;text-align:center">
+            <div style="color:rgba(255,255,255,0.4);font-size:.7rem;text-transform:uppercase">${kNames[k]}</div>
+            <div style="color:#FFD700;font-size:1.1rem;font-weight:700">${v}/${kMax[k]}</div>
+        </div>`).join('')}
+    </div>
+    ${r.doshas.length?`<div style="background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.3);border-radius:12px;padding:1rem 1.5rem">
+        <h4 style="color:#FF6644;margin-bottom:.5rem">⚠️ Doshas Found</h4>
+        ${r.doshas.map(d=>`<div style="margin:.5rem 0"><strong style="color:#FF9944">${d.name}</strong><br><span style="color:rgba(255,255,255,0.6);font-size:.85rem">${d.remedy}</span></div>`).join('')}
+    </div>`:''}`;
+}
+</script>
+{% endblock %}

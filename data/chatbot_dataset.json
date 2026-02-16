@@ -1,0 +1,441 @@
+{
+    "intents": [
+        {
+            "tag": "greeting",
+            "patterns": [
+                "Hello",
+                "Hi",
+                "Hey",
+                "Good morning",
+                "Namaste",
+                "Vanakkam",
+                "Hey AstroGuy",
+                "Start"
+            ],
+            "responses": [
+                "Namaste! I'm AstroGuy AI. Ask me anything about your horoscope, birth chart, compatibility, or Panchangam!",
+                "Vanakkam! Welcome to AstroGuy AI. How can I guide you through the stars today?"
+            ]
+        },
+        {
+            "tag": "goodbye",
+            "patterns": [
+                "Bye",
+                "Goodbye",
+                "See you",
+                "Take care",
+                "Exit",
+                "Good night"
+            ],
+            "responses": [
+                "Goodbye! May the stars always guide your path!",
+                "Farewell! The cosmos will always be here for you."
+            ]
+        },
+        {
+            "tag": "thanks",
+            "patterns": [
+                "Thanks",
+                "Thank you",
+                "That's helpful",
+                "Appreciate it",
+                "Nandri"
+            ],
+            "responses": [
+                "You're welcome! The stars are always here to guide you.",
+                "Happy to help! Feel free to ask anything else about astrology."
+            ]
+        },
+        {
+            "tag": "aries",
+            "patterns": [
+                "Tell me about Aries",
+                "Aries personality",
+                "Mesham rasi",
+                "Aries traits",
+                "I am an Aries",
+                "What is Mesham"
+            ],
+            "responses": [
+                "Aries (Mesham) is ruled by Mars. Bold, energetic, and a natural leader. Lucky color: Red. Lucky day: Tuesday. Gemstone: Red Coral.",
+                "Aries (Mesham) are fiery, courageous, and ambitious. They thrive on challenges and love to be first."
+            ]
+        },
+        {
+            "tag": "taurus",
+            "patterns": [
+                "Tell me about Taurus",
+                "Taurus personality",
+                "Rishabam rasi",
+                "Taurus traits",
+                "I am a Taurus",
+                "What is Rishabam"
+            ],
+            "responses": [
+                "Taurus (Rishabam) is ruled by Venus. Reliable, patient, and deeply loyal. Lucky color: Green. Lucky day: Friday. Gemstone: Diamond.",
+                "Taurus (Rishabam) are stable, dependable, and love comfort and beauty."
+            ]
+        },
+        {
+            "tag": "gemini",
+            "patterns": [
+                "Tell me about Gemini",
+                "Gemini personality",
+                "Midhunam rasi",
+                "Gemini traits",
+                "I am a Gemini",
+                "What is Midhunam"
+            ],
+            "responses": [
+                "Gemini (Midhunam) is ruled by Mercury. Witty, curious, and adaptable. Lucky color: Yellow. Lucky day: Wednesday. Gemstone: Emerald.",
+                "Gemini (Midhunam) are social butterflies — intelligent, quick-thinking, and great communicators."
+            ]
+        },
+        {
+            "tag": "cancer",
+            "patterns": [
+                "Tell me about Cancer",
+                "Cancer personality",
+                "Katakam rasi",
+                "Cancer traits",
+                "I am a Cancer",
+                "What is Katakam"
+            ],
+            "responses": [
+                "Cancer (Katakam) is ruled by the Moon. Nurturing, intuitive, and family-oriented. Lucky color: White/Silver. Lucky day: Monday. Gemstone: Pearl.",
+                "Cancer (Katakam) are deeply empathetic and protective of loved ones."
+            ]
+        },
+        {
+            "tag": "leo",
+            "patterns": [
+                "Tell me about Leo",
+                "Leo personality",
+                "Simmam rasi",
+                "Leo traits",
+                "I am a Leo",
+                "What is Simmam"
+            ],
+            "responses": [
+                "Leo (Simmam) is ruled by the Sun. Charismatic, creative, and a born leader. Lucky color: Gold. Lucky day: Sunday. Gemstone: Ruby.",
+                "Leo (Simmam) have a royal presence and are incredibly generous and loyal."
+            ]
+        },
+        {
+            "tag": "virgo",
+            "patterns": [
+                "Tell me about Virgo",
+                "Virgo personality",
+                "Kanni rasi",
+                "Virgo traits",
+                "I am a Virgo",
+                "What is Kanni"
+            ],
+            "responses": [
+                "Virgo (Kanni) is ruled by Mercury. Analytical, hardworking, and detail-oriented. Lucky color: Navy Blue. Lucky day: Wednesday. Gemstone: Emerald.",
+                "Virgo (Kanni) are the perfectionists of the zodiac — humble, dedicated, and organized."
+            ]
+        },
+        {
+            "tag": "libra",
+            "patterns": [
+                "Tell me about Libra",
+                "Libra personality",
+                "Thulam rasi",
+                "Libra traits",
+                "I am a Libra",
+                "What is Thulam"
+            ],
+            "responses": [
+                "Libra (Thulam) is ruled by Venus. Diplomatic, charming, and fair-minded. Lucky color: Blue/Pink. Lucky day: Friday. Gemstone: Diamond.",
+                "Libra (Thulam) are the diplomats of the zodiac with a love for harmony and balance."
+            ]
+        },
+        {
+            "tag": "scorpio",
+            "patterns": [
+                "Tell me about Scorpio",
+                "Scorpio personality",
+                "Viruchigam rasi",
+                "Scorpio traits",
+                "I am a Scorpio",
+                "What is Viruchigam"
+            ],
+            "responses": [
+                "Scorpio (Viruchigam) is ruled by Mars. Intense, passionate, and determined. Lucky color: Dark Red. Lucky day: Tuesday. Gemstone: Red Coral.",
+                "Scorpio (Viruchigam) are the most magnetic and perceptive signs of the zodiac."
+            ]
+        },
+        {
+            "tag": "sagittarius",
+            "patterns": [
+                "Tell me about Sagittarius",
+                "Sagittarius personality",
+                "Dhanusu rasi",
+                "Sagittarius traits",
+                "I am a Sagittarius",
+                "What is Dhanusu"
+            ],
+            "responses": [
+                "Sagittarius (Dhanusu) is ruled by Jupiter. Adventurous, optimistic, and truth-seeking. Lucky color: Purple. Lucky day: Thursday. Gemstone: Yellow Sapphire.",
+                "Sagittarius (Dhanusu) are the explorers of the zodiac — enthusiastic and wise."
+            ]
+        },
+        {
+            "tag": "capricorn",
+            "patterns": [
+                "Tell me about Capricorn",
+                "Capricorn personality",
+                "Makaram rasi",
+                "Capricorn traits",
+                "I am a Capricorn",
+                "What is Makaram"
+            ],
+            "responses": [
+                "Capricorn (Makaram) is ruled by Saturn. Disciplined, ambitious, and patient. Lucky color: Black/Brown. Lucky day: Saturday. Gemstone: Blue Sapphire.",
+                "Capricorn (Makaram) are goal-oriented achievers who value tradition and hard work."
+            ]
+        },
+        {
+            "tag": "aquarius",
+            "patterns": [
+                "Tell me about Aquarius",
+                "Aquarius personality",
+                "Kumbam rasi",
+                "Aquarius traits",
+                "I am an Aquarius",
+                "What is Kumbam"
+            ],
+            "responses": [
+                "Aquarius (Kumbam) is ruled by Saturn and Uranus. Innovative, humanitarian, and independent. Lucky color: Blue/Turquoise. Lucky day: Saturday. Gemstone: Blue Sapphire.",
+                "Aquarius (Kumbam) are the visionaries of the zodiac — unconventional and progressive."
+            ]
+        },
+        {
+            "tag": "pisces",
+            "patterns": [
+                "Tell me about Pisces",
+                "Pisces personality",
+                "Meenam rasi",
+                "Pisces traits",
+                "I am a Pisces",
+                "What is Meenam"
+            ],
+            "responses": [
+                "Pisces (Meenam) is ruled by Jupiter. Compassionate, artistic, and deeply spiritual. Lucky color: Sea Green. Lucky day: Thursday. Gemstone: Yellow Sapphire.",
+                "Pisces (Meenam) are the most spiritual and empathetic signs — natural healers and artists."
+            ]
+        },
+        {
+            "tag": "nakshatra_general",
+            "patterns": [
+                "What is nakshatra",
+                "Tell me about nakshatra",
+                "Explain nakshatra",
+                "Nakshatra meaning",
+                "Birth star",
+                "How many nakshatras"
+            ],
+            "responses": [
+                "Nakshatras are the 27 lunar mansions in Vedic astrology. Your birth nakshatra is determined by the Moon's position at birth and reveals your personality, destiny, and spiritual path.",
+                "There are 27 Nakshatras in Vedic astrology, each with a ruling deity, planet, and symbol that influences your nature and life path."
+            ]
+        },
+        {
+            "tag": "panchangam_general",
+            "patterns": [
+                "What is panchangam",
+                "Panchangam meaning",
+                "Explain panchangam",
+                "Five elements of panchangam",
+                "Daily panchangam",
+                "Today panchangam"
+            ],
+            "responses": [
+                "Panchangam is the Hindu almanac with five elements: Tithi (lunar day), Vara (weekday), Nakshatra (birth star), Yoga, and Karana. It guides auspicious timing for important events.",
+                "The Panchangam helps find Muhurtham (auspicious times) for weddings, business launches, and ceremonies based on planetary positions and lunar phases."
+            ]
+        },
+        {
+            "tag": "rahu_kalam",
+            "patterns": [
+                "What is Rahu Kalam",
+                "Rahu kalam timing",
+                "Rahu kalam today",
+                "Avoid Rahu kalam",
+                "Inauspicious time"
+            ],
+            "responses": [
+                "Rahu Kalam is a daily inauspicious period of 90 minutes. By day: Sun 4:30-6PM, Mon 7:30-9AM, Tue 3-4:30PM, Wed 12-1:30PM, Thu 1:30-3PM, Fri 10:30AM-12PM, Sat 9-10:30AM.",
+                "Rahu Kalam should be avoided for starting new ventures, weddings, or important ceremonies. Regular daily activities are fine during this time."
+            ]
+        },
+        {
+            "tag": "muhurtham",
+            "patterns": [
+                "What is muhurtham",
+                "Auspicious time",
+                "Good time for wedding",
+                "Best time to start business",
+                "Wedding muhurtham",
+                "Shubh muhurat"
+            ],
+            "responses": [
+                "Muhurtham is an auspicious time window based on Panchangam. A good muhurtham avoids Rahu Kalam and ensures the Lagna and Moon are well-placed. Best nakshatras for weddings: Rohini, Mrigashira, Hasta, Anuradha.",
+                "To find a good muhurtham, astrologers verify Tithi, Nakshatra, and planetary positions are favorable while avoiding malefic periods."
+            ]
+        },
+        {
+            "tag": "birth_chart",
+            "patterns": [
+                "What is a birth chart",
+                "Explain birth chart",
+                "Kundali meaning",
+                "Jathagam meaning",
+                "How to read birth chart",
+                "Natal chart"
+            ],
+            "responses": [
+                "A birth chart (Jathagam/Kundali) is a snapshot of the sky at your birth. It maps 9 planets across 12 houses, each ruling a life area like wealth, career, relationships, and health.",
+                "Your birth chart has 12 Bhavas (houses) and 9 Navagrahas (planets). The Lagna (Ascendant) shapes your personality; the Moon sign (Rasi) governs your emotions."
+            ]
+        },
+        {
+            "tag": "compatibility_general",
+            "patterns": [
+                "Which sign am I compatible with",
+                "Love compatibility",
+                "Zodiac compatibility",
+                "Who should I marry",
+                "Rasi compatibility",
+                "Marriage compatibility",
+                "Porutham"
+            ],
+            "responses": [
+                "Compatibility in Vedic astrology uses Rasi matching and Nakshatra Ashtakoota (8-fold matching). Fire signs match Air signs. Earth signs harmonize with Water signs. Tell me your rasi for specifics!",
+                "Tamil marriage compatibility uses Porutham (10 criteria) including Dina, Gana, Rasi, Yoni, and Rajju. At least 6 poruthams are needed for a good match."
+            ]
+        },
+        {
+            "tag": "mangal_dosha",
+            "patterns": [
+                "What is mangal dosha",
+                "Chevvai dosham",
+                "Mars dosha",
+                "Am I mangalik",
+                "Mangal dosha remedy",
+                "Kuja dosham"
+            ],
+            "responses": [
+                "Mangal Dosha (Chevvai Dosham) occurs when Mars is in the 1st, 2nd, 4th, 7th, 8th, or 12th house. Remedies include marrying another Mangalik, Kumbh Vivah ritual, or worshipping at Mangal temples.",
+                "Chevvai Dosham effects are nullified if both partners have the dosha. Modern astrologers consider it one factor among many, not a deal-breaker."
+            ]
+        },
+        {
+            "tag": "remedies_general",
+            "patterns": [
+                "What are astrological remedies",
+                "How to improve my luck",
+                "Remedies for bad planets",
+                "Dosham remedies",
+                "Graha dosha remedy",
+                "Astrological solutions"
+            ],
+            "responses": [
+                "Astrological remedies include: gemstone therapy, mantra chanting, temple poojas, charity on specific days, fasting on planet days, Yantra worship, and wearing specific colors.",
+                "By planet remedies: Sun — wear Ruby, offer water at sunrise. Moon — wear Pearl, offer milk. Mars — wear Red Coral. Rahu — donate black sesame. Ketu — worship Ganesha."
+            ]
+        },
+        {
+            "tag": "planets_general",
+            "patterns": [
+                "What are navagrahas",
+                "Nine planets astrology",
+                "What does each planet represent",
+                "Planetary influence",
+                "Graha meaning",
+                "Tell me about planets"
+            ],
+            "responses": [
+                "The 9 Navagrahas: Sun (soul), Moon (mind), Mars (energy), Mercury (intellect), Jupiter (wisdom), Venus (love), Saturn (karma), Rahu (ambition), Ketu (spirituality). Each rules specific life areas.",
+                "Jupiter is the great benefic bringing luck. Saturn teaches through discipline. Venus governs love. Mars provides energy and drive. The Moon shapes daily moods."
+            ]
+        },
+        {
+            "tag": "saturn_shani",
+            "patterns": [
+                "Tell me about Saturn",
+                "Shani graha",
+                "What is Sade Sati",
+                "Shani Sade Sati",
+                "Saturn transit",
+                "Saturn dasha"
+            ],
+            "responses": [
+                "Saturn (Shani) is the planet of karma and discipline. Sade Sati is a 7.5-year period when Saturn transits your Moon sign, bringing lessons and growth. Remedy: Offer sesame oil, worship Hanuman on Saturdays.",
+                "Saturn's 19-year dasha rewards patience and hard work. Sade Sati brings challenges but ultimately transforms your life. Serve others, stay disciplined, and avoid major risks during this period."
+            ]
+        },
+        {
+            "tag": "finance_career",
+            "patterns": [
+                "When will I get a job",
+                "Career astrology",
+                "Business astrology",
+                "Finance prediction",
+                "Job prediction",
+                "Best career for me",
+                "Money astrology"
+            ],
+            "responses": [
+                "Career prospects come from the 2nd house (wealth), 6th house (work), 10th house (career), and 11th house (income). A strong Jupiter and 10th lord indicate professional success.",
+                "Financial luck improves during Jupiter's favorable transit or during the dasha of your 10th or 11th house lord. Mercury rules business and communication-based careers."
+            ]
+        },
+        {
+            "tag": "wellness_mood",
+            "patterns": [
+                "How do planets affect mood",
+                "Astrology and health",
+                "Planet rules health",
+                "Moon and emotions",
+                "Planetary wellness",
+                "Astrology and mental health"
+            ],
+            "responses": [
+                "The Moon governs mind and emotions. A weak Moon causes mood swings and anxiety. Saturn during Sade Sati brings heaviness. Remedy: Meditate during full moon, chant Moon mantras, spend time near water.",
+                "Planetary health rulerships: Sun — heart and eyes, Moon — mind, Mars — blood, Mercury — nerves, Jupiter — liver, Venus — kidneys, Saturn — bones. Balancing through mantras improves wellness."
+            ]
+        },
+        {
+            "tag": "what_can_you_do",
+            "patterns": [
+                "What can you do",
+                "Help me",
+                "What are your features",
+                "How can you help",
+                "What is AstroGuy",
+                "Features of AstroGuy"
+            ],
+            "responses": [
+                "I'm AstroGuy AI! I can help with: Zodiac and Rasi info, Nakshatra details, Compatibility matching, Panchangam timing, Birth chart reading, Career predictions, Horoscopes, Dosha remedies, and Cosmic Cards!",
+                "AstroGuy AI offers birth chart analysis, daily horoscopes, compatibility matching, Tamil Panchangam, personality quiz, wellness guidance, financial predictions, and shareable Cosmic Cards!"
+            ]
+        },
+        {
+            "tag": "unknown",
+            "patterns": [
+                "asdf",
+                "random",
+                "huh",
+                "what",
+                "I don't know",
+                "tell me something"
+            ],
+            "responses": [
+                "I'm not sure I understand. Try asking about your rasi, nakshatra, compatibility, or today's Panchangam!",
+                "That's beyond my cosmic knowledge! Ask me about horoscopes, birth charts, or any zodiac sign and I'll light up the sky with answers!"
+            ]
+        }
+    ]
+}

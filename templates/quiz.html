@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section" style="padding:2rem 1rem">
+<div class="quiz-container">
+    <div style="text-align:center;margin-bottom:2rem">
+        <h1 style="font-family:Cinzel,serif;color:#FFD700;font-size:1.8rem;margin-bottom:.5rem">✨ {% if language=="ta" %}உங்கள் விண்வெளி ஆளுமை யார்?{% else %}What's Your Cosmic Personality?{% endif %}</h1>
+        <p style="color:rgba(255,255,255,0.5)">{% if language=="ta" %}ML மாதிரி உங்கள் வேத ஆளுமை வகையை கண்டறிகிறது{% else %}Our ML model classifies your Vedic personality archetype{% endif %}</p>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" id="qProgress" style="width:0%"></div></div>
+    <div id="quizArea"></div>
+</div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+const LANG = "{{ language }}";
+const QUESTIONS = [
+    {q:{en:"When facing a big decision, you...",ta:"பெரிய முடிவை எதிர்கொள்ளும்போது நீங்கள்..."},
+     opts:[{en:"Trust your gut instantly",ta:"உடனடியாக உள்ளுணர்வை நம்புகிறீர்கள்",rasi:["Mesham","Simmam"]},
+           {en:"Research thoroughly first",ta:"முதலில் நன்றாக ஆராய்கிறீர்கள்",rasi:["Kanni","Midhunam"]},
+           {en:"Consult others you trust",ta:"நம்பகமான மற்றவர்களை ஆலோசிக்கிறீர்கள்",rasi:["Thulam","Katakam"]},
+           {en:"Wait for the right moment",ta:"சரியான தருணத்திற்காக காத்திருக்கிறீர்கள்",rasi:["Makaram","Kumbam"]}]},
+    {q:{en:"Your ideal weekend is...",ta:"உங்கள் சிறந்த வார இறுதி..."},
+     opts:[{en:"Adventure & outdoors",ta:"சாகசம் & வெளிப்புறம்",rasi:["Mesham","Dhanusu"]},
+           {en:"Art, music or creativity",ta:"கலை, இசை அல்லது படைப்பாற்றல்",rasi:["Rishabam","Thulam"]},
+           {en:"Deep conversations with close friends",ta:"நெருங்கிய நண்பர்களுடன் ஆழமான உரையாடல்",rasi:["Midhunam","Kanni"]},
+           {en:"Rest, reading, spirituality",ta:"ஓய்வு, வாசிப்பு, ஆன்மீகம்",rasi:["Meenam","Viruchigam"]}]},
+    {q:{en:"Others would describe you as...",ta:"மற்றவர்கள் உங்களை இப்படி வர்ணிப்பார்கள்..."},
+     opts:[{en:"Bold and decisive",ta:"தைரியமான மற்றும் தீர்க்கமான",rasi:["Mesham","Simmam"]},
+           {en:"Warm and nurturing",ta:"அன்பான மற்றும் அரவணைக்கும்",rasi:["Katakam","Rishabam"]},
+           {en:"Clever and analytical",ta:"புத்திசாலி மற்றும் பகுப்பாய்வு",rasi:["Kanni","Midhunam"]},
+           {en:"Mysterious and intense",ta:"மர்ममான மற்றும் தீவிரமான",rasi:["Viruchigam","Makaram"]}]},
+    {q:{en:"Your relationship with money is...",ta:"பணத்துடனான உங்கள் உறவு..."},
+     opts:[{en:"Spend it on experiences",ta:"அனுபவங்களில் செலவழிக்கிறேன்",rasi:["Dhanusu","Simmam"]},
+           {en:"Save carefully, plan ahead",ta:"கவனமாக சேமிக்கிறேன், முன்கூட்டியே திட்டமிடுகிறேன்",rasi:["Makaram","Kanni"]},
+           {en:"Share it generously",ta:"தாராளமாக பகிர்ந்து கொள்கிறேன்",rasi:["Meenam","Katakam"]},
+           {en:"Invest in ideas and innovation",ta:"யோசனைகள் மற்றும் புதுமைகளில் முதலீடு செய்கிறேன்",rasi:["Kumbam","Midhunam"]}]},
+    {q:{en:"When things go wrong, you...",ta:"விஷயங்கள் தவறாக போகும்போது நீங்கள்..."},
+     opts:[{en:"Push harder and fight back",ta:"இன்னும் கடினமாக முயற்சிக்கிறீர்கள்",rasi:["Mesham","Viruchigam"]},
+           {en:"Step back and reflect deeply",ta:"பின்வாங்கி ஆழமாக சிந்திக்கிறீர்கள்",rasi:["Kanni","Meenam"]},
+           {en:"Seek support from loved ones",ta:"அன்பானவர்களிடம் ஆதரவை நாடுகிறீர்கள்",rasi:["Katakam","Thulam"]},
+           {en:"Detach and find new perspective",ta:"விலகி புதிய கண்ணோட்டம் கண்டறிகிறீர்கள்",rasi:["Kumbam","Dhanusu"]}]},
+];
+
+const RASI_TYPES = {
+    "Mesham":  {symbol:"♈",type:{en:"The Cosmic Warrior",ta:"பிரபஞ்ச போர்வீரன்"},
+                desc:{en:"Bold, pioneering, and fiercely independent. You charge into life headfirst. A natural leader who inspires others through sheer courage and passion.",
+                      ta:"தைரியமான, முன்னோடியான மற்றும் சுதந்திரமான. நீங்கள் வாழ்க்கையில் துணிச்சலாக நுழைகிறீர்கள். தைரியம் மற்றும் ஆர்வத்தால் மற்றவர்களை ஊக்குவிக்கும் இயற்கையான தலைவர்."},
+                color:"#FF4444"},
+    "Rishabam":{symbol:"♉",type:{en:"The Earthly Creator",ta:"பூமிக்குரிய படைப்பாளன்"},
+                desc:{en:"Patient, artistic, and deeply sensual. You build things that last — relationships, businesses, art. Your loyalty and determination are unmatched.",
+                      ta:"பொறுமையான, கலைஞர், ஆழமான உணர்வுடையவர். நீண்டுநிலைக்கும் விஷயங்களை கட்டுகிறீர்கள் — உறவுகள், வியாபாரம், கலை."},
+                color:"#88FF88"},
+    "Midhunam":{symbol:"♊",type:{en:"The Cosmic Communicator",ta:"பிரபஞ்ச தொடர்பாளர்"},
+                desc:{en:"Quick-witted, adaptable, and eternally curious. You can talk to anyone, understand everything, and see all sides. Your mind is your greatest superpower.",
+                      ta:"வேகமான புத்திசாலித்தனம், தகவமைப்பு மற்றும் எப்போதும் ஆர்வமுள்ளவர். யாரிடமும் பேசலாம், எல்லாவற்றையும் புரிந்துகொள்ளலாம்."},
+                color:"#44BBFF"},
+    "Katakam": {symbol:"♋",type:{en:"The Lunar Nurturer",ta:"சந்திர அரவணைப்பாளர்"},
+                desc:{en:"Deeply intuitive, protective, and emotionally intelligent. You feel everything. Your empathy is your gift — people find refuge in your presence.",
+                      ta:"ஆழமான உள்ளுணர்வு, பாதுகாப்பு மற்றும் உணர்வு நுண்ணறிவு. நீங்கள் எல்லாவற்றையும் உணர்கிறீர்கள்."},
+                color:"#FFFFFF"},
+    "Simmam":  {symbol:"♌",type:{en:"The Solar Sovereign",ta:"சூரிய அரசன்"},
+                desc:{en:"Charismatic, creative, and born to lead. The room lights up when you enter. Your generosity and warmth make you unforgettable.",
+                      ta:"கவர்ச்சி, படைப்பாற்றல் மற்றும் தலைமைக்காக பிறந்தவர். நீங்கள் நுழையும்போது அறை ஒளிரும்."},
+                color:"#FF8800"},
+    "Kanni":   {symbol:"♍",type:{en:"The Sacred Analyst",ta:"புனித பகுப்பாய்வாளர்"},
+                desc:{en:"Precise, helpful, and endlessly discerning. You see what others miss. Your dedication to improvement makes everything around you better.",
+                      ta:"துல்லியமான, உதவிகரமான மற்றும் விவேகமான. மற்றவர்கள் தவறவிடுவதை நீங்கள் காண்கிறீர்கள்."},
+                color:"#AAFFAA"},
+    "Thulam":  {symbol:"♎",type:{en:"The Cosmic Diplomat",ta:"பிரபஞ்ச தூதுவர்"},
+                desc:{en:"Graceful, fair, and deeply relationship-oriented. You seek beauty and harmony in all things. Your ability to see all sides makes you a natural peacemaker.",
+                      ta:"நேர்மையான, அழகான மற்றும் உறவு சார்ந்தவர். எல்லா விஷயங்களிலும் அழகும் இணக்கமும் தேடுகிறீர்கள்."},
+                color:"#FFAAFF"},
+    "Viruchigam":{symbol:"♏",type:{en:"The Mystic Transformer",ta:"மர்ம மாற்றியமைப்பாளர்"},
+                desc:{en:"Intense, magnetic, and deeply perceptive. You sense hidden truths. Your power to transform yourself and others is extraordinary.",
+                      ta:"தீவிரமான, காந்த சக்தியுள்ளவர் மற்றும் ஆழமான நுண்ணறிவு. மறைந்த உண்மைகளை உணர்கிறீர்கள்."},
+                color:"#FF6666"},
+    "Dhanusu": {symbol:"♐",type:{en:"The Cosmic Explorer",ta:"பிரபஞ்ச ஆய்வாளர்"},
+                desc:{en:"Optimistic, philosophical, and eternally free. You're always chasing the next horizon. Your wisdom and humor make life an adventure.",
+                      ta:"நம்பகமான, தத்துவ சிந்தனையுள்ளவர் மற்றும் என்றும் சுதந்திரமான. அடுத்த அடிவானத்தை எப்போதும் விரட்டுகிறீர்கள்."},
+                color:"#FFDD44"},
+    "Makaram": {symbol:"♑",type:{en:"The Mountain Achiever",ta:"மலை வெற்றியாளர்"},
+                desc:{en:"Disciplined, ambitious, and quietly unstoppable. You play the long game. Your patience and persistence build empires that stand for generations.",
+                      ta:"ஒழுக்கமான, லட்சியமுள்ளவர் மற்றும் அமைதியாக நிறுத்த முடியாதவர். நீண்ட விளையாட்டை விளையாடுகிறீர்கள்."},
+                color:"#8888FF"},
+    "Kumbam":  {symbol:"♒",type:{en:"The Cosmic Visionary",ta:"பிரபஞ்ச தொலைநோக்காளர்"},
+                desc:{en:"Original, humanitarian, and ahead of your time. You see the future others can't imagine. Your innovative mind connects the dots in revolutionary ways.",
+                      ta:"அசல், மனிதநேயமுள்ளவர் மற்றும் காலத்திற்கு முன்னோடி. மற்றவர்களால் கற்பனை செய்ய முடியாத எதிர்காலத்தை காண்கிறீர்கள்."},
+                color:"#88AAFF"},
+    "Meenam":  {symbol:"♓",type:{en:"The Cosmic Dreamer",ta:"பிரபஞ்ச கனவு காண்பவர்"},
+                desc:{en:"Empathetic, spiritual, and boundlessly imaginative. You live between worlds. Your compassion and creativity touch people in ways words can't express.",
+                      ta:"அனுதாபமுள்ளவர், ஆன்மீகமுள்ளவர் மற்றும் கட்டற்ற கற்பனை. உலகங்களுக்கிடையே வாழ்கிறீர்கள்."},
+                color:"#AAAAFF"},
+};
+
+let current = 0;
+const scores = {};
+
+function renderQuestion(){
+    if(current >= QUESTIONS.length){ showResult(); return; }
+    const q = QUESTIONS[current];
+    const pct = (current/QUESTIONS.length)*100;
+    document.getElementById('qProgress').style.width = pct+'%';
+    document.getElementById('quizArea').innerHTML = `
+        <div style="text-align:center;margin-bottom:.5rem;color:rgba(255,255,255,0.4);font-size:.85rem">
+            Question ${current+1} of ${QUESTIONS.length}
+        </div>
+        <div class="quiz-question">${q.q[LANG]||q.q.en}</div>
+        <div class="quiz-options">
+            ${q.opts.map((o,i)=>`
+            <button class="quiz-option" onclick="answer(${i})">
+                ${o[LANG]||o.en}
+            </button>`).join('')}
+        </div>`;
+}
+
+function answer(i){
+    const opt = QUESTIONS[current].opts[i];
+    opt.rasi.forEach(r=>{ scores[r]=(scores[r]||0)+1; });
+    current++;
+    document.querySelectorAll('.quiz-option')[i].classList.add('selected');
+    setTimeout(renderQuestion, 300);
+}
+
+function showResult(){
+    document.getElementById('qProgress').style.width='100%';
+    const top = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+    const info = RASI_TYPES[top] || RASI_TYPES["Mesham"];
+    document.getElementById('quizArea').innerHTML = `
+        <div class="quiz-result">
+            <div style="font-size:5rem;margin-bottom:1rem">${info.symbol}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:.85rem;margin-bottom:.3rem">Your Cosmic Archetype</div>
+            <div class="result-type" style="color:${info.color}">${info.type[LANG]||info.type.en}</div>
+            <div style="color:rgba(255,255,255,0.5);margin-bottom:1rem">${top} Energy</div>
+            <p class="result-desc">${info.desc[LANG]||info.desc.en}</p>
+            <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+                <a href="/cosmic-card" style="display:inline-block;padding:.9rem 2rem;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border-radius:25px;font-weight:700;text-decoration:none">
+                    <i class="fas fa-download"></i> ${LANG=="ta"?"என் அட்டை பெறு":"Get My Cosmic Card"}
+                </a>
+                <button onclick="current=0;Object.keys(scores).forEach(k=>delete scores[k]);renderQuestion()" style="padding:.9rem 2rem;background:rgba(255,215,0,0.1);color:#FFD700;border:1px solid rgba(255,215,0,0.3);border-radius:25px;cursor:pointer;font-size:.95rem">
+                    ${LANG=="ta"?"மீண்டும் முயற்சி":"Retake Quiz"}
+                </button>
+            </div>
+        </div>`;
+}
+
+renderQuestion();
+</script>
+{% endblock %}

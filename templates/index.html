@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-star"></i> Authentic Vedic Astrology</div>
+        <h1 class="hero-title">{% if language=="ta" %}ஆஸ்ட்ரோகை AI{% else %}AstroGuy AI{% endif %}</h1>
+        <p class="hero-subtitle">{% if language=="ta" %}நேர்மையான வேத ஜோதிடம் • பழங்கால ஞானம் • நவீன அறிவுநுட்பம்{% else %}Authentic Vedic Astrology • Ancient Wisdom • Modern Intelligence{% endif %}</p>
+        <div class="hero-features">
+            <div class="feature-pill"><i class="fas fa-moon"></i> {% if language=="ta" %}தினசரி ராசி{% else %}Daily Rasi{% endif %}</div>
+            <div class="feature-pill"><i class="fas fa-chart-pie"></i> {% if language=="ta" %}பிறப்பு சக்கரம்{% else %}Birth Chart{% endif %}</div>
+            <div class="feature-pill"><i class="fas fa-heart"></i> {% if language=="ta" %}பொருத்தம்{% else %}Compatibility{% endif %}</div>
+            <div class="feature-pill"><i class="fas fa-calendar"></i> {% if language=="ta" %}பஞ்சாங்கம்{% else %}Panchangam{% endif %}</div>
+            <div class="feature-pill"><i class="fas fa-brain"></i> {% if language=="ta" %}AI சாட்பாட்{% else %}AI Chatbot{% endif %}</div>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <div class="form-card">
+            <h2 class="section-title">{% if language=="ta" %}உங்கள் விண்வெளி பயணத்தைத் தொடங்குங்கள்{% else %}Begin Your Cosmic Journey{% endif %}</h2>
+            <div class="form-grid">
+                <div class="form-group"><label>{% if language=="ta" %}முழு பெயர்{% else %}Full Name{% endif %}</label><input type="text" id="userName" placeholder="{% if language=='ta' %}உங்கள் பெயர்{% else %}Your full name{% endif %}"></div>
+                <div class="form-group"><label>{% if language=="ta" %}பிறந்த தேதி{% else %}Date of Birth{% endif %}</label><input type="date" id="userDob"></div>
+                <div class="form-group"><label>{% if language=="ta" %}பிறந்த நேரம்{% else %}Birth Time{% endif %}</label><input type="time" id="userTime"></div>
+                <div class="form-group"><label>{% if language=="ta" %}பிறந்த இடம்{% else %}Birth Place{% endif %}</label><input type="text" id="userPlace" placeholder="{% if language=='ta' %}நகரம், மாநிலம்{% else %}City, State{% endif %}"></div>
+                <div class="form-group"><label>{% if language=="ta" %}பாலினம்{% else %}Gender{% endif %}</label>
+                    <select id="userGender">
+                        <option value="">{% if language=="ta" %}தேர்ந்தெடுக்கவும்{% else %}Select{% endif %}</option>
+                        <option value="male">{% if language=="ta" %}ஆண்{% else %}Male{% endif %}</option>
+                        <option value="female">{% if language=="ta" %}பெண்{% else %}Female{% endif %}</option>
+                        <option value="other">{% if language=="ta" %}மற்றவை{% else %}Other{% endif %}</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveUser()">
+                <i class="fas fa-star"></i> {% if language=="ta" %}என் ஜாதகத்தை உருவாக்கு{% else %}Generate My Chart{% endif %}
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}

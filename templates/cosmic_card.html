@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section style="padding: 2rem 1rem; max-width: 700px; margin: 0 auto;">
+
+    <div style="text-align:center; margin-bottom: 2rem;">
+        <h1 style="font-family:'Cinzel',serif; color:#FFD700; font-size:2rem; margin-bottom:0.4rem;">
+            ✨ Your Cosmic Card
+        </h1>
+        <p style="color:rgba(255,255,255,0.5); font-size:0.9rem;">
+            {% if language == 'ta' %}
+                உங்கள் தனிப்பட்ட ஜோதிட அடையாள அட்டை — பகிரவும், பதிவிறக்கவும்
+            {% else %}
+                Your personal astrology identity card — share it, download it
+            {% endif %}
+        </p>
+    </div>
+
+    {% if not user_chart %}
+    <!-- No chart yet -->
+    <div style="text-align:center; padding:3rem; background:rgba(255,255,255,0.04);
+                border:1px dashed rgba(255,215,0,0.3); border-radius:16px;">
+        <div style="font-size:3rem; margin-bottom:1rem;">🔮</div>
+        <p style="color:rgba(255,255,255,0.6); margin-bottom:1.5rem;">
+            {% if language == 'ta' %}
+                முதலில் உங்கள் பிறந்த விவரங்களை முகப்பு பக்கத்தில் உள்ளிடவும்
+            {% else %}
+                Enter your birth details on the home page first to generate your card
+            {% endif %}
+        </p>
+        <a href="/" style="display:inline-block; padding:0.8rem 2rem;
+                   background:linear-gradient(135deg,#FFD700,#FF8C00);
+                   color:#000; border-radius:25px; font-weight:700;
+                   text-decoration:none;">
+            {% if language == 'ta' %}முகப்பு பக்கம்{% else %}Go to Home{% endif %}
+        </a>
+    </div>
+
+    {% else %}
+    <!-- Canvas Card -->
+    <div style="display:flex; flex-direction:column; align-items:center; gap:1.5rem;">
+
+        <canvas id="cosmicCard" width="480" height="680"
+                style="border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,0.6),
+                       0 0 40px rgba(255,215,0,0.15); max-width:100%;"></canvas>
+
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+            <button onclick="downloadCard()"
+                    style="padding:0.9rem 2rem; background:linear-gradient(135deg,#FFD700,#FF8C00);
+                           color:#000; border:none; border-radius:25px; font-weight:700;
+                           font-size:0.95rem; cursor:pointer; transition:all 0.3s;">
+                <i class="fas fa-download"></i>
+                {% if language == 'ta' %}பதிவிறக்கு{% else %}Download PNG{% endif %}
+            </button>
+            <button onclick="regenerateCard()"
+                    style="padding:0.9rem 2rem; background:rgba(255,215,0,0.1);
+                           color:#FFD700; border:1px solid rgba(255,215,0,0.3);
+                           border-radius:25px; font-weight:600; font-size:0.95rem;
+                           cursor:pointer; transition:all 0.3s;">
+                <i class="fas fa-sync-alt"></i>
+                {% if language == 'ta' %}புதுப்பி{% else %}Refresh{% endif %}
+            </button>
+        </div>
+
+        <p style="color:rgba(255,255,255,0.3); font-size:0.78rem; text-align:center;">
+            📱
+            {% if language == 'ta' %}
+                Instagram, WhatsApp, அல்லது Twitter இல் பகிரவும்
+            {% else %}
+                Share on Instagram, WhatsApp, or Twitter
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+</section>
+
+{% if user_chart %}
+<script>
+// ── Chart data from Flask ────────────────────────────────────────────────
+const CHART = {
+    name:       "{{ profile.name if profile else 'Cosmic Soul' }}",
+    dob:        "{{ profile.dob if profile else '' }}",
+    rasiEn:     "{{ user_chart.rasi.english_name if user_chart.rasi.english_name else user_chart.rasi.englishName }}",
+    rasiTa:     "{{ user_chart.rasi.tamil_name if user_chart.rasi.tamil_name else user_chart.rasi.tamilName }}",
+    nakEn:      "{{ user_chart.nakshatra.name }}",
+    nakTa:      "{{ user_chart.nakshatra.tamil_name if user_chart.nakshatra.tamil_name else user_chart.nakshatra.tamilName }}",
+    pada:       "{{ user_chart.nakshatra.pada }}",
+    lord:       "{{ user_chart.nakshatra.lord }}",
+    lagna:      "{{ user_chart.lagna.name }}",
+    lang:       "{{ language }}",
+};
+
+const LUCKY = {
+    'Mesham':     { color:'#FF4444', gem:'Red Coral',    day:'Tuesday',  num:9  },
+    'Rishabam':   { color:'#88FF88', gem:'Diamond',      day:'Friday',   num:6  },
+    'Midhunam':   { color:'#44BBFF', gem:'Emerald',      day:'Wednesday',num:5  },
+    'Katakam':    { color:'#FFFFFF', gem:'Pearl',        day:'Monday',   num:2  },
+    'Simmam':     { color:'#FF8800', gem:'Ruby',         day:'Sunday',   num:1  },
+    'Kanni':      { color:'#AAFFAA', gem:'Emerald',      day:'Wednesday',num:5  },
+    'Thulam':     { color:'#FFAAFF', gem:'Diamond',      day:'Friday',   num:6  },
+    'Viruchigam': { color:'#FF6666', gem:'Red Coral',    day:'Tuesday',  num:9  },
+    'Dhanusu':    { color:'#FFDD44', gem:'Yellow Sapph.',day:'Thursday', num:3  },
+    'Makaram':    { color:'#8888FF', gem:'Blue Sapph.',  day:'Saturday', num:8  },
+    'Kumbam':     { color:'#88AAFF', gem:'Blue Sapph.',  day:'Saturday', num:8  },
+    'Meenam':     { color:'#AAAAFF', gem:'Yellow Sapph.',day:'Thursday', num:3  },
+};
+
+const RASI_SYMBOLS = {
+    'Mesham':'♈','Rishabam':'♉','Midhunam':'♊','Katakam':'♋',
+    'Simmam':'♌','Kanni':'♍','Thulam':'♎','Viruchigam':'♏',
+    'Dhanusu':'♐','Makaram':'♑','Kumbam':'♒','Meenam':'♓',
+};
+
+// ── Draw the card on canvas ──────────────────────────────────────────────
+function drawCosmicCard() {
+    const canvas = document.getElementById('cosmicCard');
+    const ctx    = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const lucky = LUCKY[CHART.rasiEn] || { color:'#FFD700', gem:'Pearl', day:'Monday', num:2 };
+
+    // Background
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0,   '#0a0a1a');
+    bgGrad.addColorStop(0.5, '#0f0f2e');
+    bgGrad.addColorStop(1,   '#080818');
+    ctx.fillStyle = bgGrad;
+    ctx.beginPath();
+    roundRect(ctx, 0, 0, W, H, 20);
+    ctx.fill();
+
+    // Star field
+    ctx.save();
+    for (let i = 0; i < 120; i++) {
+        const x = Math.random() * W;
+        const y = Math.random() * H;
+        const r = Math.random() * 1.2;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.6 + 0.1})`;
+        ctx.fill();
+    }
+    ctx.restore();
+
+    // Gold border
+    const borderGrad = ctx.createLinearGradient(0, 0, W, H);
+    borderGrad.addColorStop(0,   'rgba(255,215,0,0.8)');
+    borderGrad.addColorStop(0.5, 'rgba(255,140,0,0.4)');
+    borderGrad.addColorStop(1,   'rgba(255,215,0,0.8)');
+    ctx.strokeStyle = borderGrad;
+    ctx.lineWidth   = 2;
+    ctx.beginPath();
+    roundRect(ctx, 4, 4, W-8, H-8, 17);
+    ctx.stroke();
+
+    // Top glow circle
+    const glowGrad = ctx.createRadialGradient(W/2, 140, 0, W/2, 140, 160);
+    glowGrad.addColorStop(0,   `${lucky.color}22`);
+    glowGrad.addColorStop(0.5, `${lucky.color}11`);
+    glowGrad.addColorStop(1,   'transparent');
+    ctx.fillStyle = glowGrad;
+    ctx.fillRect(0, 0, W, 300);
+
+    // Rasi symbol (big, centered)
+    const symbol = RASI_SYMBOLS[CHART.rasiEn] || '☆';
+    ctx.font      = 'bold 90px serif';
+    ctx.fillStyle = lucky.color;
+    ctx.globalAlpha = 0.15;
+    ctx.textAlign   = 'center';
+    ctx.fillText(symbol, W/2, 190);
+    ctx.globalAlpha = 1;
+
+    // App brand
+    ctx.font      = '600 13px sans-serif';
+    ctx.fillStyle = 'rgba(255,215,0,0.5)';
+    ctx.textAlign = 'center';
+    ctx.letterSpacing = '3px';
+    ctx.fillText('✦  ASTROGUY AI  ✦', W/2, 40);
+
+    // Divider line
+    ctx.strokeStyle = 'rgba(255,215,0,0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(40, 52); ctx.lineTo(W-40, 52); ctx.stroke();
+
+    // Name
+    ctx.font      = 'bold 26px Cinzel, serif';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.fillText(CHART.name.toUpperCase(), W/2, 95);
+
+    // DOB
+    if (CHART.dob) {
+        ctx.font      = '400 13px sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fillText(CHART.dob, W/2, 118);
+    }
+
+    // Rasi symbol (visible)
+    ctx.font      = '50px serif';
+    ctx.fillStyle = lucky.color;
+    ctx.textAlign = 'center';
+    ctx.fillText(symbol, W/2, 185);
+
+    // Rasi name
+    ctx.font      = 'bold 22px Cinzel, serif';
+    ctx.fillStyle = lucky.color;
+    ctx.fillText(CHART.lang === 'ta' ? CHART.rasiTa : CHART.rasiEn, W/2, 225);
+
+    ctx.font      = '400 12px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fillText('Rasi (Moon Sign)', W/2, 245);
+
+    // Divider
+    ctx.strokeStyle = 'rgba(255,215,0,0.15)';
+    ctx.beginPath(); ctx.moveTo(40, 262); ctx.lineTo(W-40, 262); ctx.stroke();
+
+    // Info grid — 2 columns
+    const infoItems = [
+        { label: 'Nakshatra', value: CHART.lang === 'ta' ? CHART.nakTa : CHART.nakEn },
+        { label: 'Pada',      value: `${CHART.pada}`                                  },
+        { label: 'Lagna',     value: CHART.lagna                                      },
+        { label: 'Nak. Lord', value: CHART.lord                                        },
+    ];
+
+    const colX  = [W/4, (3*W)/4];
+    const startY = 295;
+    infoItems.forEach((item, i) => {
+        const x = colX[i % 2];
+        const y = startY + Math.floor(i / 2) * 65;
+
+        // Card bg
+        ctx.fillStyle = 'rgba(255,255,255,0.04)';
+        roundRect(ctx, x - 80, y - 25, 160, 55, 10);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,215,0,0.12)';
+        ctx.lineWidth = 1;
+        roundRect(ctx, x - 80, y - 25, 160, 55, 10);
+        ctx.stroke();
+
+        ctx.font      = '400 11px sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.textAlign = 'center';
+        ctx.fillText(item.label.toUpperCase(), x, y - 5);
+
+        ctx.font      = 'bold 15px Cinzel, serif';
+        ctx.fillStyle = '#FFD700';
+        ctx.fillText(item.value, x, y + 18);
+    });
+
+    // Lucky section
+    const luckyY = startY + 145;
+    ctx.strokeStyle = 'rgba(255,215,0,0.15)';
+    ctx.beginPath(); ctx.moveTo(40, luckyY - 15); ctx.lineTo(W-40, luckyY - 15); ctx.stroke();
+
+    ctx.font      = '600 11px sans-serif';
+    ctx.fillStyle = 'rgba(255,215,0,0.5)';
+    ctx.textAlign = 'center';
+    ctx.fillText('✦  LUCKY ELEMENTS  ✦', W/2, luckyY);
+
+    const luckyItems = [
+        { label:'Color',   value: lucky.color,  display: '●  ' + lucky.color.replace('#','').slice(0,6) },
+        { label:'Gemstone',value: lucky.gem,     display: '💎  ' + lucky.gem  },
+        { label:'Day',     value: lucky.day,     display: '📅  ' + lucky.day  },
+        { label:'Number',  value: lucky.num,     display: '🔢  ' + lucky.num  },
+    ];
+
+    const lY = luckyY + 25;
+    const lColX = [W*0.25, W*0.75];
+    luckyItems.forEach((item, i) => {
+        const x = lColX[i % 2];
+        const y = lY + Math.floor(i / 2) * 52;
+
+        ctx.fillStyle = 'rgba(255,255,255,0.03)';
+        roundRect(ctx, x - 75, y - 18, 150, 42, 8);
+        ctx.fill();
+
+        ctx.font      = '400 10px sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.textAlign = 'center';
+        ctx.fillText(item.label, x, y - 2);
+
+        ctx.font      = '600 13px sans-serif';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(item.display, x, y + 16);
+    });
+
+    // Bottom divider + date
+    const botY = H - 45;
+    ctx.strokeStyle = 'rgba(255,215,0,0.15)';
+    ctx.beginPath(); ctx.moveTo(40, botY - 12); ctx.lineTo(W-40, botY - 12); ctx.stroke();
+
+    ctx.font      = '400 11px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.textAlign = 'center';
+    ctx.fillText('astroguy.ai  •  Authentic Vedic Astrology  •  ' + new Date().toLocaleDateString(), W/2, botY + 5);
+
+    ctx.font      = '400 10px sans-serif';
+    ctx.fillStyle = 'rgba(255,215,0,0.3)';
+    ctx.fillText('Generated with ✨ AI-powered calculations', W/2, botY + 22);
+}
+
+// ── Rounded rect helper ──────────────────────────────────────────────────
+function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+}
+
+function downloadCard() {
+    const canvas = document.getElementById('cosmicCard');
+    const link   = document.createElement('a');
+    link.download = `cosmic-card-${CHART.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+    link.href     = canvas.toDataURL('image/png');
+    link.click();
+}
+
+function regenerateCard() {
+    // Redraw with fresh random stars
+    drawCosmicCard();
+}
+
+// Draw on load
+window.addEventListener('load', drawCosmicCard);
+</script>
+{% endif %}
+{% endblock %}

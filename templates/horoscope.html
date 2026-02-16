@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section" style="max-width:800px;margin:0 auto;padding:2rem 1rem">
+    <h1 style="font-family:Cinzel,serif;color:#FFD700;text-align:center;margin-bottom:2rem">
+        🌙 {% if language=="ta" %}ராசி பலன்கள்{% else %}Horoscope Predictions{% endif %}
+    </h1>
+    {% if user_chart %}
+    <div class="result-card" style="margin-bottom:2rem">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+            <span style="font-size:3rem">{{ user_chart.rasi.symbol }}</span>
+            <div>
+                <h2 style="font-family:Cinzel,serif;color:#FFD700">
+                    {% if language=="ta" %}{{ user_chart.rasi.tamilName }}{% else %}{{ user_chart.rasi.englishName }}{% endif %}
+                </h2>
+                <p style="color:rgba(255,255,255,0.5)">
+                    {% if language=="ta" %}நட்சத்திரம்: {{ user_chart.nakshatra.tamilName }}{% else %}Nakshatra: {{ user_chart.nakshatra.name }}{% endif %}
+                    &nbsp;|&nbsp; {% if language=="ta" %}அதிபதி: {% else %}Lord: {% endif %}{{ user_chart.rasi.lord }}
+                </p>
+            </div>
+        </div>
+        {% if horoscope %}
+        {% for key, label_en, label_ta in [("general","General","பொதுவான"),("career","Career","தொழில்"),("love","Love","காதல்"),("health","Health","ஆரோக்கியம்"),("finance","Finance","நிதி")] %}
+        {% if horoscope[key] is defined %}
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,215,0,0.15);border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem">
+            <div style="color:#FFD700;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem">
+                {% if language=="ta" %}{{ label_ta }}{% else %}{{ label_en }}{% endif %}
+            </div>
+            <p style="color:rgba(255,255,255,0.8);line-height:1.7">{{ horoscope[key] }}</p>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:3rem">
+        <div style="font-size:3rem;margin-bottom:1rem">🔮</div>
+        <p style="color:rgba(255,255,255,0.6);margin-bottom:1.5rem">
+            {% if language=="ta" %}முதலில் முகப்பு பக்கத்தில் உங்கள் விவரங்களை உள்ளிடவும்{% else %}Enter your birth details on the home page first{% endif %}
+        </p>
+        <a href="/" style="display:inline-block;padding:0.8rem 2rem;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border-radius:25px;font-weight:700;text-decoration:none">
+            {% if language=="ta" %}முகப்பு{% else %}Go to Home{% endif %}
+        </a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
