@@ -1,441 +1,616 @@
 {
-    "intents": [
-        {
-            "tag": "greeting",
-            "patterns": [
-                "Hello",
-                "Hi",
-                "Hey",
-                "Good morning",
-                "Namaste",
-                "Vanakkam",
-                "Hey AstroGuy",
-                "Start"
-            ],
-            "responses": [
-                "Namaste! I'm AstroGuy AI. Ask me anything about your horoscope, birth chart, compatibility, or Panchangam!",
-                "Vanakkam! Welcome to AstroGuy AI. How can I guide you through the stars today?"
-            ]
-        },
-        {
-            "tag": "goodbye",
-            "patterns": [
-                "Bye",
-                "Goodbye",
-                "See you",
-                "Take care",
-                "Exit",
-                "Good night"
-            ],
-            "responses": [
-                "Goodbye! May the stars always guide your path!",
-                "Farewell! The cosmos will always be here for you."
-            ]
-        },
-        {
-            "tag": "thanks",
-            "patterns": [
-                "Thanks",
-                "Thank you",
-                "That's helpful",
-                "Appreciate it",
-                "Nandri"
-            ],
-            "responses": [
-                "You're welcome! The stars are always here to guide you.",
-                "Happy to help! Feel free to ask anything else about astrology."
-            ]
-        },
-        {
-            "tag": "aries",
-            "patterns": [
-                "Tell me about Aries",
-                "Aries personality",
-                "Mesham rasi",
-                "Aries traits",
-                "I am an Aries",
-                "What is Mesham"
-            ],
-            "responses": [
-                "Aries (Mesham) is ruled by Mars. Bold, energetic, and a natural leader. Lucky color: Red. Lucky day: Tuesday. Gemstone: Red Coral.",
-                "Aries (Mesham) are fiery, courageous, and ambitious. They thrive on challenges and love to be first."
-            ]
-        },
-        {
-            "tag": "taurus",
-            "patterns": [
-                "Tell me about Taurus",
-                "Taurus personality",
-                "Rishabam rasi",
-                "Taurus traits",
-                "I am a Taurus",
-                "What is Rishabam"
-            ],
-            "responses": [
-                "Taurus (Rishabam) is ruled by Venus. Reliable, patient, and deeply loyal. Lucky color: Green. Lucky day: Friday. Gemstone: Diamond.",
-                "Taurus (Rishabam) are stable, dependable, and love comfort and beauty."
-            ]
-        },
-        {
-            "tag": "gemini",
-            "patterns": [
-                "Tell me about Gemini",
-                "Gemini personality",
-                "Midhunam rasi",
-                "Gemini traits",
-                "I am a Gemini",
-                "What is Midhunam"
-            ],
-            "responses": [
-                "Gemini (Midhunam) is ruled by Mercury. Witty, curious, and adaptable. Lucky color: Yellow. Lucky day: Wednesday. Gemstone: Emerald.",
-                "Gemini (Midhunam) are social butterflies — intelligent, quick-thinking, and great communicators."
-            ]
-        },
-        {
-            "tag": "cancer",
-            "patterns": [
-                "Tell me about Cancer",
-                "Cancer personality",
-                "Katakam rasi",
-                "Cancer traits",
-                "I am a Cancer",
-                "What is Katakam"
-            ],
-            "responses": [
-                "Cancer (Katakam) is ruled by the Moon. Nurturing, intuitive, and family-oriented. Lucky color: White/Silver. Lucky day: Monday. Gemstone: Pearl.",
-                "Cancer (Katakam) are deeply empathetic and protective of loved ones."
-            ]
-        },
-        {
-            "tag": "leo",
-            "patterns": [
-                "Tell me about Leo",
-                "Leo personality",
-                "Simmam rasi",
-                "Leo traits",
-                "I am a Leo",
-                "What is Simmam"
-            ],
-            "responses": [
-                "Leo (Simmam) is ruled by the Sun. Charismatic, creative, and a born leader. Lucky color: Gold. Lucky day: Sunday. Gemstone: Ruby.",
-                "Leo (Simmam) have a royal presence and are incredibly generous and loyal."
-            ]
-        },
-        {
-            "tag": "virgo",
-            "patterns": [
-                "Tell me about Virgo",
-                "Virgo personality",
-                "Kanni rasi",
-                "Virgo traits",
-                "I am a Virgo",
-                "What is Kanni"
-            ],
-            "responses": [
-                "Virgo (Kanni) is ruled by Mercury. Analytical, hardworking, and detail-oriented. Lucky color: Navy Blue. Lucky day: Wednesday. Gemstone: Emerald.",
-                "Virgo (Kanni) are the perfectionists of the zodiac — humble, dedicated, and organized."
-            ]
-        },
-        {
-            "tag": "libra",
-            "patterns": [
-                "Tell me about Libra",
-                "Libra personality",
-                "Thulam rasi",
-                "Libra traits",
-                "I am a Libra",
-                "What is Thulam"
-            ],
-            "responses": [
-                "Libra (Thulam) is ruled by Venus. Diplomatic, charming, and fair-minded. Lucky color: Blue/Pink. Lucky day: Friday. Gemstone: Diamond.",
-                "Libra (Thulam) are the diplomats of the zodiac with a love for harmony and balance."
-            ]
-        },
-        {
-            "tag": "scorpio",
-            "patterns": [
-                "Tell me about Scorpio",
-                "Scorpio personality",
-                "Viruchigam rasi",
-                "Scorpio traits",
-                "I am a Scorpio",
-                "What is Viruchigam"
-            ],
-            "responses": [
-                "Scorpio (Viruchigam) is ruled by Mars. Intense, passionate, and determined. Lucky color: Dark Red. Lucky day: Tuesday. Gemstone: Red Coral.",
-                "Scorpio (Viruchigam) are the most magnetic and perceptive signs of the zodiac."
-            ]
-        },
-        {
-            "tag": "sagittarius",
-            "patterns": [
-                "Tell me about Sagittarius",
-                "Sagittarius personality",
-                "Dhanusu rasi",
-                "Sagittarius traits",
-                "I am a Sagittarius",
-                "What is Dhanusu"
-            ],
-            "responses": [
-                "Sagittarius (Dhanusu) is ruled by Jupiter. Adventurous, optimistic, and truth-seeking. Lucky color: Purple. Lucky day: Thursday. Gemstone: Yellow Sapphire.",
-                "Sagittarius (Dhanusu) are the explorers of the zodiac — enthusiastic and wise."
-            ]
-        },
-        {
-            "tag": "capricorn",
-            "patterns": [
-                "Tell me about Capricorn",
-                "Capricorn personality",
-                "Makaram rasi",
-                "Capricorn traits",
-                "I am a Capricorn",
-                "What is Makaram"
-            ],
-            "responses": [
-                "Capricorn (Makaram) is ruled by Saturn. Disciplined, ambitious, and patient. Lucky color: Black/Brown. Lucky day: Saturday. Gemstone: Blue Sapphire.",
-                "Capricorn (Makaram) are goal-oriented achievers who value tradition and hard work."
-            ]
-        },
-        {
-            "tag": "aquarius",
-            "patterns": [
-                "Tell me about Aquarius",
-                "Aquarius personality",
-                "Kumbam rasi",
-                "Aquarius traits",
-                "I am an Aquarius",
-                "What is Kumbam"
-            ],
-            "responses": [
-                "Aquarius (Kumbam) is ruled by Saturn and Uranus. Innovative, humanitarian, and independent. Lucky color: Blue/Turquoise. Lucky day: Saturday. Gemstone: Blue Sapphire.",
-                "Aquarius (Kumbam) are the visionaries of the zodiac — unconventional and progressive."
-            ]
-        },
-        {
-            "tag": "pisces",
-            "patterns": [
-                "Tell me about Pisces",
-                "Pisces personality",
-                "Meenam rasi",
-                "Pisces traits",
-                "I am a Pisces",
-                "What is Meenam"
-            ],
-            "responses": [
-                "Pisces (Meenam) is ruled by Jupiter. Compassionate, artistic, and deeply spiritual. Lucky color: Sea Green. Lucky day: Thursday. Gemstone: Yellow Sapphire.",
-                "Pisces (Meenam) are the most spiritual and empathetic signs — natural healers and artists."
-            ]
-        },
-        {
-            "tag": "nakshatra_general",
-            "patterns": [
-                "What is nakshatra",
-                "Tell me about nakshatra",
-                "Explain nakshatra",
-                "Nakshatra meaning",
-                "Birth star",
-                "How many nakshatras"
-            ],
-            "responses": [
-                "Nakshatras are the 27 lunar mansions in Vedic astrology. Your birth nakshatra is determined by the Moon's position at birth and reveals your personality, destiny, and spiritual path.",
-                "There are 27 Nakshatras in Vedic astrology, each with a ruling deity, planet, and symbol that influences your nature and life path."
-            ]
-        },
-        {
-            "tag": "panchangam_general",
-            "patterns": [
-                "What is panchangam",
-                "Panchangam meaning",
-                "Explain panchangam",
-                "Five elements of panchangam",
-                "Daily panchangam",
-                "Today panchangam"
-            ],
-            "responses": [
-                "Panchangam is the Hindu almanac with five elements: Tithi (lunar day), Vara (weekday), Nakshatra (birth star), Yoga, and Karana. It guides auspicious timing for important events.",
-                "The Panchangam helps find Muhurtham (auspicious times) for weddings, business launches, and ceremonies based on planetary positions and lunar phases."
-            ]
-        },
-        {
-            "tag": "rahu_kalam",
-            "patterns": [
-                "What is Rahu Kalam",
-                "Rahu kalam timing",
-                "Rahu kalam today",
-                "Avoid Rahu kalam",
-                "Inauspicious time"
-            ],
-            "responses": [
-                "Rahu Kalam is a daily inauspicious period of 90 minutes. By day: Sun 4:30-6PM, Mon 7:30-9AM, Tue 3-4:30PM, Wed 12-1:30PM, Thu 1:30-3PM, Fri 10:30AM-12PM, Sat 9-10:30AM.",
-                "Rahu Kalam should be avoided for starting new ventures, weddings, or important ceremonies. Regular daily activities are fine during this time."
-            ]
-        },
-        {
-            "tag": "muhurtham",
-            "patterns": [
-                "What is muhurtham",
-                "Auspicious time",
-                "Good time for wedding",
-                "Best time to start business",
-                "Wedding muhurtham",
-                "Shubh muhurat"
-            ],
-            "responses": [
-                "Muhurtham is an auspicious time window based on Panchangam. A good muhurtham avoids Rahu Kalam and ensures the Lagna and Moon are well-placed. Best nakshatras for weddings: Rohini, Mrigashira, Hasta, Anuradha.",
-                "To find a good muhurtham, astrologers verify Tithi, Nakshatra, and planetary positions are favorable while avoiding malefic periods."
-            ]
-        },
-        {
-            "tag": "birth_chart",
-            "patterns": [
-                "What is a birth chart",
-                "Explain birth chart",
-                "Kundali meaning",
-                "Jathagam meaning",
-                "How to read birth chart",
-                "Natal chart"
-            ],
-            "responses": [
-                "A birth chart (Jathagam/Kundali) is a snapshot of the sky at your birth. It maps 9 planets across 12 houses, each ruling a life area like wealth, career, relationships, and health.",
-                "Your birth chart has 12 Bhavas (houses) and 9 Navagrahas (planets). The Lagna (Ascendant) shapes your personality; the Moon sign (Rasi) governs your emotions."
-            ]
-        },
-        {
-            "tag": "compatibility_general",
-            "patterns": [
-                "Which sign am I compatible with",
-                "Love compatibility",
-                "Zodiac compatibility",
-                "Who should I marry",
-                "Rasi compatibility",
-                "Marriage compatibility",
-                "Porutham"
-            ],
-            "responses": [
-                "Compatibility in Vedic astrology uses Rasi matching and Nakshatra Ashtakoota (8-fold matching). Fire signs match Air signs. Earth signs harmonize with Water signs. Tell me your rasi for specifics!",
-                "Tamil marriage compatibility uses Porutham (10 criteria) including Dina, Gana, Rasi, Yoni, and Rajju. At least 6 poruthams are needed for a good match."
-            ]
-        },
-        {
-            "tag": "mangal_dosha",
-            "patterns": [
-                "What is mangal dosha",
-                "Chevvai dosham",
-                "Mars dosha",
-                "Am I mangalik",
-                "Mangal dosha remedy",
-                "Kuja dosham"
-            ],
-            "responses": [
-                "Mangal Dosha (Chevvai Dosham) occurs when Mars is in the 1st, 2nd, 4th, 7th, 8th, or 12th house. Remedies include marrying another Mangalik, Kumbh Vivah ritual, or worshipping at Mangal temples.",
-                "Chevvai Dosham effects are nullified if both partners have the dosha. Modern astrologers consider it one factor among many, not a deal-breaker."
-            ]
-        },
-        {
-            "tag": "remedies_general",
-            "patterns": [
-                "What are astrological remedies",
-                "How to improve my luck",
-                "Remedies for bad planets",
-                "Dosham remedies",
-                "Graha dosha remedy",
-                "Astrological solutions"
-            ],
-            "responses": [
-                "Astrological remedies include: gemstone therapy, mantra chanting, temple poojas, charity on specific days, fasting on planet days, Yantra worship, and wearing specific colors.",
-                "By planet remedies: Sun — wear Ruby, offer water at sunrise. Moon — wear Pearl, offer milk. Mars — wear Red Coral. Rahu — donate black sesame. Ketu — worship Ganesha."
-            ]
-        },
-        {
-            "tag": "planets_general",
-            "patterns": [
-                "What are navagrahas",
-                "Nine planets astrology",
-                "What does each planet represent",
-                "Planetary influence",
-                "Graha meaning",
-                "Tell me about planets"
-            ],
-            "responses": [
-                "The 9 Navagrahas: Sun (soul), Moon (mind), Mars (energy), Mercury (intellect), Jupiter (wisdom), Venus (love), Saturn (karma), Rahu (ambition), Ketu (spirituality). Each rules specific life areas.",
-                "Jupiter is the great benefic bringing luck. Saturn teaches through discipline. Venus governs love. Mars provides energy and drive. The Moon shapes daily moods."
-            ]
-        },
-        {
-            "tag": "saturn_shani",
-            "patterns": [
-                "Tell me about Saturn",
-                "Shani graha",
-                "What is Sade Sati",
-                "Shani Sade Sati",
-                "Saturn transit",
-                "Saturn dasha"
-            ],
-            "responses": [
-                "Saturn (Shani) is the planet of karma and discipline. Sade Sati is a 7.5-year period when Saturn transits your Moon sign, bringing lessons and growth. Remedy: Offer sesame oil, worship Hanuman on Saturdays.",
-                "Saturn's 19-year dasha rewards patience and hard work. Sade Sati brings challenges but ultimately transforms your life. Serve others, stay disciplined, and avoid major risks during this period."
-            ]
-        },
-        {
-            "tag": "finance_career",
-            "patterns": [
-                "When will I get a job",
-                "Career astrology",
-                "Business astrology",
-                "Finance prediction",
-                "Job prediction",
-                "Best career for me",
-                "Money astrology"
-            ],
-            "responses": [
-                "Career prospects come from the 2nd house (wealth), 6th house (work), 10th house (career), and 11th house (income). A strong Jupiter and 10th lord indicate professional success.",
-                "Financial luck improves during Jupiter's favorable transit or during the dasha of your 10th or 11th house lord. Mercury rules business and communication-based careers."
-            ]
-        },
-        {
-            "tag": "wellness_mood",
-            "patterns": [
-                "How do planets affect mood",
-                "Astrology and health",
-                "Planet rules health",
-                "Moon and emotions",
-                "Planetary wellness",
-                "Astrology and mental health"
-            ],
-            "responses": [
-                "The Moon governs mind and emotions. A weak Moon causes mood swings and anxiety. Saturn during Sade Sati brings heaviness. Remedy: Meditate during full moon, chant Moon mantras, spend time near water.",
-                "Planetary health rulerships: Sun — heart and eyes, Moon — mind, Mars — blood, Mercury — nerves, Jupiter — liver, Venus — kidneys, Saturn — bones. Balancing through mantras improves wellness."
-            ]
-        },
-        {
-            "tag": "what_can_you_do",
-            "patterns": [
-                "What can you do",
-                "Help me",
-                "What are your features",
-                "How can you help",
-                "What is AstroGuy",
-                "Features of AstroGuy"
-            ],
-            "responses": [
-                "I'm AstroGuy AI! I can help with: Zodiac and Rasi info, Nakshatra details, Compatibility matching, Panchangam timing, Birth chart reading, Career predictions, Horoscopes, Dosha remedies, and Cosmic Cards!",
-                "AstroGuy AI offers birth chart analysis, daily horoscopes, compatibility matching, Tamil Panchangam, personality quiz, wellness guidance, financial predictions, and shareable Cosmic Cards!"
-            ]
-        },
-        {
-            "tag": "unknown",
-            "patterns": [
-                "asdf",
-                "random",
-                "huh",
-                "what",
-                "I don't know",
-                "tell me something"
-            ],
-            "responses": [
-                "I'm not sure I understand. Try asking about your rasi, nakshatra, compatibility, or today's Panchangam!",
-                "That's beyond my cosmic knowledge! Ask me about horoscopes, birth charts, or any zodiac sign and I'll light up the sky with answers!"
-            ]
-        }
-    ]
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hi",
+        "hello",
+        "hey",
+        "vanakkam",
+        "namaste",
+        "good morning",
+        "good evening",
+        "howdy",
+        "what's up",
+        "greetings",
+        "hi there",
+        "hello there",
+        "hey there",
+        "good day",
+        "sup",
+        "yo",
+        "hola",
+        "hai",
+        "வணக்கம்",
+        "நமஸ்காரம்",
+        "good afternoon",
+        "hi astroguy",
+        "hello astroguy",
+        "hey astroguy",
+        "hi buddy",
+        "good morning astroguy",
+        "heyy",
+        "hello friend",
+        "start"
+      ],
+      "responses": [
+        "🙏 Vanakkam! I'm AstroGuy AI, your Vedic astrology guide. Ask me about your Rasi, Nakshatra, planets, or compatibility!",
+        "🌟 Hello! Welcome to AstroGuy. I can help you with birth charts, horoscopes, compatibility matching, and Vedic remedies. What would you like to know?",
+        "🙏 Namaste! I'm here to guide you through authentic Vedic astrology. You can ask about planets, nakshatras, career, love, or health predictions!"
+      ]
+    },
+    {
+      "tag": "birth_chart",
+      "patterns": [
+        "what is my birth chart",
+        "show me my jathagam",
+        "calculate my horoscope",
+        "what is kundali",
+        "birth chart details",
+        "my natal chart",
+        "jathagam paar",
+        "create my chart",
+        "generate horoscope",
+        "my kundali",
+        "calculate jathagam",
+        "what is rasi chart",
+        "south indian chart",
+        "north indian chart",
+        "how to read birth chart",
+        "explain my birth chart",
+        "ஜாதகம்",
+        "birth chart meaning",
+        "what does my chart say",
+        "planetary positions",
+        "my horoscope chart",
+        "astrology chart",
+        "vedic chart",
+        "lagna chart"
+      ],
+      "responses": [
+        "📊 Your birth chart (Jathagam) is a cosmic map of planetary positions at your birth time. Enter your birth date, time, and place on the home page to generate your personalized Vedic chart!",
+        "🗺️ A Vedic birth chart shows your Rasi (Moon sign), Nakshatra (birth star), Lagna (ascendant), and the positions of all 9 planets. Go to the home page and enter your details to get yours!",
+        "✨ Your Jathagam reveals your life path, personality, and destiny. I need your birth date, exact time, and birthplace to calculate it. Please enter those on the home page!"
+      ]
+    },
+    {
+      "tag": "rasi_info",
+      "patterns": [
+        "what is rasi",
+        "tell me about my rasi",
+        "rasi meaning",
+        "what is zodiac sign",
+        "which rasi am i",
+        "my moon sign",
+        "rasi details",
+        "zodiac meaning",
+        "what is mesham",
+        "what is rishabam",
+        "what is midhunam",
+        "what is katakam",
+        "what is simmam",
+        "what is kanni",
+        "what is thulam",
+        "what is viruchigam",
+        "what is dhanusu",
+        "what is makaram",
+        "what is kumbam",
+        "what is meenam",
+        "aries meaning",
+        "taurus meaning",
+        "gemini meaning",
+        "cancer meaning",
+        "leo meaning",
+        "virgo meaning",
+        "libra meaning",
+        "scorpio meaning",
+        "sagittarius meaning",
+        "capricorn meaning",
+        "aquarius meaning",
+        "pisces meaning",
+        "ராசி என்ன",
+        "என் ராசி",
+        "rasi characteristics",
+        "rasi traits",
+        "my moon sign is",
+        "aries personality",
+        "taurus personality",
+        "gemini characteristics",
+        "cancer personality traits",
+        "leo sun sign",
+        "virgo traits",
+        "libra personality",
+        "scorpio characteristics",
+        "sagittarius traits",
+        "capricorn personality",
+        "aquarius characteristics",
+        "pisces personality",
+        "rasi palan",
+        "rasi koodu"
+      ],
+      "responses": [
+        "🌙 In Vedic astrology, your Rasi is determined by the Moon's position at your birth — not the Sun like Western astrology! There are 12 Rasis: Mesham, Rishabam, Midhunam, Katakam, Simmam, Kanni, Thulam, Viruchigam, Dhanusu, Makaram, Kumbam, and Meenam.",
+        "♈ Your Rasi (Moon sign) reveals your emotional nature and inner self. Enter your birth details on the home page to discover yours! Each Rasi has a ruling planet, element, and unique characteristics.",
+        "🌟 The 12 Rasis represent different cosmic energies. Your Moon was in one of these signs at birth — that's your Rasi! Want to know about a specific Rasi? Just ask!"
+      ]
+    },
+    {
+      "tag": "nakshatra_info",
+      "patterns": [
+        "what is nakshatra",
+        "my birth star",
+        "nakshatra details",
+        "tell me about nakshatra",
+        "which nakshatra am i",
+        "natchathiram",
+        "birth star meaning",
+        "27 nakshatras",
+        "nakshatra lord",
+        "nakshatra pada",
+        "what is ashwini",
+        "what is rohini",
+        "what is krittika",
+        "what is bharani",
+        "what is mrigashira",
+        "what is ardra",
+        "what is punarvasu",
+        "what is pushya",
+        "what is ashlesha",
+        "what is magha",
+        "nakshatra characteristics",
+        "my star sign vedic",
+        "நட்சத்திரம்",
+        "nakshatra prediction",
+        "star based prediction",
+        "natchathiram பலன்",
+        "nakshatra compatibility",
+        "nakshatra gana",
+        "nakshatra nadi"
+      ],
+      "responses": [
+        "⭐ Nakshatras are the 27 lunar mansions in Vedic astrology, each spanning 13°20'. Your Nakshatra (birth star) is where the Moon was at your exact birth time. It reveals your deeper nature, talents, and life purpose!",
+        "🌟 There are 27 Nakshatras, each with 4 Padas (quarters). Your Nakshatra Lord (ruling planet) greatly influences your personality. Enter your birth details to find your Nakshatra!",
+        "✨ Each Nakshatra belongs to a Gana (Deva/Manushya/Rakshasa) and Nadi (Vata/Pitta/Kapha). These are crucial for marriage compatibility! Your Nakshatra is calculated from your Moon's position."
+      ]
+    },
+    {
+      "tag": "planet_info",
+      "patterns": [
+        "tell me about sun",
+        "what does sun mean",
+        "surya in astrology",
+        "tell me about moon",
+        "what does moon mean",
+        "chandra in astrology",
+        "tell me about mars",
+        "what does mars mean",
+        "sevvai planet",
+        "tell me about mercury",
+        "what does mercury mean",
+        "budhan planet",
+        "tell me about jupiter",
+        "what does jupiter mean",
+        "guru planet",
+        "tell me about venus",
+        "what does venus mean",
+        "sukran planet",
+        "tell me about saturn",
+        "what does saturn mean",
+        "sani planet",
+        "tell me about rahu",
+        "what does rahu mean",
+        "rahu effects",
+        "tell me about ketu",
+        "what does ketu mean",
+        "ketu effects",
+        "9 planets vedic",
+        "navagrahas",
+        "planet effects",
+        "planet meaning",
+        "சூரியன்",
+        "சந்திரன்",
+        "செவ்வாய்",
+        "புதன்",
+        "குரு",
+        "சுக்ரன்",
+        "சனி",
+        "ராகு",
+        "கேது",
+        "which planet rules",
+        "planet in my chart",
+        "strong planet",
+        "weak planet",
+        "explain sun planet",
+        "what planet is sun",
+        "surya graha",
+        "describe mars planet",
+        "chandra graha meaning",
+        "planet saturn effects",
+        "planet rahu effects",
+        "what does venus represent",
+        "what does jupiter represent",
+        "what does saturn represent",
+        "navagraha meaning",
+        "nine planets astrology",
+        "planet in 1st house",
+        "malefic planet",
+        "benefic planet",
+        "exalted planet",
+        "debilitated planet",
+        "planet strength"
+      ],
+      "responses": [
+        "🪐 The 9 Vedic planets (Navagrahas) are: Sun (soul/authority), Moon (mind/emotions), Mars (energy/courage), Mercury (intelligence/communication), Jupiter (wisdom/wealth), Venus (love/beauty), Saturn (karma/discipline), Rahu (obsession/illusion), Ketu (spirituality/liberation). Which planet would you like to know more about?",
+        "☀️ Each planet governs different aspects of life. The Sun rules your soul and ego, Moon rules your mind, Mars rules energy and property, Mercury rules intellect, Jupiter rules wisdom and children, Venus rules love and luxury, Saturn rules karma and longevity!",
+        "🌟 Ask me about any specific planet — Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, or Ketu — and I'll tell you exactly what it means in your chart!"
+      ]
+    },
+    {
+      "tag": "career_advice",
+      "patterns": [
+        "what career suits me",
+        "career prediction",
+        "job prediction",
+        "career in astrology",
+        "which profession is good for me",
+        "career advice astrology",
+        "job forecast",
+        "my career horoscope",
+        "business prediction",
+        "will i get a job",
+        "job astrology",
+        "career based on rasi",
+        "profession based on birth chart",
+        "best career for me",
+        "work prediction",
+        "career guidance vedic",
+        "தொழில் பலன்",
+        "வேலை பலன்",
+        "job opportunities",
+        "promotion astrology",
+        "business success astrology",
+        "career change astrology",
+        "will my business succeed",
+        "career forecast 2025",
+        "10th house career",
+        "work life astrology"
+      ],
+      "responses": [
+        "💼 Career in Vedic astrology is seen through the 10th house, its lord, and planets like Sun (government/authority), Mercury (business/communication), Saturn (technical/labor), Jupiter (teaching/consulting). Enter your birth details so I can give you personalized career guidance!",
+        "🌟 For career success: Worship your 10th house lord, chant the Gayatri Mantra daily, and wear your lucky gemstone. The planets Mercury (business), Jupiter (academics), and Saturn (service) strongly influence profession!",
+        "📈 Your Rasi and Nakshatra reveal natural talents. Mesham/Simmam excel in leadership, Kanni/Midhunam in analysis, Thulam/Rishabam in arts, and Makaram/Kumbam in technology. What's your birth date? I'll give specific guidance!"
+      ]
+    },
+    {
+      "tag": "love_marriage",
+      "patterns": [
+        "when will i get married",
+        "love prediction",
+        "marriage astrology",
+        "relationship advice",
+        "compatibility with partner",
+        "will i find love",
+        "marriage horoscope",
+        "love life",
+        "when is my marriage",
+        "love match",
+        "soulmate astrology",
+        "relationship prediction",
+        "will my marriage be successful",
+        "husband wife astrology",
+        "love problems",
+        "break up astrology",
+        "divorce prediction",
+        "marriage age astrology",
+        "காதல் பலன்",
+        "திருமண பலன்",
+        "life partner",
+        "romantic compatibility",
+        "7th house marriage",
+        "venus love astrology",
+        "partner prediction"
+      ],
+      "responses": [
+        "💑 Marriage in Vedic astrology is seen through the 7th house, Venus, and Navamsa chart. The timing of marriage is predicted through Dasha periods. Enter your birth details for personalized marriage timing!",
+        "❤️ For a happy marriage: Check compatibility (Ashtakoota matching), ensure no major doshas (Manglik, Nadi), and worship Venus on Fridays. True love comes when Jupiter transits your 7th house!",
+        "💕 Love compatibility in Vedic astrology goes beyond Sun signs — your Moon sign, Nakshatra, and Lagna all matter. Use the Compatibility page to check your Ashtakoota score (out of 36) with your partner!"
+      ]
+    },
+    {
+      "tag": "health_prediction",
+      "patterns": [
+        "health prediction",
+        "health astrology",
+        "disease prediction",
+        "what illness",
+        "health horoscope",
+        "medical astrology",
+        "health problems astrology",
+        "which body part is weak",
+        "health advice astrology",
+        "healing astrology",
+        "wellness astrology",
+        "mental health astrology",
+        "ஆரோக்கியம் பலன்",
+        "health forecast",
+        "will i recover",
+        "health issues",
+        "sick prediction",
+        "6th house health",
+        "8th house health",
+        "health remedy astrology",
+        "which planet causes disease",
+        "rahu ketu health",
+        "saturn health problems"
+      ],
+      "responses": [
+        "🏥 Health in Vedic astrology is seen through the 6th house (illness), 8th house (chronic issues), and 12th house (hospitalization). Each Rasi rules a body part: Mesham rules head, Rishabam rules neck, Katakam rules chest, and so on.",
+        "💊 For good health: Practice yoga daily, eat sattvic food, and follow your Rasi's health guidelines. Avoid inauspicious planetary periods (dashas) for surgeries. The Moon's position greatly affects mental health!",
+        "🌿 Health remedies in Vedic astrology: Worship the Sun at sunrise for vitality, chant Maha Mrityunjaya Mantra for healing, and wear Pearl (Moon gemstone) for mental peace. Which health aspect concerns you?"
+      ]
+    },
+    {
+      "tag": "finance_wealth",
+      "patterns": [
+        "money prediction",
+        "wealth astrology",
+        "financial forecast",
+        "will i get rich",
+        "finance horoscope",
+        "money problems astrology",
+        "financial astrology",
+        "investment prediction",
+        "stock market astrology",
+        "property prediction",
+        "lottery astrology",
+        "business profit prediction",
+        "நிதி பலன்",
+        "பணம் பலன்",
+        "wealth forecast",
+        "financial success",
+        "2nd house wealth",
+        "11th house gains",
+        "jupiter wealth astrology",
+        "venus luxury astrology",
+        "kubera astrology",
+        "will my investment succeed",
+        "financial crisis astrology",
+        "debt astrology"
+      ],
+      "responses": [
+        "💰 Wealth in Vedic astrology comes through the 2nd house (accumulated wealth), 11th house (gains/income), and Jupiter (the planet of abundance). A strong Jupiter in your chart indicates financial prosperity!",
+        "💎 For financial prosperity: Worship Goddess Lakshmi on Fridays, keep a Kubera Yantra in your home's northeast, donate on your Nakshatra's ruling day, and avoid major financial decisions during Rahu Kalam!",
+        "📊 Your financial periods are determined by planetary Dashas. Jupiter Dasha and Venus Dasha are generally prosperous. Saturn Dasha tests patience but builds long-term wealth. Enter your birth details for your Dasha timeline!"
+      ]
+    },
+    {
+      "tag": "compatibility",
+      "patterns": [
+        "check compatibility",
+        "are we compatible",
+        "marriage match",
+        "kundali matching",
+        "ashtakoota matching",
+        "porutham",
+        "how compatible are we",
+        "match making",
+        "nadi dosha compatibility",
+        "guna milan",
+        "match check",
+        "compatibility score",
+        "பொருத்தம் பார்",
+        "திருமண பொருத்தம்",
+        "love compatibility check",
+        "compatibility between rasi",
+        "nakshatra compatibility",
+        "how to match horoscope",
+        "36 points matching",
+        "koota matching",
+        "varna porutham",
+        "gana porutham",
+        "nadi porutham",
+        "rajju porutham",
+        "are we a good match"
+      ],
+      "responses": [
+        "💑 Ashtakoota matching checks 8 aspects: Varna (1pt), Vashya (2pt), Tara (3pt), Yoni (4pt), Graha Maitri (5pt), Gana (6pt), Bhakoot (7pt), and Nadi (8pt) — total 36 points. 18+ is acceptable, 28+ is excellent!",
+        "❤️ Use the Compatibility page on AstroGuy to get your full Ashtakoota analysis! Enter both birth dates and times for an instant compatibility score with dosha analysis.",
+        "🔮 The most important kutas are Nadi (8pts) and Bhakoot (7pts). If both partners have the same Nadi, it creates Nadi Dosha — the most serious compatibility issue. But remedies exist for every dosha!"
+      ]
+    },
+    {
+      "tag": "remedy_request",
+      "patterns": [
+        "what is the remedy",
+        "how to remedy",
+        "pariharam",
+        "remedy for bad planets",
+        "remedy for dosha",
+        "how to reduce effects",
+        "planet remedy",
+        "gemstone remedy",
+        "puja remedy",
+        "mantra remedy",
+        "remedy for saturn",
+        "remedy for rahu",
+        "remedy for ketu",
+        "remedy for mars",
+        "manglik remedy",
+        "nadi dosha remedy",
+        "பரிகாரம்",
+        "dosha pariharam",
+        "remedy for problems",
+        "astrological remedy",
+        "what puja to do",
+        "which gemstone",
+        "which mantra",
+        "fasting remedy",
+        "charity remedy",
+        "donation remedy",
+        "temple remedy",
+        "how to please planets"
+      ],
+      "responses": [
+        "🕉️ Vedic remedies include: Gemstones (wear the gemstone of your weak planet), Mantras (chant the planet's beej mantra), Fasting (on the planet's ruling day), Charity (donate items associated with the planet), and Pujas (special rituals). Check the Remedies page for detailed guidance!",
+        "💎 Gemstone remedies: Ruby (Sun), Pearl (Moon), Red Coral (Mars), Emerald (Mercury), Yellow Sapphire (Jupiter), Diamond (Venus), Blue Sapphire (Saturn), Hessonite (Rahu), Cat's Eye (Ketu). Always consult an astrologer before wearing!",
+        "🙏 The most powerful remedy is sincere prayer and ethical conduct. Additionally: Chant Om Namah Shivaya for Saturn, Hanuman Chalisa for Rahu/Ketu, Gayatri Mantra for Sun. The Remedies page has complete details for all planets!"
+      ]
+    },
+    {
+      "tag": "dosha_info",
+      "patterns": [
+        "what is dosha",
+        "what is manglik dosha",
+        "manglik dosha effects",
+        "nadi dosha meaning",
+        "bhakoot dosha",
+        "kuja dosha",
+        "what is kuja dosha",
+        "dosha in horoscope",
+        "which dosha do i have",
+        "dosha effects",
+        "how to remove dosha",
+        "dosha remedy",
+        "dosha check",
+        "தோஷம்",
+        "manglik person",
+        "am i manglik",
+        "dosha in marriage",
+        "dosha problem",
+        "shani dosha",
+        "rahu dosha",
+        "ketu dosha",
+        "pitra dosha",
+        "kalasarpa dosha",
+        "what is kalasarpa yoga",
+        "pitru dosha",
+        "graha dosha"
+      ],
+      "responses": [
+        "⚠️ Doshas are planetary afflictions that can affect life. Major doshas: Manglik Dosha (Mars in 1st/4th/7th/8th/12th house — affects marriage), Nadi Dosha (same Nadi in compatibility — affects health/progeny), Kala Sarpa Dosha (all planets between Rahu-Ketu — affects overall life).",
+        "🔱 Manglik Dosha remedy: Marry after 28 years, marry another Manglik, perform Kumbh Vivah, or chant Hanuman Chalisa daily. Nadi Dosha remedy: Nadi Nivarana Puja, donate gold, chant Mahamrityunjaya Mantra 108 times.",
+        "💫 Kala Sarpa Dosha occurs when all 7 planets fall between Rahu and Ketu. Remedy: Perform Kala Sarpa Puja at Tryambakeshwar or Kalahasti. Chant Rahu mantra on Saturdays. Don't panic — it also gives spiritual power!"
+      ]
+    },
+    {
+      "tag": "dasha_prediction",
+      "patterns": [
+        "what is dasha",
+        "my current dasha",
+        "dasha prediction",
+        "vimshottari dasha",
+        "dasha period effects",
+        "mahadasha",
+        "antardasha",
+        "planetary period",
+        "when does my dasha change",
+        "dasha effects",
+        "good dasha",
+        "bad dasha",
+        "saturn dasha effects",
+        "jupiter dasha effects",
+        "rahu dasha effects",
+        "when will good time come",
+        "favorable period",
+        "when will my luck change",
+        "dasha bhukti",
+        "pratyantar dasha",
+        "dasha timeline",
+        "daśā",
+        "what dasha am i in",
+        "current mahadasha",
+        "jupiter dasha benefits",
+        "saturn dasha problems",
+        "rahu dasha 18 years",
+        "venus dasha 20 years",
+        "when does my dasha end",
+        "dasha results",
+        "good time coming astrology",
+        "when will my luck change astrology",
+        "favorable dasha period"
+      ],
+      "responses": [
+        "⏳ Vimshottari Dasha is a 120-year planetary cycle. Each planet rules for a fixed period: Sun (6yr), Moon (10yr), Mars (7yr), Rahu (18yr), Jupiter (16yr), Saturn (19yr), Mercury (17yr), Ketu (7yr), Venus (20yr). Your current Dasha is calculated from your birth Nakshatra!",
+        "🔮 Jupiter Mahadasha brings wisdom, wealth, and spiritual growth. Venus Dasha brings luxury and relationships. Saturn Dasha tests patience but rewards hard work. Rahu Dasha brings sudden changes. Enter your birth details to know your current Dasha!",
+        "📅 Your Dasha sequence starts from your birth Nakshatra's lord. It determines the timing of major life events — marriage, career changes, financial gains, and spiritual growth. The sub-period (Antardasha) fine-tunes the timing!"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye",
+        "goodbye",
+        "see you",
+        "take care",
+        "good night",
+        "good bye",
+        "thanks bye",
+        "thank you bye",
+        "ok bye",
+        "cya",
+        "later",
+        "ttyl",
+        "that's all",
+        "nothing else",
+        "i'm done",
+        "that will be all",
+        "நன்றி",
+        "போகிறேன்",
+        "பை",
+        "thanks",
+        "thank you",
+        "thx",
+        "ty",
+        "ok thanks",
+        "got it thanks",
+        "very helpful",
+        "that helped"
+      ],
+      "responses": [
+        "🙏 Vanakkam! May the stars guide your path. Come back anytime for more Vedic guidance! ⭐",
+        "🌟 Thank you for consulting AstroGuy AI. May all planets be favorable for you! 🪐 Goodbye!",
+        "🙏 Nandri! The cosmos has infinite wisdom to share. Visit us again for your astrology questions! ✨"
+      ]
+    },
+    {
+      "tag": "about_astroguy",
+      "patterns": [
+        "what is astroguy",
+        "about this app",
+        "what can you do",
+        "what are your features",
+        "how does this work",
+        "what is vedic astrology",
+        "explain vedic astrology",
+        "difference between vedic and western",
+        "why use vedic astrology",
+        "what is jyotish",
+        "tell me about yourself",
+        "who are you",
+        "what are you",
+        "how accurate is this",
+        "is vedic astrology real",
+        "help",
+        "what can i ask",
+        "features of astroguy",
+        "astroguy features",
+        "astroguy capabilities",
+        "what can this app do",
+        "how do i use this",
+        "astroguy help",
+        "guide me",
+        "what topics can i ask",
+        "app features",
+        "what is jyotish shastra",
+        "vedic vs western astrology",
+        "is vedic astrology accurate",
+        "how old is vedic astrology"
+      ],
+      "responses": [
+        "🌟 AstroGuy AI is your authentic Vedic astrology companion! I can help with: Birth Chart (Jathagam) generation, Daily/Weekly Horoscope predictions, Marriage Compatibility (Ashtakoota), Finance & Career forecasts, Planetary Remedies, and Nakshatra-based guidance — all in English and Tamil!",
+        "🔮 Vedic astrology (Jyotish) is a 5000-year-old science from ancient India. Unlike Western astrology which uses the Sun sign, Vedic astrology uses the Moon sign (Rasi) and focuses on the sidereal zodiac with Lahiri Ayanamsa for precise calculations!",
+        "✨ I'm AstroGuy AI — powered by authentic Vedic calculations! Ask me about your Rasi, Nakshatra, planets (Navagrahas), compatibility, career, love, health, finance, doshas, or remedies. I understand both English and Tamil!"
+      ]
+    }
+  ]
 }

@@ -41,11 +41,12 @@ def index():
 @app.route("/horoscope")
 def horoscope():
     uc = chart()
-    hdata = None
+    horoscope_data = None
     if uc:
-        hdata = HOROSCOPE.get(uc["rasi"]["englishName"],{}).get(lang(),{})
+        horoscope_data = HOROSCOPE.get(uc["rasi"]["englishName"], {})
     return render_template("horoscope.html", translations=t(), language=lang(),
-                           user_chart=uc, horoscope=hdata, rasis=RASIS)
+                           user_chart=uc, horoscope_data=horoscope_data,
+                           all_horoscope=HOROSCOPE)
 
 @app.route("/compatibility")
 def compatibility():
@@ -60,12 +61,32 @@ def birthchart():
 
 @app.route("/predictions")
 def predictions():
-    uc    = chart()
-    pdata = None
+    from datetime import timedelta
+    uc = chart(); preds = []
     if uc:
-        pdata = HOROSCOPE.get(uc["rasi"]["englishName"],{}).get(lang(),{})
+        l = lang()
+        MOON_EMOJIS = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"]
+        NAKS_7 = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu"]
+        DAY = [
+            {"ce":"Peak energy — ideal for important meetings and decisions.","le":"Express your feelings openly. Romance is strong.","he":"Vitality is high. Great day for exercise.","fe":"Good for financial planning and reviewing investments.","ct":"உச்ச ஆற்றல் — முக்கிய சந்திப்புகளுக்கு சிறந்தது.","lt":"காதல் ஆற்றல் வலுவாக உள்ளது.","ht":"உயிர்ப்பு அதிகம். உடற்பயிற்சிக்கு சிறந்த நாள்.","ft":"நிதி திட்டமிடலுக்கு நல்ல நாள்."},
+            {"ce":"Focus on completing pending tasks. Avoid new projects.","le":"Listen more than you speak. Understanding deepens bonds.","he":"Rest and recharge. Hydration is key today.","fe":"Hold off on major spending. Review your budget.","ct":"நிலுவையில் உள்ள பணிகளை முடிக்கவும்.","lt":"அதிகமாக கேளுங்கள். புரிதல் பிணைப்பை ஆழப்படுத்துகிறது.","ht":"ஓய்வெடுங்கள். நீரேற்றம் முக்கியம்.","ft":"பெரிய செலவுகளை தவிர்க்கவும்."},
+            {"ce":"Excellent for networking and collaboration. New opportunities emerge.","le":"Social energy is high. Great day for dates and outings.","he":"Mental clarity is sharp. Good for yoga and meditation.","fe":"Good day for investments. Consult an advisor.","ct":"நெட்வொர்க்கிங்கிற்கு சிறந்தது. புதிய வாய்ப்புகள் வருகின்றன.","lt":"சமூக ஆற்றல் அதிகம். சந்திப்புகளுக்கு சிறந்த நாள்.","ht":"மன தெளிவு கூர்மையானது. யோகாவிற்கு நல்ல நாள்.","ft":"முதலீடுகளுக்கு நல்ல நாள்."},
+            {"ce":"Creative work flourishes. Trust your instincts over analysis.","le":"Deep emotional conversations strengthen your relationship.","he":"Watch for fatigue. Take short breaks throughout the day.","fe":"Avoid speculative investments. Conservative choices safer.","ct":"படைப்பாற்றல் பணி சிறக்கும்.","lt":"ஆழமான உணர்வு உரையாடல்கள் உறவை வலுப்படுத்துகின்றன.","ht":"சோர்வை கவனியுங்கள். சிறிய இடைவெளிகள் எடுங்கள்.","ft":"ஊக முதலீடுகளை தவிர்க்கவும்."},
+            {"ce":"Leadership shines. Take initiative on projects you believe in.","le":"Passion and romance are heightened. Plan something special.","he":"Physical energy is excellent. Push yourself a little.","fe":"Strong day for salary negotiations and financial talks.","ct":"தலைமைத்துவம் மிளிர்கிறது.","lt":"ஆர்வமும் காதலும் அதிகரித்திருக்கின்றன.","ht":"உடல் ஆற்றல் சிறந்தது.","ft":"சம்பள பேச்சுவார்த்தைகளுக்கு வலுவான நாள்."},
+            {"ce":"Day of reflection. Review progress and set new intentions.","le":"Quiet togetherness is more valuable than grand gestures.","he":"Rest is productive. Sleep early, avoid screens.","fe":"Good day to track expenses and improve savings.","ct":"சிந்தனையின் நாள். முன்னேற்றத்தை மதிப்பீடு செய்யுங்கள்.","lt":"அமைதியான ஒன்றிணைவு இன்று மிகவும் மதிப்புமிக்கது.","ht":"ஓய்வு உற்பத்திகரமானது.","ft":"செலவுகளை கண்காணிக்கவும்."},
+            {"ce":"Week ends high. Celebrate small wins and plan ahead.","le":"Joyful energy. Laughter and fun bring you closer.","he":"Excellent wellbeing. Treat yourself to something good.","fe":"Review the week's finances and plan the month ahead.","ct":"வாரம் உயர்வில் முடிகிறது. சிறிய வெற்றிகளை கொண்டாடுங்கள்.","lt":"மகிழ்ச்சியான ஆற்றல். சிரிப்பு உங்களை நெருக்கமாக்குகிறது.","ht":"சிறந்த நலன். ஏதாவது புத்துணர்ச்சிகரமானதை அனுபவியுங்கள்.","ft":"வாரத்தின் நிதியை மதிப்பாய்வு செய்யுங்கள்."},
+        ]
+        for i in range(7):
+            try: dt = datetime.now() + timedelta(days=i)
+            except: dt = datetime.now()
+            e = DAY[i]
+            if l == "ta":
+                areas = [("தொழில்","💼",e["ct"]),("காதல்","❤️",e["lt"]),("ஆரோக்கியம்","🏥",e["ht"]),("நிதி","💰",e["ft"])]
+            else:
+                areas = [("Career","💼",e["ce"]),("Love","❤️",e["le"]),("Health","🏥",e["he"]),("Finance","💰",e["fe"])]
+            preds.append({"date":dt.strftime("%A, %d %b"),"moon_emoji":MOON_EMOJIS[i%8],"nakshatra":NAKS_7[i],"areas":areas})
     return render_template("predictions.html", translations=t(), language=lang(),
-                           user_chart=uc, predictions=pdata)
+                           user_chart=uc, predictions=preds)
 
 @app.route("/finance")
 def finance():

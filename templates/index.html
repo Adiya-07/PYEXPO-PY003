@@ -1,41 +1,80 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero">
-    <div class="hero-content">
-        <div class="hero-badge"><i class="fas fa-star"></i> Authentic Vedic Astrology</div>
-        <h1 class="hero-title">{% if language=="ta" %}ஆஸ்ட்ரோகை AI{% else %}AstroGuy AI{% endif %}</h1>
-        <p class="hero-subtitle">{% if language=="ta" %}நேர்மையான வேத ஜோதிடம் • பழங்கால ஞானம் • நவீன அறிவுநுட்பம்{% else %}Authentic Vedic Astrology • Ancient Wisdom • Modern Intelligence{% endif %}</p>
-        <div class="hero-features">
-            <div class="feature-pill"><i class="fas fa-moon"></i> {% if language=="ta" %}தினசரி ராசி{% else %}Daily Rasi{% endif %}</div>
-            <div class="feature-pill"><i class="fas fa-chart-pie"></i> {% if language=="ta" %}பிறப்பு சக்கரம்{% else %}Birth Chart{% endif %}</div>
-            <div class="feature-pill"><i class="fas fa-heart"></i> {% if language=="ta" %}பொருத்தம்{% else %}Compatibility{% endif %}</div>
-            <div class="feature-pill"><i class="fas fa-calendar"></i> {% if language=="ta" %}பஞ்சாங்கம்{% else %}Panchangam{% endif %}</div>
-            <div class="feature-pill"><i class="fas fa-brain"></i> {% if language=="ta" %}AI சாட்பாட்{% else %}AI Chatbot{% endif %}</div>
+<div class="hero">
+  <div class="hero-content">
+    <h1>{% if language=='ta' %}ஆஸ்ட்ரோகை AI{% else %}AstroGuy AI{% endif %}</h1>
+    <p class="hero-subtitle">{% if language=='ta' %}நேர்மையான வேத ஜோதிடம் • பழங்கால ஞானம் • நவீன AI{% else %}Authentic Vedic Astrology • Ancient Wisdom • Modern AI{% endif %}</p>
+    <div class="datetime-display"><i class="fas fa-moon"></i><span id="datetime"></span></div>
+    <div class="glass-card form-section">
+      <h2>{% if language=='ta' %}உங்கள் விண்வெளி பயணத்தைத் தொடங்குங்கள்{% else %}Begin Your Cosmic Journey{% endif %}</h2>
+      <form id="userForm" onsubmit="saveUser(event)">
+        <div class="input-group">
+          <label>{% if language=='ta' %}முழு பெயர்{% else %}Full Name{% endif %}</label>
+          <div class="input-wrapper"><i class="fas fa-user"></i>
+            <input type="text" id="userName" required placeholder="{% if language=='ta' %}உங்கள் பெயர்{% else %}Enter your full name{% endif %}">
+          </div>
         </div>
-    </div>
-</section>
-<section class="section">
-    <div class="container">
-        <div class="form-card">
-            <h2 class="section-title">{% if language=="ta" %}உங்கள் விண்வெளி பயணத்தைத் தொடங்குங்கள்{% else %}Begin Your Cosmic Journey{% endif %}</h2>
-            <div class="form-grid">
-                <div class="form-group"><label>{% if language=="ta" %}முழு பெயர்{% else %}Full Name{% endif %}</label><input type="text" id="userName" placeholder="{% if language=='ta' %}உங்கள் பெயர்{% else %}Your full name{% endif %}"></div>
-                <div class="form-group"><label>{% if language=="ta" %}பிறந்த தேதி{% else %}Date of Birth{% endif %}</label><input type="date" id="userDob"></div>
-                <div class="form-group"><label>{% if language=="ta" %}பிறந்த நேரம்{% else %}Birth Time{% endif %}</label><input type="time" id="userTime"></div>
-                <div class="form-group"><label>{% if language=="ta" %}பிறந்த இடம்{% else %}Birth Place{% endif %}</label><input type="text" id="userPlace" placeholder="{% if language=='ta' %}நகரம், மாநிலம்{% else %}City, State{% endif %}"></div>
-                <div class="form-group"><label>{% if language=="ta" %}பாலினம்{% else %}Gender{% endif %}</label>
-                    <select id="userGender">
-                        <option value="">{% if language=="ta" %}தேர்ந்தெடுக்கவும்{% else %}Select{% endif %}</option>
-                        <option value="male">{% if language=="ta" %}ஆண்{% else %}Male{% endif %}</option>
-                        <option value="female">{% if language=="ta" %}பெண்{% else %}Female{% endif %}</option>
-                        <option value="other">{% if language=="ta" %}மற்றவை{% else %}Other{% endif %}</option>
-                    </select>
-                </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="input-group">
+            <label>{% if language=='ta' %}பிறந்த தேதி{% else %}Date of Birth{% endif %}</label>
+            <div class="input-wrapper"><i class="fas fa-calendar"></i><input type="date" id="userDob" required></div>
+          </div>
+          <div class="input-group">
+            <label>{% if language=='ta' %}பிறந்த நேரம்{% else %}Birth Time{% endif %}</label>
+            <div class="input-wrapper"><i class="fas fa-clock"></i><input type="time" id="userTime" required></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>{% if language=='ta' %}பிறந்த இடம்{% else %}Birth Place{% endif %}</label>
+          <div class="input-wrapper"><i class="fas fa-map-marker-alt"></i>
+            <input type="text" id="userPlace" required placeholder="{% if language=='ta' %}நகரம், மாநிலம்{% else %}City, Country{% endif %}">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="input-group">
+            <label>{% if language=='ta' %}பாலினம்{% else %}Gender{% endif %}</label>
+            <div class="input-wrapper"><i class="fas fa-venus-mars"></i>
+              <select id="userGender" required>
+                <option value="">{% if language=='ta' %}தேர்ந்தெடுக்கவும்{% else %}Select{% endif %}</option>
+                <option value="Male">{% if language=='ta' %}ஆண்{% else %}Male{% endif %}</option>
+                <option value="Female">{% if language=='ta' %}பெண்{% else %}Female{% endif %}</option>
+                <option value="Other">{% if language=='ta' %}மற்றவை{% else %}Other{% endif %}</option>
+              </select>
             </div>
-            <button class="btn btn-primary" onclick="saveUser()">
-                <i class="fas fa-star"></i> {% if language=="ta" %}என் ஜாதகத்தை உருவாக்கு{% else %}Generate My Chart{% endif %}
-            </button>
+          </div>
+          <div class="input-group">
+            <label>{% if language=='ta' %}தொலைபேசி (விருப்பம்){% else %}Phone (Optional){% endif %}</label>
+            <div class="input-wrapper"><i class="fas fa-phone"></i>
+              <input type="tel" id="userPhone" placeholder="{% if language=='ta' %}நினைவூட்டல்களுக்கு{% else %}For reminders{% endif %}">
+            </div>
+          </div>
         </div>
+        <button type="submit" class="btn-primary" id="submitBtn" style="margin-top:1.5rem;width:100%">
+          <span>{% if language=='ta' %}என் ஜாதகத்தை உருவாக்கு{% else %}Generate My Chart{% endif %}</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+      <p id="welcomeMsg" style="margin-top:1rem;color:var(--primary-gold);font-family:'Cinzel',serif;text-align:center"></p>
     </div>
-</section>
+    <div class="features-grid">
+      <a href="/horoscope" class="feature-card" style="text-decoration:none"><div class="feature-icon">🌙</div><h3>{% if language=='ta' %}ராசி பலன்{% else %}Horoscope{% endif %}</h3><p>{% if language=='ta' %}தனிப்பட்ட தினசரி பலன்கள்{% else %}Personalized daily predictions{% endif %}</p></a>
+      <a href="/birthchart" class="feature-card" style="text-decoration:none"><div class="feature-icon">🪐</div><h3>{% if language=='ta' %}ஜாதகம்{% else %}Birth Chart{% endif %}</h3><p>{% if language=='ta' %}முழுமையான வேத ஜாதகம்{% else %}Complete Vedic Jathagam{% endif %}</p></a>
+      <a href="/compatibility" class="feature-card" style="text-decoration:none"><div class="feature-icon">💑</div><h3>{% if language=='ta' %}பொருத்தம்{% else %}Compatibility{% endif %}</h3><p>{% if language=='ta' %}அஷ்டகூட திருமண பொருத்தம்{% else %}Ashtakoota marriage matching{% endif %}</p></a>
+      <a href="/panchangam" class="feature-card" style="text-decoration:none"><div class="feature-icon">📅</div><h3>{% if language=='ta' %}பஞ்சாங்கம்{% else %}Panchangam{% endif %}</h3><p>{% if language=='ta' %}தினசரி திதி, நட்சத்திரம்{% else %}Daily Tithi, Rahu Kalam{% endif %}</p></a>
+      <a href="/quiz" class="feature-card" style="text-decoration:none"><div class="feature-icon">🔮</div><h3>{% if language=='ta' %}வினாடி வினா{% else %}Personality Quiz{% endif %}</h3><p>{% if language=='ta' %}உங்கள் ஜோதிட ஆளுமை{% else %}Discover your cosmic type{% endif %}</p></a>
+      <a href="/remedies" class="feature-card" style="text-decoration:none"><div class="feature-icon">🕉️</div><h3>{% if language=='ta' %}பரிகாரம்{% else %}Remedies{% endif %}</h3><p>{% if language=='ta' %}நேர்மையான கிரக பரிகாரங்கள்{% else %}Authentic planetary remedies{% endif %}</p></a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function updateDateTime(){
+  const d=new Date();
+  document.getElementById('datetime').textContent=
+    d.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+
+    ' • '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+updateDateTime(); setInterval(updateDateTime,60000);
+</script>
 {% endblock %}

@@ -1,41 +1,120 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="section" style="max-width:800px;margin:0 auto;padding:2rem 1rem">
-    <h1 style="font-family:Cinzel,serif;color:#FFD700;text-align:center;margin-bottom:2rem">
-        📊 {% if language=="ta" %}வேத பிறப்பு சக்கரம்{% else %}Vedic Birth Chart{% endif %}
-    </h1>
-    {% if user_chart %}
-    <div style="display:flex;justify-content:center;margin-bottom:1.5rem">
-        {{ svg_chart | safe }}
-    </div>
-    <div id="housePanel" style="display:none;margin:1rem auto;max-width:500px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.25);border-radius:14px;padding:1.2rem 1.5rem">
-        <div style="font-family:Cinzel,serif;color:#FFD700;margin-bottom:.5rem" id="houseTitle"></div>
-        <div style="color:rgba(255,255,255,0.7);font-size:.88rem" id="houseBody"></div>
-    </div>
-    <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:.8rem;margin-top:1rem">
-        {% if language=="ta" %}வீட்டை கிளிக் செய்து கிரக தகவல் பெறவும்{% else %}Click any house to see planet details{% endif %}
-    </p>
-    {% else %}
-    <div style="text-align:center;padding:3rem">
-        <div style="font-size:3rem;margin-bottom:1rem">📊</div>
-        <p style="color:rgba(255,255,255,0.6);margin-bottom:1.5rem">
-            {% if language=="ta" %}முதலில் முகப்பு பக்கத்தில் உங்கள் விவரங்களை உள்ளிடவும்{% else %}Enter your birth details on the home page first{% endif %}
+<section style="padding:2rem 1rem;max-width:960px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:2rem">
+        <h1 style="font-family:'Cinzel',serif;color:#FFD700;font-size:2rem">🪐 {% if language=='ta' %}வேத பிறப்பு
+            சக்கரம்{% else %}Vedic Birth Chart{% endif %}</h1>
+        <p style="color:rgba(255,255,255,.4);font-size:.8rem">
+            {% if language=='ta' %}தென் இந்திய பாணி • ராசி நிலையானது • லக்னத்திலிருந்து வீடுகள் கணக்கிடப்படுகின்றன{%
+            else %}South Indian Style • Signs fixed • Houses counted clockwise from Lagna{% endif %}
         </p>
-        <a href="/" style="display:inline-block;padding:.8rem 2rem;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border-radius:25px;font-weight:700;text-decoration:none">
-            {% if language=="ta" %}முகப்பு{% else %}Go to Home{% endif %}
+    </div>
+
+    {% if user_chart %}
+    <div style="display:grid;grid-template-columns:420px 1fr;gap:2rem;align-items:start">
+
+        <!-- SVG Chart -->
+        <div>
+            <div style="display:flex;justify-content:center">
+                {{ svg_chart|safe }}
+            </div>
+            <!-- House info panel (shown on click) -->
+            <div id="housePanel" style="display:none;margin-top:1rem;background:rgba(255,255,255,.05);
+         border:1px solid rgba(255,215,0,.25);border-radius:14px;padding:1.2rem">
+                <div style="font-family:'Cinzel',serif;color:#FFD700;font-weight:600;margin-bottom:.5rem"
+                    id="housePanelTitle"></div>
+                <div style="color:rgba(255,255,255,.7);font-size:.88rem;line-height:1.6" id="housePanelBody"></div>
+            </div>
+            <p style="text-align:center;color:rgba(255,255,255,.3);font-size:.75rem;margin-top:.8rem">
+                {% if language=='ta' %}வீட்டில் கிளிக் செய்யுங்கள்{% else %}Click any house for details{% endif %}
+            </p>
+        </div>
+
+        <!-- Sidebar -->
+        <div style="display:flex;flex-direction:column;gap:1rem">
+
+            <!-- Chart summary -->
+            <div class="glass-card" style="padding:1.5rem">
+                <h3 style="color:#FFD700;font-family:'Cinzel',serif;margin-bottom:1rem;font-size:1rem">
+                    {% if language=='ta' %}ஜாதக சுருக்கம்{% else %}Chart Summary{% endif %}
+                </h3>
+                {% for label_en, label_ta, val in [
+                ('🌙 Rasi (Moon Sign)', '🌙 ராசி', (user_chart.rasi.tamilName if language=="ta" else
+                user_chart.rasi.englishName)),
+                ('⭐ Nakshatra', '⭐ நட்சத்திரம்', (user_chart.nakshatra.tamilName if language=="ta" else
+                user_chart.nakshatra.name) ~ ' Pada ' ~ user_chart.nakshatra.pada),
+                ('🪐 Nak. Lord', '🪐 நட்சத்திர அதிபதி', user_chart.nakshatra.lord),
+                ('🏠 Lagna', '🏠 லக்னம்', (user_chart.lagna.tamilName if language=="ta" else
+                user_chart.lagna.englishName)),
+                ('🌀 Gana', '🌀 கணம்', user_chart.nakshatra.gana),
+                ('💧 Nadi', '💧 நாடி', user_chart.nakshatra.nadi),
+                ('🔥 Element', '🔥 பூதம்', user_chart.rasi.element),
+                ('👑 Rasi Lord', '👑 ராசியாதிபதி', user_chart.rasi.lord)
+                ] %}
+                <div
+                    style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.06)">
+                    <span style="color:rgba(255,255,255,.45);font-size:.82rem">{% if language=='ta' %}{{ label_ta }}{%
+                        else %}{{ label_en }}{% endif %}</span>
+                    <span style="color:#FFD700;font-weight:600;font-size:.85rem">{{ val }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Planets in houses -->
+            <div class="glass-card" style="padding:1.5rem">
+                <h3 style="color:#FFD700;font-family:'Cinzel',serif;margin-bottom:1rem;font-size:1rem">
+                    {% if language=='ta' %}கிரக நிலைகள்{% else %}Planetary Positions{% endif %}
+                </h3>
+                {% for p in planets %}
+                <div
+                    style="display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05)">
+                    <span style="color:{{ p.color }};font-weight:700;min-width:24px;font-size:.85rem">{{ p.symbol
+                        }}</span>
+                    <div style="flex:1">
+                        <div style="color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600">
+                            {{ p.name }}
+                            <span style="color:rgba(255,255,255,.35);font-weight:400;font-size:.75rem">— House {{
+                                p.house }}</span>
+                        </div>
+                        <div style="color:rgba(255,255,255,.4);font-size:.72rem">
+                            {% if language=='ta' %}{{ p.sign_ta }}{% else %}{{ p.sign }}{% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Planet meanings -->
+            <div class="glass-card" style="padding:1.5rem">
+                <h3 style="color:#FFD700;font-family:'Cinzel',serif;margin-bottom:1rem;font-size:1rem">
+                    {% if language=='ta' %}கிரக அர்த்தங்கள்{% else %}What Each Planet Rules{% endif %}
+                </h3>
+                {% for p in planets %}
+                <div style="margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid rgba(255,255,255,.04)">
+                    <span style="color:{{ p.color }};font-weight:700;font-size:.8rem">{{ p.name }}</span>
+                    <span
+                        style="color:rgba(255,255,255,.45);font-size:.75rem;display:block;line-height:1.4;margin-top:.15rem">{{
+                        p.info }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    {% else %}
+    <div
+        style="text-align:center;padding:3rem;background:rgba(255,255,255,.04);border:1px dashed rgba(255,215,0,.3);border-radius:16px">
+        <div style="font-size:3rem;margin-bottom:1rem">🪐</div>
+        <p style="color:rgba(255,255,255,.6);margin-bottom:1.5rem">
+            {% if language=='ta' %}முதலில் உங்கள் பிறந்த விவரங்களை உள்ளிடவும்{% else %}Enter your birth details first to
+            generate your chart{% endif %}
+        </p>
+        <a href="/"
+            style="display:inline-block;padding:.8rem 2rem;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000;border-radius:25px;font-weight:700;text-decoration:none">
+            {% if language=='ta' %}முகப்பு{% else %}Go to Home{% endif %}
         </a>
     </div>
     {% endif %}
 </section>
-{% endblock %}
-{% block extra_js %}
-<script>
-function showHouseInfo(h,rasi,rasiNum,planets,meaning){
-    document.getElementById('houseTitle').textContent='House '+h+' — '+rasi;
-    document.getElementById('houseBody').innerHTML='<strong>Planets:</strong> '+planets+'<br><strong>Meaning:</strong> '+meaning;
-    const p=document.getElementById('housePanel');
-    p.style.display='block';
-    p.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-</script>
 {% endblock %}

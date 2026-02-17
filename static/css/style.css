@@ -319,3 +319,8 @@
     padding:1rem;gap:.5rem}
   .nav-links.active{display:flex}
 }
+
+/* ── Chat ML badge ── */
+.ml-badge{display:inline-flex;align-items:center;gap:.3rem;background:rgba(255,215,0,.12);
+border:1px solid rgba(255,215,0,.25);border-radius:20px;padding:.15rem .55rem;
+font-size:.7rem;color:#FFD700;margin-left:.5rem;vertical-align:middle}
