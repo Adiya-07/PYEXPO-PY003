@@ -133,8 +133,12 @@ def calculate_birth_chart(year, month, day, hour, minute, place="Chennai"):
     sun_rasi = int(sun_sid/30)+1
     nak_idx  = int(moon_sid/(360/27))
     nak_pada = int((moon_sid % (360/27))/(360/108))+1
-    lagna_l  = _norm(sun_sid + (hour+minute/60)*15)
-    lagna_r  = int(lagna_l/30)+1
+    # Lagna calculation (simplified approximation matching original HTML)
+    # NOTE: This is approximate. Accurate lagna needs geographic lat/long and local sidereal time.
+    # Formula from original working code: sunSidereal + (hour - 6) * 15
+    # The -6 adjusts for local time (6 AM = 0° offset)
+    lagna_approx = _norm(sun_sid + (hour - 6 + minute/60) * 15)
+    lagna_r  = int(lagna_approx/30)+1
     planets  = {}
     for p in ["Mars","Mercury","Jupiter","Venus","Saturn"]:
         l = _norm(_planet_lon(jd,p)-ay)
@@ -148,7 +152,7 @@ def calculate_birth_chart(year, month, day, hour, minute, place="Chennai"):
     return {
         "rasi":     {**rasi,"longitude":round(moon_sid,2)},
         "nakshatra":{**nak,"index":nak_idx,"pada":nak_pada},
-        "lagna":    {**RASIS[lagna_r-1],"longitude":round(lagna_l,2)},
+        "lagna":    {**RASIS[lagna_r-1],"longitude":round(lagna_approx,2)},
         "sun":      {"rasi":sun_rasi,"longitude":round(sun_sid,2)},
         "moon":     {"rasi":moon_rasi,"longitude":round(moon_sid,2)},
         "mars":     planets["Mars"],

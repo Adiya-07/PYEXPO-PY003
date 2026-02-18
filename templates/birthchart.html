@@ -118,3 +118,23 @@
     {% endif %}
 </section>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+    // Interactive house click handler
+    function showHouseInfo(house, rasiName, rasiNum, planets, meaning) {
+        const panel = document.getElementById('housePanel');
+        const title = document.getElementById('housePanelTitle');
+        const body = document.getElementById('housePanelBody');
+
+        title.textContent = `House ${house} — ${rasiName}`;
+        body.innerHTML = `
+    <div style="margin-bottom:.7rem"><strong>Planets:</strong> ${planets}</div>
+    <div style="color:rgba(255,255,255,.55)">${meaning}</div>
+  `;
+
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+</script>
+{% endblock %}
