@@ -1,6 +1,6 @@
 """
-AstroGuy AI — ML-Powered Chatbot
-=================================
+AstroGuy AI — ML-Powered Chatbot (FIXED)
+=========================================
 Uses trained scikit-learn model (TF-IDF + Naive Bayes)
 for intent classification, falls back to rule-based
 if model not found.
@@ -161,33 +161,42 @@ def get_chatbot_response(message: str,
             probs      = pipeline.predict_proba([processed])[0]
             confidence = float(max(probs))
 
-            logger.debug(f"Intent: {intent} ({confidence:.0%})")
+            print(f"[CHATBOT] Message: '{msg}' | Intent: {intent} | Confidence: {confidence:.1%}")
 
             # Low confidence → fallback
-            if confidence < 0.25:
+            if confidence < 0.15:
+                print(f"[CHATBOT] Low confidence, using fallback")
                 return random.choice(_FALLBACK[language])
 
-            # Personalize if chart available
-            if user_chart:
-                personal = _personalized(intent, language, user_chart)
-                if personal:
-                    return personal
-
-            # Special intents that need custom handling
+            # Special intents first
             if intent == 'greeting':
                 return random.choice(_GREETINGS[language])
             if intent == 'goodbye':
                 return random.choice(_GOODBYE[language])
+            
+            # Personalize if chart available
+            if user_chart:
+                personal = _personalized(intent, language, user_chart)
+                if personal:
+                    print(f"[CHATBOT] Using personalized response")
+                    return personal
 
             # Return dataset response
             if intent in responses:
-                return random.choice(responses[intent])
+                response = random.choice(responses[intent])
+                print(f"[CHATBOT] Using dataset response for intent '{intent}'")
+                return response
+            else:
+                print(f"[CHATBOT] Intent '{intent}' not found in responses")
+                return random.choice(_FALLBACK[language])
 
         except Exception as e:
+            print(f"[CHATBOT] ML error: {e}")
             logger.error(f"ML prediction error: {e}")
             # Fall through to rule-based
 
     # ── Rule-based fallback ────────────────────────────────────────────
+    print(f"[CHATBOT] Using rule-based fallback")
     return _rule_based(msg, user_chart, language)
 
 
@@ -259,3 +268,4 @@ def _rule_based(msg: str, chart: Optional[Dict], lang: str) -> str:
         return "🌙 Enter your birth date and time on the home page to find your Rasi!"
 
     return random.choice(_FALLBACK[lang])
+

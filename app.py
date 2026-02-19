@@ -3,6 +3,8 @@ AstroGuy AI — Flask Backend (v2, clean rebuild)
 ================================================
 Run: python app.py
 """
+from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask, render_template, request, jsonify, session
 from datetime import datetime
 import os, json, traceback
