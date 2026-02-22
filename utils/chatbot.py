@@ -164,7 +164,7 @@ def get_chatbot_response(message: str,
             print(f"[CHATBOT] Message: '{msg}' | Intent: {intent} | Confidence: {confidence:.1%}")
 
             # Low confidence → fallback
-            if confidence < 0.15:
+            if confidence < 0.08:
                 print(f"[CHATBOT] Low confidence, using fallback")
                 return random.choice(_FALLBACK[language])
 

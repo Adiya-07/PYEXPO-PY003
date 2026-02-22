@@ -1,216 +1,419 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section style="padding: 1rem 2rem;">
-    <div class="chat-container">
+<div class="chat-wrap">
 
-        <!-- Header -->
-        <div class="chat-header">
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="chat-avatar-wrap">
             <div class="chat-avatar">🔮</div>
-            <div class="chat-info">
-                <h3>AstroGuy AI</h3>
-                <p>
-                    {% if language == 'ta' %}
-                    உங்கள் தனிப்பட்ட வேத ஜோதிட வழிகாட்டி
-                    {% else %}
-                    Your Personal Vedic Astrologer
-                    {% endif %}
-                    <span class="ml-badge">
-                        <i class="fas fa-microchip"></i> ML-Powered
-                    </span>
-                </p>
-            </div>
+            <div class="chat-online-dot"></div>
         </div>
-
-        <!-- Messages -->
-        <div class="chat-messages" id="chatMessages">
-            <div class="message message-bot">
-                {% if language == 'ta' %}
-                🙏 வணக்கம்! நான் AstroGuy AI. உங்கள் ராசி, நட்சத்திரம், திருமண பொருத்தம், தொழில், காதல் அல்லது
-                பரிகாரங்கள் பற்றி கேட்கலாம்!
-                {% else %}
-                🙏 Vanakkam! I'm AstroGuy AI, your Vedic astrology assistant. Ask me about your Rasi, Nakshatra,
-                compatibility, career, love, or remedies!
-                {% endif %}
-            </div>
+        <div class="chat-info">
+            <h3 class="chat-name">AstroGuy AI</h3>
+            <p class="chat-sub">
+                {% if language == 'ta' %}உங்கள் தனிப்பட்ட வேத ஜோதிட வழிகாட்டி{% else %}Your Personal Vedic Astrologer{%
+                endif %}
+                <span class="ml-badge"><i class="fas fa-microchip"></i> ML-Powered</span>
+            </p>
         </div>
-
-        <!-- Typing indicator -->
-        <div class="typing-indicator" id="typingIndicator">
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-        </div>
-
-        <!-- Quick Replies -->
-        <div class="quick-replies" id="quickReplies">
-            <div class="quick-replies-header">
-                <span class="quick-replies-icon">✨</span>
-                <span class="quick-replies-title">{% if language == 'ta' %}விரைவு கேள்விகள்{% else %}Quick Questions{%
-                    endif %}</span>
-            </div>
-            <div class="quick-replies-grid" id="quickRepliesGrid">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- Input -->
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chatInput"
-                placeholder="{% if language == 'ta' %}ராசி, திருமணம், தொழில், பரிகாரம் பற்றி கேளுங்கள்...{% else %}Ask about Rasi, marriage, career, remedies...{% endif %}"
-                onkeypress="if(event.key==='Enter') sendMessage()" autocomplete="off">
-            <button class="chat-send" onclick="sendMessage()" title="Send">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-
     </div>
-</section>
+
+    <!-- Messages area -->
+    <div class="chat-messages" id="chatMessages">
+        <div class="message message-bot">
+            {% if language == 'ta' %}
+            🙏 வணக்கம்! நான் AstroGuy AI. உங்கள் ராசி, நட்சத்திரம், திருமண பொருத்தம், தொழில், காதல் அல்லது பரிகாரங்கள்
+            பற்றி கேட்கலாம்!
+            {% else %}
+            🙏 Vanakkam! I'm AstroGuy AI, your Vedic astrology assistant. Ask me about your Rasi, Nakshatra,
+            compatibility, career, love, or remedies!
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    </div>
+
+    <!-- Quick Replies -->
+    <div class="quick-replies" id="quickReplies">
+        <div class="quick-replies-header">
+            <span>✨</span>
+            <span>{% if language == 'ta' %}விரைவு கேள்விகள்{% else %}Quick Questions{% endif %}</span>
+        </div>
+        <div class="quick-replies-grid" id="quickRepliesGrid"></div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-container">
+        <input type="text" class="chat-input" id="chatInput"
+            placeholder="{% if language == 'ta' %}ராசி, திருமணம், தொழில், பரிகாரம் பற்றி கேளுங்கள்...{% else %}Ask about Rasi, marriage, career, remedies...{% endif %}"
+            onkeypress="if(event.key==='Enter') sendMessage()" autocomplete="off">
+        <button class="chat-send" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+</div>
 
 <style>
-    /* Quick Replies */
+    /* ── Wrap ── */
+    .chat-wrap {
+        max-width: 780px;
+        margin: 0 auto;
+        height: calc(100vh - 80px);
+        display: flex;
+        flex-direction: column;
+        padding: 1rem 1rem 0.8rem;
+        gap: 0.8rem;
+    }
+
+    /* ── Header ── */
+    .chat-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.4rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 215, 0, 0.12);
+        border-radius: 16px;
+        flex-shrink: 0;
+    }
+
+    .chat-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .chat-avatar {
+        width: 46px;
+        height: 46px;
+        background: rgba(255, 215, 0, 0.1);
+        border: 1.5px solid rgba(255, 215, 0, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .chat-online-dot {
+        position: absolute;
+        bottom: 1px;
+        right: 1px;
+        width: 10px;
+        height: 10px;
+        background: #3DD68C;
+        border-radius: 50%;
+        border: 2px solid #050510;
+    }
+
+    .chat-name {
+        font-family: 'Cinzel', serif;
+        font-size: 1rem;
+        color: #FFD700;
+        margin: 0 0 0.25rem;
+    }
+
+    .chat-sub {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.78rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+
+    .ml-badge {
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        color: rgba(255, 215, 0, 0.8);
+        padding: 0.15rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.72rem;
+    }
+
+    /* ── Messages ── */
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        padding: 0.4rem 0.2rem;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 215, 0, 0.15) transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: rgba(255, 215, 0, 0.2);
+        border-radius: 4px;
+    }
+
+    .message {
+        max-width: 70%;
+        padding: 0.9rem 1.2rem;
+        border-radius: 18px;
+        font-size: 0.92rem;
+        line-height: 1.75;
+        animation: msgIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .message-bot {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.1);
+        border-bottom-left-radius: 4px;
+        color: rgba(255, 255, 255, 0.85);
+        align-self: flex-start;
+    }
+
+    .message-user {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.16), rgba(255, 140, 0, 0.1));
+        border: 1px solid rgba(255, 215, 0, 0.22);
+        border-bottom-right-radius: 4px;
+        color: #fff;
+        align-self: flex-end;
+    }
+
+    @keyframes msgIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px) scale(0.96);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* ── Typing ── */
+    .typing-indicator {
+        display: none;
+        align-items: center;
+        gap: 5px;
+        padding: 0.1rem 0.3rem;
+        flex-shrink: 0;
+    }
+
+    .typing-indicator.active {
+        display: flex;
+    }
+
+    .typing-dot {
+        width: 7px;
+        height: 7px;
+        background: rgba(255, 215, 0, 0.45);
+        border-radius: 50%;
+        animation: bounce 1.2s ease-in-out infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        60%,
+        100% {
+            transform: translateY(0);
+            opacity: 0.4;
+        }
+
+        30% {
+            transform: translateY(-7px);
+            opacity: 1;
+        }
+    }
+
+    /* ── Quick Replies ── */
     .quick-replies {
-        padding: 0 1.5rem 1rem;
-        background: rgba(0, 0, 0, 0.2);
-        border-top: 1px solid rgba(255, 215, 0, 0.1);
+        flex-shrink: 0;
+        border-top: 1px solid rgba(255, 215, 0, 0.08);
+        padding-top: 0.8rem;
     }
 
     .quick-replies-header {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.8rem 0 0.6rem;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.85rem;
-    }
-
-    .quick-replies-icon {
-        font-size: 1rem;
-    }
-
-    .quick-replies-title {
+        gap: 0.4rem;
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.35);
         font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 0.65rem;
     }
 
     .quick-replies-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 0.6rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
     }
 
     .quick-reply-btn {
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 215, 0, 0.2);
-        border-radius: 20px;
-        padding: 0.6rem 1rem;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.85rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: left;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.35rem;
+        padding: 0.42rem 0.85rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 215, 0, 0.14);
+        border-radius: 50px;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
     }
 
     .quick-reply-btn:hover {
-        background: rgba(255, 215, 0, 0.1);
-        border-color: rgba(255, 215, 0, 0.4);
-        transform: translateY(-2px);
+        background: rgba(255, 215, 0, 0.09);
+        border-color: rgba(255, 215, 0, 0.38);
         color: #FFD700;
-    }
-
-    .quick-reply-btn:active {
-        transform: translateY(0);
+        transform: translateY(-2px);
     }
 
     .quick-reply-icon {
-        font-size: 1.1rem;
+        font-size: 1rem;
+    }
+
+    /* ── Input ── */
+    .chat-input-container {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.7rem 1rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 215, 0, 0.15);
+        border-radius: 50px;
         flex-shrink: 0;
+        transition: border-color 0.2s, background 0.2s;
     }
 
-    @media (max-width: 768px) {
-        .quick-replies-grid {
-            grid-template-columns: repeat(2, 1fr);
+    .chat-input-container:focus-within {
+        border-color: rgba(255, 215, 0, 0.38);
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .chat-input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-size: 0.92rem;
+        min-width: 0;
+    }
+
+    .chat-input::placeholder {
+        color: rgba(255, 255, 255, 0.28);
+    }
+
+    .chat-send {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #FFD700, #FF8C00);
+        border: none;
+        border-radius: 50%;
+        color: #000;
+        font-size: 0.85rem;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .chat-send:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 16px rgba(255, 215, 0, 0.35);
+    }
+
+    @media (max-width: 600px) {
+        .message {
+            max-width: 86%;
+            font-size: 0.88rem;
         }
-    }
 
-    @media (max-width: 480px) {
-        .quick-replies-grid {
-            grid-template-columns: 1fr;
+        .chat-wrap {
+            padding: 0.6rem;
         }
     }
 </style>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // ── State ───────────────────────────────────────────────────────────────────
     const LANG = "{{ language }}";
     let userChart = null;
-
-    // ── Quick Reply Options ─────────────────────────────────────────────────────
     const QUICK_REPLIES = {
         en: [
-            { icon: "🌙", text: "Tell me about my Rasi", query: "Tell me about my rasi" },
-            { icon: "⭐", text: "My Nakshatra details", query: "What is my nakshatra?" },
-            { icon: "💼", text: "Career guidance", query: "Give me career advice" },
-            { icon: "💕", text: "Love & marriage", query: "When will I get married?" },
-            { icon: "💰", text: "Financial advice", query: "Tell me about my finances" },
-            { icon: "🕉️", text: "Remedies for me", query: "What remedies should I do?" },
-            { icon: "☀️", text: "About Sun", query: "Tell me about the Sun" },
-            { icon: "🌙", text: "About Moon", query: "Tell me about the Moon" },
+            { icon: "🌙", text: "My Rasi", query: "what is my rasi" },
+            { icon: "⭐", text: "My Nakshatra", query: "what is my nakshatra" },
+            { icon: "📅", text: "Today's forecast", query: "how will my day be" },
+            { icon: "💼", text: "Career", query: "career advice" },
+            { icon: "💕", text: "Love & marriage", query: "marriage prediction" },
+            { icon: "💰", text: "Finance", query: "money prediction" },
+            { icon: "🕉️", text: "Remedies", query: "remedy for planets" },
+            { icon: "☀️", text: "About Sun", query: "tell me about sun" },
+            { icon: "🪐", text: "About Saturn", query: "tell me about saturn" },
+            { icon: "🔮", text: "What is Dasha?", query: "what is dasha" },
         ],
         ta: [
-            { icon: "🌙", text: "என் ராசி பற்றி", query: "என் ராசி பற்றி சொல்லுங்கள்" },
-            { icon: "⭐", text: "நட்சத்திர விவரம்", query: "என் நட்சத்திரம் என்ன?" },
-            { icon: "💼", text: "தொழில் வழிகாட்டுதல்", query: "தொழில் ஆலோசனை கொடுங்கள்" },
-            { icon: "💕", text: "காதல் & திருமணம்", query: "எப்போது திருமணம் ஆகும்?" },
-            { icon: "💰", text: "நிதி ஆலோசனை", query: "நிதி பற்றி சொல்லுங்கள்" },
-            { icon: "🕉️", text: "பரிகாரங்கள்", query: "என்ன பரிகாரம் செய்யலாம்?" },
-            { icon: "☀️", text: "சூரியன் பற்றி", query: "சூரியன் பற்றி சொல்லுங்கள்" },
-            { icon: "🌙", text: "சந்திரன் பற்றி", query: "சந்திரன் பற்றி சொல்லுங்கள்" },
+            { icon: "🌙", text: "என் ராசி", query: "ராசி என்ன" },
+            { icon: "⭐", text: "நட்சத்திரம்", query: "நட்சத்திரம் என்ன" },
+            { icon: "📅", text: "இன்றைய பலன்", query: "இன்று எப்படி இருக்கும்" },
+            { icon: "💼", text: "தொழில்", query: "தொழில் பலன்" },
+            { icon: "💕", text: "காதல் & திருமணம்", query: "திருமண பலன்" },
+            { icon: "💰", text: "நிதி", query: "பணம் பலன்" },
+            { icon: "🕉️", text: "பரிகாரங்கள்", query: "பரிகாரம்" },
+            { icon: "☀️", text: "சூரியன்", query: "சூரியன் பற்றி" },
+            { icon: "🪐", text: "சனி பற்றி", query: "சனி பற்றி" },
+            { icon: "🔮", text: "தசை என்ன?", query: "தசை என்ன" },
         ]
     };
 
-    // ── Load user chart from session on page load ───────────────────────────────
+    // Load user chart
     (async function loadUserData() {
         try {
             const res = await fetch('/api/get-user-data');
             const data = await res.json();
-            if (data.chart) {
-                userChart = data.chart;
-                console.log('User chart loaded:', userChart.rasi?.english_name || userChart.rasi?.englishName);
-            }
-        } catch (e) {
-            console.log('No user chart in session');
-        }
-
-        // Initialize quick replies
+            if (data.chart) userChart = data.chart;
+        } catch (e) { }
         initQuickReplies();
     })();
 
-    // ── Initialize Quick Replies ────────────────────────────────────────────────
     function initQuickReplies() {
         const grid = document.getElementById('quickRepliesGrid');
         const replies = QUICK_REPLIES[LANG] || QUICK_REPLIES.en;
-
-        grid.innerHTML = replies.map(reply => `
-        <button class="quick-reply-btn" onclick="sendQuickReply('${reply.query.replace(/'/g, "\\'")}')">
-            <span class="quick-reply-icon">${reply.icon}</span>
-            <span>${reply.text}</span>
-        </button>
-    `).join('');
+        grid.innerHTML = replies.map(r =>
+            `<button class="quick-reply-btn" onclick="sendQuickReply('${r.query.replace(/'/g, "\\'")}')">
+            <span class="quick-reply-icon">${r.icon}</span>
+            <span>${r.text}</span>
+         </button>`
+        ).join('');
     }
 
-    // ── Send Quick Reply ────────────────────────────────────────────────────────
     function sendQuickReply(query) {
         document.getElementById('chatInput').value = query;
         sendMessage();
     }
 
-    // ── Send message ────────────────────────────────────────────────────────────
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const message = input.value.trim();
@@ -219,11 +422,10 @@
         const messagesDiv = document.getElementById('chatMessages');
         const typing = document.getElementById('typingIndicator');
 
-        // Show user message
         appendMessage(message, 'user');
         input.value = '';
 
-        // Show typing
+
         typing.classList.add('active');
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
@@ -231,46 +433,28 @@
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: message,
-                    lang: LANG,
-                    userChart: userChart     // ← sends chart to Python for personalised replies
-                })
+                body: JSON.stringify({ message, lang: LANG, userChart })
             });
-
             const data = await res.json();
             typing.classList.remove('active');
-
-            if (data.success) {
-                appendMessage(data.response, 'bot');
-            } else {
-                appendMessage(
-                    LANG === 'ta'
-                        ? 'மன்னிக்கவும், ஒரு பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.'
-                        : 'Sorry, I encountered an error. Please try again.',
-                    'bot'
-                );
-            }
-
+            appendMessage(data.success ? data.response :
+                (LANG === 'ta' ? 'மன்னிக்கவும், ஒரு பிழை ஏற்பட்டது.' : 'Sorry, an error occurred. Please try again.'),
+                'bot');
         } catch (err) {
             typing.classList.remove('active');
-            appendMessage(
-                LANG === 'ta'
-                    ? 'இணைப்பு பிழை. Flask சர்வர் இயங்குகிறதா என சரிபார்க்கவும்.'
-                    : 'Connection error. Please check if the Flask server is running.',
-                'bot'
-            );
+            appendMessage(LANG === 'ta'
+                ? 'இணைப்பு பிழை. Flask சர்வர் இயங்குகிறதா என சரிபார்க்கவும்.'
+                : 'Connection error. Please check if the Flask server is running.', 'bot');
         }
     }
 
-    // ── Append a message bubble ─────────────────────────────────────────────────
     function appendMessage(text, role) {
-        const messagesDiv = document.getElementById('chatMessages');
         const div = document.createElement('div');
         div.className = `message message-${role}`;
-        div.textContent = text;   // textContent prevents XSS
-        messagesDiv.appendChild(div);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        div.textContent = text;
+        const msgs = document.getElementById('chatMessages');
+        msgs.appendChild(div);
+        msgs.scrollTop = msgs.scrollHeight;
     }
 </script>
 {% endblock %}
