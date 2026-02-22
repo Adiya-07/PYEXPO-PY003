@@ -786,7 +786,7 @@
 
       if (data.success) {
         // FIXED: Redirect to horoscope instead of birthchart
-        window.location.href = '/horoscope';
+        window.location.href = '/dashboard';
       } else {
         alert(data.error || 'Error generating chart');
         submitBtn.style.display = 'flex';

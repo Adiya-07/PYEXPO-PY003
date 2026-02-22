@@ -66,6 +66,11 @@
                 <i class="fas fa-home"></i>
                 <span>{% if language=='ta' %}முகப்பு{% else %}Home{% endif %}</span>
             </a>
+            
+            <a href="/dashboard" class="sidebar-link {% if request.path == '/dashboard' %}active{% endif %}">
+                <span class="sidebar-link-icon">📊</span>
+                <span>{% if language == 'ta' %}எனது டாஷ்போர்டு{% else %}My Dashboard{% endif %}</span>
+            </a>
 
             <!-- Astrology Section -->
             <div class="sidebar-section">
