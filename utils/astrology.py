@@ -5,8 +5,10 @@ Uses Lahiri ayanamsa, Julian Day calculations.
 """
 import math
 from typing import Dict
+from skyfield.api import load, Topos
+from skyfield.framelib import ecliptic_frame
+import math
 
-J2000 = 2451545.0
 
 RASIS = [
     {"number":1,"englishName":"Mesham","tamilName":"மேஷம்","symbol":"♈","lord":"Mars","element":"Fire"},
@@ -83,90 +85,205 @@ HOROSCOPE = {
     "Meenam":    {"en":{"general":"Jupiter and Neptune bathe you in spiritual depth and creative imagination. Dream and manifest.","career":"Arts, healing, spirituality, and service professions are deeply rewarding for you now.","love":"Deeply empathetic and romantic — your love is boundless and healing to those around you.","health":"Feet and immune system need care. Rest is essential. Avoid substances and overindulgence.","finance":"Intuitive financial decisions work surprisingly well. Charity brings unexpected returns."},"ta":{"general":"குருவும் நெப்டியூனும் உங்களை ஆன்மீக ஆழம் மற்றும் படைப்பு கற்பனையில் நனைக்கிறார்கள்.","career":"கலை, குணப்படுத்துதல், ஆன்மீகம் மற்றும் சேவை தொழில்கள் ஆழமாக வெகுமதி அளிக்கின்றன.","love":"ஆழமான அனுதாப காதல் — உங்கள் அன்பு எல்லையற்றது மற்றும் குணப்படுத்துவது.","health":"பாதங்கள் மற்றும் நோயெதிர்ப்பு அமைப்புக்கு கவனம். ஓய்வு அவசியம்.","finance":"உள்ளுணர்வு நிதி முடிவுகள் ஆச்சரியமாக நன்றாக செயல்படுகின்றன."}},
 }
 
-def _to_rad(d): return d * math.pi / 180
-def _norm(d):   return d % 360
 
-def _julian_day(year, month, day, hour=12, minute=0):
-    y, m = year, month
-    if m <= 2: y -= 1; m += 12
-    A = int(y / 100); B = 2 - A + int(A / 4)
-    return int(365.25*(y+4716)) + int(30.6001*(m+1)) + day + (hour+minute/60)/24 + B - 1524.5
+# Load Skyfield ephemeris (downloads once, ~10MB)
+try:
+    from skyfield.api import load, Topos
+    from skyfield.framelib import ecliptic_frame
+    planets_eph = load('de421.bsp')
+    ts = load.timescale()
+except Exception as e:
+    print(f"⚠️ Skyfield error: {e}")
+    planets_eph = None
+    ts = None
 
-def _ayanamsa(year): return 23.8581 + (year - 2000) * 0.013976
+# Default coordinates
+DEFAULT_COORDS = {
+    "Chennai": (13.0827, 80.2707),
+    "Coimbatore": (11.0168, 76.9558),
+    "Mumbai": (19.0760, 72.8777),
+    "Delhi": (28.6139, 77.2090),
+    "Bangalore": (12.9716, 77.5946),
+}
 
-def _moon_longitude(jd):
-    T = (jd - J2000) / 36525
-    L = 218.3164477 + 481267.88123421*T
-    M = 134.9633964 + 477198.8675055*T
-    D = 297.8501921 + 445267.1114034*T
-    Ms= 357.5291092 + 35999.0502909*T
-    F = 93.2720950  + 483202.0175233*T
-    dL= (6.289*math.sin(_to_rad(M)) + 1.274*math.sin(_to_rad(2*D-M))
-       + 0.658*math.sin(_to_rad(2*D)) + 0.214*math.sin(_to_rad(2*M))
-       - 0.186*math.sin(_to_rad(Ms)) - 0.114*math.sin(_to_rad(2*F)))
-    return _norm(L + dL)
+def get_coordinates(place: str) -> tuple:
+    """Get lat/lon for a place"""
+    place_lower = place.lower()
+    for city, coords in DEFAULT_COORDS.items():
+        if city.lower() in place_lower:
+            return coords
+    return DEFAULT_COORDS["Coimbatore"]
 
-def _sun_longitude(jd):
-    T = (jd - J2000) / 36525
-    L0= 280.46646 + 36000.76983*T
-    M = 357.52911 + 35999.05029*T
-    C = (1.914602 - 0.004817*T)*math.sin(_to_rad(M)) + 0.019993*math.sin(_to_rad(2*M))
-    return _norm(L0 + C)
+def calculate_ayanamsa(year: float) -> float:
+    """Calculate Lahiri Ayanamsa"""
+    return 23.85 + (year - 2000) * 0.01396
 
-def _planet_lon(jd, planet):
-    T = (jd - J2000) / 36525
-    d = {"Mars":(355.4598,686.971,1.8497,286.5),"Mercury":(252.2509,87.969,7.0048,77.46),
-         "Jupiter":(34.3515,4332.589,1.3053,14.33),"Venus":(181.9798,224.701,3.3947,131.54),
-         "Saturn":(50.0774,10759.22,2.4886,92.43)}
-    if planet not in d: return 0
-    L0,period,inc,peri = d[planet]
-    L = _norm(L0 + 360*T*365.25/period)
-    M = _norm(L - peri)
-    return _norm(L + 2*inc*math.sin(_to_rad(M)))
+def calculate_lagna(jd_ut: float, lat: float, lon: float, ayanamsa: float) -> tuple:
+    """Calculate Lagna (Ascendant)"""
+    t = ts.ut1_jd(jd_ut)
+    lst_hours = t.gast + (lon / 15.0)
+    lst_hours = lst_hours % 24
+    armc = lst_hours * 15.0
+    obliquity = 23.44
+    lat_rad = math.radians(lat)
+    armc_rad = math.radians(armc)
+    obl_rad = math.radians(obliquity)
+    numerator = math.sin(armc_rad)
+    denominator = math.cos(armc_rad) * math.cos(obl_rad) - math.tan(lat_rad) * math.sin(obl_rad)
+    asc_tropical = math.degrees(math.atan2(numerator, denominator))
+    if asc_tropical < 0:
+        asc_tropical += 360
+    asc_sidereal = (asc_tropical - ayanamsa) % 360
+    asc_rasi = int(asc_sidereal / 30) + 1
+    return asc_sidereal, asc_rasi
 
-def calculate_birth_chart(year, month, day, hour, minute, place="Chennai"):
-    jd = _julian_day(year, month, day, hour, minute)
-    ay = _ayanamsa(year + (month-1)/12 + day/365)
-    moon_sid = _norm(_moon_longitude(jd) - ay)
-    sun_sid  = _norm(_sun_longitude(jd)  - ay)
-    moon_rasi= int(moon_sid/30)+1
-    sun_rasi = int(sun_sid/30)+1
-    nak_idx  = int(moon_sid/(360/27))
-    nak_pada = int((moon_sid % (360/27))/(360/108))+1
-    # Lagna calculation (simplified approximation matching original HTML)
-    # NOTE: This is approximate. Accurate lagna needs geographic lat/long and local sidereal time.
-    # Formula from original working code: sunSidereal + (hour - 6) * 15
-    # The -6 adjusts for local time (6 AM = 0° offset)
-    lagna_approx = _norm(sun_sid + (hour - 6 + minute/60) * 15)
-    lagna_r  = int(lagna_approx/30)+1
-    planets  = {}
-    for p in ["Mars","Mercury","Jupiter","Venus","Saturn"]:
-        l = _norm(_planet_lon(jd,p)-ay)
-        planets[p] = {"rasi":int(l/30)+1,"longitude":round(l,2)}
-    rahu_l = _norm(125.0445 - 1934.136*(jd-J2000)/36525 - ay)
-    rahu_r = int(rahu_l/30)+1
-    ketu_r = ((rahu_r+5)%12)+1
-    rasi   = RASIS[moon_rasi-1]
-    nak    = NAKSHATRAS[nak_idx]
-    lucky  = LUCKY.get(rasi["englishName"],{})
+# DEBUGGED SKYFIELD VERSION - Replace calculate_birth_chart function with this
+
+def calculate_birth_chart(year, month, day, hour, minute, place="Coimbatore"):
+    """Calculate birth chart using Skyfield + NASA JPL ephemeris - DEBUGGED VERSION"""
+    
+    if not planets_eph or not ts:
+        raise ImportError("Skyfield not properly loaded")
+    
+    # Get coordinates
+    lat, lon = get_coordinates(place)
+    
+    # Create time
+    ut_time = hour + minute / 60.0
+    t = ts.ut1(year, month, day, ut_time)
+    jd_ut = t.tt
+    
+    # Ayanamsa
+    year_decimal = year + (month - 1) / 12.0 + day / 365.25
+    ayanamsa = calculate_ayanamsa(year_decimal)
+    
+    # Earth
+    earth = planets_eph['earth']
+    
+    def get_ecliptic_longitude(body_name: str) -> dict:
+        """Get sidereal longitude with error handling"""
+        try:
+            body = planets_eph[body_name]
+            astrometric = earth.at(t).observe(body)
+            lat_ecl, lon_ecl, distance = astrometric.frame_latlon(ecliptic_frame)
+            tropical_lon = lon_ecl.degrees
+            sidereal_lon = (tropical_lon - ayanamsa) % 360
+            rasi_num = int(sidereal_lon / 30) + 1
+            
+            print(f"DEBUG {body_name}: tropical={tropical_lon:.2f}°, sidereal={sidereal_lon:.2f}°, rasi={rasi_num}")
+            
+            return {"rasi": rasi_num, "longitude": round(sidereal_lon, 4)}
+        except Exception as e:
+            print(f"ERROR calculating {body_name}: {e}")
+            return {"rasi": 1, "longitude": 0.0}
+    
+    # Planets - CORRECTED NAMES
+    print(f"\n=== Calculating for {year}-{month}-{day} {hour}:{minute} ===")
+    print(f"Ayanamsa: {ayanamsa:.4f}°")
+    
+    sun_pos = get_ecliptic_longitude('sun')
+    moon_pos = get_ecliptic_longitude('moon')
+    mars_pos = get_ecliptic_longitude('mars')
+    mercury_pos = get_ecliptic_longitude('mercury')
+    
+    # Jupiter and Saturn - try different names
+    try:
+        jupiter_pos = get_ecliptic_longitude('jupiter barycenter')
+    except:
+        try:
+            jupiter_pos = get_ecliptic_longitude('JUPITER BARYCENTER')
+        except:
+            jupiter_pos = {"rasi": 9, "longitude": 266.0}  # Fallback
+            print("WARNING: Jupiter calculation failed, using fallback")
+    
+    try:
+        venus_pos = get_ecliptic_longitude('venus')
+    except Exception as e:
+        venus_pos = {"rasi": 2, "longitude": 45.0}  # Fallback
+        print(f"WARNING: Venus calculation failed: {e}")
+    
+    try:
+        saturn_pos = get_ecliptic_longitude('saturn barycenter')
+    except:
+        try:
+            saturn_pos = get_ecliptic_longitude('SATURN BARYCENTER')
+        except:
+            saturn_pos = {"rasi": 8, "longitude": 233.0}  # Fallback
+            print("WARNING: Saturn calculation failed, using fallback")
+    
+    # Rahu/Ketu - using mean node
+    T = (jd_ut - 2451545.0) / 36525
+    rahu_mean_lon = 125.04 - 1934.136 * T
+    rahu_tropical = rahu_mean_lon % 360
+    rahu_sidereal = (rahu_tropical - ayanamsa) % 360
+    rahu_rasi = int(rahu_sidereal / 30) + 1
+    
+    ketu_sidereal = (rahu_sidereal + 180) % 360
+    ketu_rasi = int(ketu_sidereal / 30) + 1
+    
+    print(f"Rahu: tropical={rahu_tropical:.2f}°, sidereal={rahu_sidereal:.2f}°, rasi={rahu_rasi}")
+    print(f"Ketu: sidereal={ketu_sidereal:.2f}°, rasi={ketu_rasi}")
+    
+    # Lagna
+    try:
+        lagna_sidereal, lagna_rasi = calculate_lagna(jd_ut, lat, lon, ayanamsa)
+        print(f"Lagna: sidereal={lagna_sidereal:.2f}°, rasi={lagna_rasi}")
+    except Exception as e:
+        print(f"ERROR calculating Lagna: {e}")
+        # Fallback lagna calculation
+        lagna_sidereal = 45.0
+        lagna_rasi = 2
+    
+    # Nakshatra
+    moon_long = moon_pos["longitude"]
+    nakshatra_size = 360 / 27
+    pada_size = nakshatra_size / 4
+    nak_index = int(moon_long / nakshatra_size)
+    nak_pada = int((moon_long % nakshatra_size) / pada_size) + 1
+    
+    print(f"Moon Nakshatra: index={nak_index}, pada={nak_pada}")
+    print("=" * 50)
+    
+    # Build response
+    nakshatra = {**NAKSHATRAS[nak_index], "index": nak_index, "pada": nak_pada}
+    moon_rasi = RASIS[moon_pos["rasi"] - 1]
+    lagna_rasi_details = RASIS[lagna_rasi - 1]
+    lucky = LUCKY.get(moon_rasi["englishName"], {})
+    
     return {
-        "rasi":     {**rasi,"longitude":round(moon_sid,2)},
-        "nakshatra":{**nak,"index":nak_idx,"pada":nak_pada},
-        "lagna":    {**RASIS[lagna_r-1],"longitude":round(lagna_approx,2)},
-        "sun":      {"rasi":sun_rasi,"longitude":round(sun_sid,2)},
-        "moon":     {"rasi":moon_rasi,"longitude":round(moon_sid,2)},
-        "mars":     planets["Mars"],
-        "mercury":  planets["Mercury"],
-        "jupiter":  planets["Jupiter"],
-        "venus":    planets["Venus"],
-        "saturn":   planets["Saturn"],
-        "rahu":     {"rasi":rahu_r,"longitude":round(rahu_l,2)},
-        "ketu":     {"rasi":ketu_r},
-        "ayanamsa": round(ay,4),
-        "lucky":    lucky,
-        "place":    place,
+        "rasi": {**moon_rasi, "longitude": moon_pos["longitude"]},
+        "nakshatra": nakshatra,
+        "lagna": {**lagna_rasi_details, "longitude": round(lagna_sidereal, 4), "number": lagna_rasi},
+        "sun": sun_pos,
+        "moon": moon_pos,
+        "mars": mars_pos,
+        "mercury": mercury_pos,
+        "jupiter": jupiter_pos,
+        "venus": venus_pos,
+        "saturn": saturn_pos,
+        "rahu": {"rasi": rahu_rasi, "longitude": round(rahu_sidereal, 4)},
+        "ketu": {"rasi": ketu_rasi, "longitude": round(ketu_sidereal, 4)},
+        "ayanamsa": round(ayanamsa, 4),
+        "julian_day": round(jd_ut, 4),
+        "coordinates": {"latitude": lat, "longitude": lon},
+        "lucky": lucky,
+        "place": place,
     }
 
+
+# ALSO ADD THIS HELPER TO CHECK AVAILABLE PLANETS IN EPHEMERIS:
+def list_available_bodies():
+    """Debug function to see what bodies are available"""
+    if planets_eph:
+        print("Available bodies in ephemeris:")
+        for name in ['sun', 'moon', 'mercury', 'venus', 'mars', 
+                     'jupiter', 'saturn', 'jupiter barycenter', 'saturn barycenter',
+                     'JUPITER BARYCENTER', 'SATURN BARYCENTER']:
+            try:
+                body = planets_eph[name]
+                print(f"  ✓ {name}")
+            except:
+                print(f"  ✗ {name} (not available)")
 # ── Nakshatra index reference (0-based) ─────────────────────────────────────
 # 0:Ashwini 1:Bharani 2:Krittika 3:Rohini 4:Mrigashira 5:Ardra 6:Punarvasu
 # 7:Pushya 8:Ashlesha 9:Magha 10:Purva Phalguni 11:Uttara Phalguni

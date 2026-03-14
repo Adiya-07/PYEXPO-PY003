@@ -89,13 +89,9 @@ def generate_birth_chart_svg(chart: Dict, size: int = 420) -> str:
     sign_planets[lagna_rasi].append('Lagna')
 
     # Planet → sign number from chart dict
-    def _rasi(key):
-        v = chart.get(key)
-        if isinstance(v, dict): return v.get('rasi', 0)
-        return 0
-
-    sign_planets[_rasi('sun') or chart.get('sun',{}).get('rasi',0)].append('Sun') if (_rasi('sun') or chart.get('sun',{}).get('rasi',0)) else None
-    sign_planets[chart.get('rasi',{}).get('number',0)].append('Moon') if chart.get('rasi',{}).get('number',0) else None
+    
+    sign_planets[chart.get('sun',{}).get('rasi',0)].append('Sun') if chart.get('sun',{}).get('rasi',0) else None
+    sign_planets[chart.get('moon',{}).get('rasi',0)].append('Moon') if chart.get('moon',{}).get('rasi',0) else None
     sign_planets[chart.get('mars',{}).get('rasi',0)].append('Mars') if chart.get('mars',{}).get('rasi',0) else None
     sign_planets[chart.get('mercury',{}).get('rasi',0)].append('Mercury') if chart.get('mercury',{}).get('rasi',0) else None
     sign_planets[chart.get('jupiter',{}).get('rasi',0)].append('Jupiter') if chart.get('jupiter',{}).get('rasi',0) else None
@@ -186,7 +182,7 @@ def get_planet_house_data(chart: Dict) -> List[Dict]:
     result = []
     planet_sign_map = {
         'Sun':     chart.get('sun',{}).get('rasi',0),
-        'Moon':    chart.get('rasi',{}).get('number',0),
+        'Moon':    chart.get('moon',{}).get('rasi',0),
         'Mars':    chart.get('mars',{}).get('rasi',0),
         'Mercury': chart.get('mercury',{}).get('rasi',0),
         'Jupiter': chart.get('jupiter',{}).get('rasi',0),
