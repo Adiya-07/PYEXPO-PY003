@@ -124,9 +124,11 @@ def generate_birth_chart_svg(chart: Dict, size: int = 420) -> str:
         y = row * cell
         house = _house_num(lagna_rasi, sign_num)
         planets = [p for p in sign_planets.get(sign_num, []) if p]
-        is_lagna = (sign_num == lagna_rasi)
-
+        is_lagna = (sign_num == lagna_rasi)  # ← ADD THIS LINE!
+        planets = [p for p in sign_planets.get(sign_num, []) if p]
         hmean = HOUSE_MEANINGS[house].replace("'","\\'")
+        rasi_en = RASI_EN.get(sign_num, RASI_EN.get(1, 'Mesham'))
+        sign_num = ((sign_num - 1) % 12) + 1  # Ensure 1-12
         rasi_en = RASI_EN[sign_num]
         planet_str = ', '.join(p for p in planets if p != 'Lagna') or 'Empty'
         onclick = f"showHouseInfo({house},'{rasi_en}',{house},'{planet_str}','{hmean}')"

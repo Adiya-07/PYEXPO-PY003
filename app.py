@@ -65,10 +65,18 @@ def compatibility():
 
 @app.route("/birthchart")
 def birthchart():
-    uc  = chart()
+    from utils.birth_chart_svg import generate_birth_chart_svg, get_planet_house_data
+    
+    uc = chart()
     svg = generate_birth_chart_svg(uc) if uc else None
-    return render_template("birthchart.html", translations=t(), language=lang(),
-                           user_chart=uc, svg_chart=svg)
+    planets = get_planet_house_data(uc) if uc else []  # ← ADD THIS!
+    
+    return render_template("birthchart.html", 
+                          translations=t(), 
+                          language=lang(),
+                          user_chart=uc, 
+                          svg_chart=svg,
+                          planets=planets)  # ← ADD THIS!
 
 @app.route("/predictions")
 def predictions():
