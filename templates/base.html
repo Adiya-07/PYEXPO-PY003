@@ -229,7 +229,9 @@
         </div>
     </aside>
 
-    <main>{% block content %}{% endblock %}</main>
+    <main id="main-content">
+        {% block content %}{% endblock %}
+    </main>
 
     <a href="/chat" class="floating-chat" title="Chat with AstroGuy AI">
         <i class="fas fa-robot"></i>

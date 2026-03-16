@@ -60,6 +60,7 @@ body {
   font-weight: 700;
   background: var(--gradient-gold);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   text-decoration: none;
   cursor: pointer;
@@ -179,6 +180,7 @@ body {
   font-weight: 700;
   background: var(--gradient-gold);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -490,10 +492,21 @@ body {
 /* ============================================================
    PAGES & LAYOUT
    ============================================================ */
+/* Main content spacing for fixed nav */
+main {
+  padding-top: 80px;
+  min-height: 100vh;
+}
+
+/* Responsive main padding */
+@media (max-width: 768px) {
+  main {
+    padding-top: 70px;
+  }
+}
+
 .page {
   display: none;
-  min-height: 100vh;
-  padding-top: 80px;
   position: relative;
   z-index: 1;
   animation: fadeIn 0.6s ease;
@@ -553,6 +566,7 @@ body {
   margin-bottom: 1rem;
   background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
   animation: titleFloat 6s ease-in-out infinite;
@@ -580,6 +594,7 @@ body {
 .datetime-display {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: rgba(255, 215, 0, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.2);
@@ -589,6 +604,12 @@ body {
   color: var(--primary-gold);
   margin-bottom: 3rem;
   backdrop-filter: blur(10px);
+}
+
+/* Global Heading Styles */
+h1 {
+  text-align: center;
+  width: 100%;
 }
 
 /* Glass Cards */
