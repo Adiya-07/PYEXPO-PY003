@@ -229,7 +229,7 @@ def compatibility():
 @app.route("/birthchart")
 def birthchart():
     uc      = chart()
-    svg     = generate_birth_chart_svg(uc) if uc else None
+    svg     = generate_birth_chart_svg(uc, lang()) if uc else None
     planets = get_planet_house_data(uc)    if uc else []
     return render_template(
         "birthchart.html",

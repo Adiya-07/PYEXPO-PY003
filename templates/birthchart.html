@@ -60,45 +60,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Planets in houses -->
-            <div class="glass-card" style="padding:1.5rem">
-                <h3 style="color:#FFD700;font-family:'Cinzel',serif;margin-bottom:1rem;font-size:1rem">
-                    {% if language=='ta' %}கிரக நிலைகள்{% else %}Planetary Positions{% endif %}
-                </h3>
-                {% for p in planets %}
-                <div
-                    style="display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05)">
-                    <span style="color:{{ p.color }};font-weight:700;min-width:24px;font-size:.85rem">{{ p.symbol
-                        }}</span>
-                    <div style="flex:1">
-                        <div style="color:rgba(255,255,255,.8);font-size:.82rem;font-weight:600">
-                            {{ p.name }}
-                            <span style="color:rgba(255,255,255,.35);font-weight:400;font-size:.75rem">— House {{
-                                p.house }}</span>
-                        </div>
-                        <div style="color:rgba(255,255,255,.4);font-size:.72rem">
-                            {% if language=='ta' %}{{ p.sign_ta }}{% else %}{{ p.sign }}{% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- Planet meanings -->
-            <div class="glass-card" style="padding:1.5rem">
-                <h3 style="color:#FFD700;font-family:'Cinzel',serif;margin-bottom:1rem;font-size:1rem">
-                    {% if language=='ta' %}கிரக அர்த்தங்கள்{% else %}What Each Planet Rules{% endif %}
-                </h3>
-                {% for p in planets %}
-                <div style="margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid rgba(255,255,255,.04)">
-                    <span style="color:{{ p.color }};font-weight:700;font-size:.8rem">{{ p.name }}</span>
-                    <span
-                        style="color:rgba(255,255,255,.45);font-size:.75rem;display:block;line-height:1.4;margin-top:.15rem">{{
-                        p.info }}</span>
-                </div>
-                {% endfor %}
-            </div>
-
         </div>
     </div>
 
@@ -128,9 +89,18 @@
         const body = document.getElementById('housePanelBody');
 
         title.textContent = `House ${house} — ${rasiName}`;
+        let planetDescriptions;
+        if (meaning === 'No planets in this house.') {
+            planetDescriptions = meaning;
+        } else {
+            planetDescriptions = meaning.split('; ').map(m => {
+                let [planet, desc] = m.split(': ');
+                return `<div style="margin-bottom:0.5rem"><strong>${planet}:</strong> ${desc}</div>`;
+            }).join('');
+        }
         body.innerHTML = `
     <div style="margin-bottom:.7rem"><strong>Planets:</strong> ${planets}</div>
-    <div style="color:rgba(255,255,255,.55)">${meaning}</div>
+    <div style="color:rgba(255,255,255,.55)">${planetDescriptions}</div>
   `;
 
         panel.style.display = 'block';
