@@ -18,13 +18,14 @@
         <div class="empty-state">
             <div class="empty-icon">🔮</div>
             <h2 class="empty-title">
-                {% if language == 'ta' %}உங்கள் விண்வெளி பயணம் காத்திருக்கிறது{% else %}Your Cosmic Journey Awaits{% endif %}
+                {% if language == 'ta' %}உங்கள் விண்வெளி பயணம் காத்திருக்கிறது{% else %}Your Cosmic Journey Awaits{%
+                endif %}
             </h2>
             <p class="empty-text">
                 {% if language == 'ta' %}
-                    உங்கள் பிறப்பு விவரங்களை உள்ளிட்டு தனிப்பயனாக்கப்பட்ட டாஷ்போர்டை வெளிப்படுத்துங்கள்
+                உங்கள் பிறப்பு விவரங்களை உள்ளிட்டு தனிப்பயனாக்கப்பட்ட டாஷ்போர்டை வெளிப்படுத்துங்கள்
                 {% else %}
-                    Enter your birth details to unlock your personalized dashboard
+                Enter your birth details to unlock your personalized dashboard
                 {% endif %}
             </p>
             <a href="/" class="empty-btn">
@@ -34,27 +35,61 @@
 
         {% else %}
         <!-- Dashboard Content -->
-        
+
         <!-- Welcome Header -->
         <div class="dashboard-welcome">
             <h1 class="welcome-title">
-                {% if language == 'ta' %}வணக்கம், {{ profile.name if profile else 'விண்வெளி ஆன்மா' }}{% else %}Welcome, {{ profile.name if profile else 'Cosmic Soul' }}{% endif %}
+                {% if language == 'ta' %}வணக்கம், {{ profile.name if profile else 'விண்வெளி ஆன்மா' }}{% else %}Welcome,
+                {{ profile.name if profile else 'Cosmic Soul' }}{% endif %}
             </h1>
             <p class="welcome-subtitle">
                 {% if language == 'ta' %}
-                    உங்கள் தனிப்பயனாக்கப்பட்ட வேத ஜோதிட டாஷ்போர்டு
+                உங்கள் தனிப்பயனாக்கப்பட்ட வேத ஜோதிட டாஷ்போர்டு
                 {% else %}
-                    Your personalized Vedic astrology dashboard
+                Your personalized Vedic astrology dashboard
                 {% endif %}
             </p>
+
+            <!-- Auth status bar -->
+            {% if current_user %}
+            <div style="display:inline-flex;align-items:center;gap:.5rem;margin-top:.75rem;
+                        padding:.45rem 1rem;background:rgba(34,197,94,.08);
+                        border:1px solid rgba(34,197,94,.2);border-radius:50px;font-size:.8rem;">
+                <span style="color:#22c55e;">✓</span>
+                <span style="color:rgba(255,255,255,.6);">
+                    {% if language=='ta' %}{{ user_display }} — தரவு சேமிக்கப்பட்டது{% else %}{{ user_display }} — data
+                    saved to account{% endif %}
+                </span>
+            </div>
+            {% else %}
+            <div style="display:inline-flex;align-items:center;gap:.75rem;margin-top:.75rem;
+                        padding:.6rem 1.25rem;background:rgba(255,215,0,.06);
+                        border:1px solid rgba(255,215,0,.2);border-radius:12px;font-size:.82rem;flex-wrap:wrap;">
+                <span style="color:rgba(255,255,255,.5);">
+                    💡 {% if language=='ta' %}உங்கள் ஜாதகத்தை சேமிக்க கணக்கு உருவாக்குங்கள்{% else %}Create an account
+                    to save your chart permanently{% endif %}
+                </span>
+                <div style="display:flex;gap:.5rem;">
+                    <a href="/register" style="padding:.4rem .9rem;background:linear-gradient(135deg,#FFD700,#FFA500);
+                               color:#000;border-radius:6px;font-size:.78rem;font-weight:700;text-decoration:none;">
+                        {% if language=='ta' %}கணக்கு உருவாக்கு{% else %}Register{% endif %}
+                    </a>
+                    <a href="/login" style="padding:.4rem .9rem;background:rgba(255,215,0,.1);
+                               border:1px solid rgba(255,215,0,.25);color:#FFD700;
+                               border-radius:6px;font-size:.78rem;font-weight:600;text-decoration:none;">
+                        {% if language=='ta' %}உள்நுழை{% else %}Sign In{% endif %}
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Main Grid Layout -->
         <div class="dashboard-grid">
-            
+
             <!-- Left Column: Profile + Guidance -->
             <div class="left-column">
-                
+
                 <!-- Cosmic Profile Card - COMPACT -->
                 <div class="profile-card">
                     <div class="profile-header">
@@ -65,12 +100,12 @@
                             <h2 class="profile-name">{{ profile.name if profile else 'Cosmic Soul' }}</h2>
                             <p class="profile-meta">
                                 {% if profile %}
-                                    📅 {{ profile.dob }} • ⏰ {{ profile.time }}
+                                📅 {{ profile.dob }} • ⏰ {{ profile.time }}
                                 {% endif %}
                             </p>
                             <p class="profile-meta">
                                 {% if profile %}
-                                    📍 {{ profile.place }}
+                                📍 {{ profile.place }}
                                 {% endif %}
                             </p>
                         </div>
@@ -80,14 +115,19 @@
                         <div class="profile-item-compact">
                             <div class="profile-label">{% if language == 'ta' %}ராசி{% else %}Rasi{% endif %}</div>
                             <div class="profile-value">
-                                {{ user_chart.rasi.tamil_name if language == 'ta' and user_chart.rasi.tamil_name else user_chart.rasi.tamilName if language == 'ta' else user_chart.rasi.english_name if user_chart.rasi.english_name else user_chart.rasi.englishName }}
+                                {{ user_chart.rasi.tamil_name if language == 'ta' and user_chart.rasi.tamil_name else
+                                user_chart.rasi.tamilName if language == 'ta' else user_chart.rasi.english_name if
+                                user_chart.rasi.english_name else user_chart.rasi.englishName }}
                             </div>
                         </div>
 
                         <div class="profile-item-compact">
-                            <div class="profile-label">{% if language == 'ta' %}நட்சத்திரம்{% else %}Nakshatra{% endif %}</div>
+                            <div class="profile-label">{% if language == 'ta' %}நட்சத்திரம்{% else %}Nakshatra{% endif
+                                %}</div>
                             <div class="profile-value">
-                                {{ user_chart.nakshatra.tamil_name if language == 'ta' and user_chart.nakshatra.tamil_name else user_chart.nakshatra.tamilName if language == 'ta' else user_chart.nakshatra.name }}
+                                {{ user_chart.nakshatra.tamil_name if language == 'ta' and
+                                user_chart.nakshatra.tamil_name else user_chart.nakshatra.tamilName if language == 'ta'
+                                else user_chart.nakshatra.name }}
                             </div>
                         </div>
 
@@ -99,7 +139,11 @@
                         <div class="profile-item-compact">
                             <div class="profile-label">{% if language == 'ta' %}லக்னம்{% else %}Lagna{% endif %}</div>
                             <div class="profile-value">
-                                {{ user_chart.lagna.tamil_name if language == 'ta' and user_chart.lagna.tamil_name else user_chart.lagna.tamilName if language == 'ta' else user_chart.lagna.english_name if user_chart.lagna.english_name else user_chart.lagna.englishName if user_chart.lagna.englishName else user_chart.lagna.name if user_chart.lagna.name else '-' }}
+                                {{ user_chart.lagna.tamil_name if language == 'ta' and user_chart.lagna.tamil_name else
+                                user_chart.lagna.tamilName if language == 'ta' else user_chart.lagna.english_name if
+                                user_chart.lagna.english_name else user_chart.lagna.englishName if
+                                user_chart.lagna.englishName else user_chart.lagna.name if user_chart.lagna.name else
+                                '-' }}
                             </div>
                         </div>
 
@@ -125,19 +169,24 @@
                     </div>
                     <p class="guidance-text">
                         {% if language == 'ta' %}
-                            {{ user_chart.rasi.tamil_name if user_chart.rasi.tamil_name else user_chart.rasi.tamilName }} ராசியினருக்கு சாதகமான நாள். நீண்டகால திட்டமிடலில் கவனம் செலுத்துங்கள்.
+                        {{ user_chart.rasi.tamil_name if user_chart.rasi.tamil_name else user_chart.rasi.tamilName }}
+                        ராசியினருக்கு சாதகமான நாள். நீண்டகால திட்டமிடலில் கவனம் செலுத்துங்கள்.
                         {% else %}
-                            Favorable day for {{ user_chart.rasi.english_name if user_chart.rasi.english_name else user_chart.rasi.englishName }} natives. Focus on long-term planning.
+                        Favorable day for {{ user_chart.rasi.english_name if user_chart.rasi.english_name else
+                        user_chart.rasi.englishName }} natives. Focus on long-term planning.
                         {% endif %}
                     </p>
                     <div class="guidance-highlights">
                         <div class="highlight-item">
-                            <span class="highlight-label">{% if language == 'ta' %}சிறந்த நேரம்{% else %}Best Time{% endif %}</span>
+                            <span class="highlight-label">{% if language == 'ta' %}சிறந்த நேரம்{% else %}Best Time{%
+                                endif %}</span>
                             <span class="highlight-value">10:00 - 12:00</span>
                         </div>
                         <div class="highlight-item">
-                            <span class="highlight-label">{% if language == 'ta' %}கவனம்{% else %}Focus{% endif %}</span>
-                            <span class="highlight-value">{% if language == 'ta' %}திட்டமிடல்{% else %}Planning{% endif %}</span>
+                            <span class="highlight-label">{% if language == 'ta' %}கவனம்{% else %}Focus{% endif
+                                %}</span>
+                            <span class="highlight-value">{% if language == 'ta' %}திட்டமிடல்{% else %}Planning{% endif
+                                %}</span>
                         </div>
                     </div>
                 </div>
@@ -149,13 +198,15 @@
                 <h3 class="section-title-compact">
                     {% if language == 'ta' %}விரைவு செயல்கள்{% else %}Quick Actions{% endif %}
                 </h3>
-                
+
                 <div class="actions-grid-compact">
                     <a href="/birthchart" class="action-card-compact">
                         <div class="action-icon-compact">📊</div>
                         <div class="action-content">
-                            <h4 class="action-title-compact">{% if language == 'ta' %}முழு ஜாதகம்{% else %}Full Chart{% endif %}</h4>
-                            <p class="action-desc-compact">{% if language == 'ta' %}விரிவான பகுப்பாய்வு{% else %}Detailed analysis{% endif %}</p>
+                            <h4 class="action-title-compact">{% if language == 'ta' %}முழு ஜாதகம்{% else %}Full Chart{%
+                                endif %}</h4>
+                            <p class="action-desc-compact">{% if language == 'ta' %}விரிவான பகுப்பாய்வு{% else
+                                %}Detailed analysis{% endif %}</p>
                         </div>
                         <span class="action-arrow-compact">→</span>
                     </a>
@@ -163,8 +214,10 @@
                     <a href="/horoscope" class="action-card-compact">
                         <div class="action-icon-compact">🌙</div>
                         <div class="action-content">
-                            <h4 class="action-title-compact">{% if language == 'ta' %}ராசிபலன்{% else %}Horoscope{% endif %}</h4>
-                            <p class="action-desc-compact">{% if language == 'ta' %}இன்றைய பலன்{% else %}Today's reading{% endif %}</p>
+                            <h4 class="action-title-compact">{% if language == 'ta' %}ராசிபலன்{% else %}Horoscope{%
+                                endif %}</h4>
+                            <p class="action-desc-compact">{% if language == 'ta' %}இன்றைய பலன்{% else %}Today's
+                                reading{% endif %}</p>
                         </div>
                         <span class="action-arrow-compact">→</span>
                     </a>
@@ -172,8 +225,10 @@
                     <a href="/compatibility" class="action-card-compact">
                         <div class="action-icon-compact">💕</div>
                         <div class="action-content">
-                            <h4 class="action-title-compact">{% if language == 'ta' %}பொருத்தம்{% else %}Match{% endif %}</h4>
-                            <p class="action-desc-compact">{% if language == 'ta' %}திருமண சோதனை{% else %}Compatibility{% endif %}</p>
+                            <h4 class="action-title-compact">{% if language == 'ta' %}பொருத்தம்{% else %}Match{% endif
+                                %}</h4>
+                            <p class="action-desc-compact">{% if language == 'ta' %}திருமண சோதனை{% else
+                                %}Compatibility{% endif %}</p>
                         </div>
                         <span class="action-arrow-compact">→</span>
                     </a>
@@ -181,8 +236,10 @@
                     <a href="/predictions" class="action-card-compact">
                         <div class="action-icon-compact">🔮</div>
                         <div class="action-content">
-                            <h4 class="action-title-compact">{% if language == 'ta' %}முன்னறிவிப்பு{% else %}Predictions{% endif %}</h4>
-                            <p class="action-desc-compact">{% if language == 'ta' %}7 நாள் பலன்{% else %}7-day forecast{% endif %}</p>
+                            <h4 class="action-title-compact">{% if language == 'ta' %}முன்னறிவிப்பு{% else
+                                %}Predictions{% endif %}</h4>
+                            <p class="action-desc-compact">{% if language == 'ta' %}7 நாள் பலன்{% else %}7-day
+                                forecast{% endif %}</p>
                         </div>
                         <span class="action-arrow-compact">→</span>
                     </a>
@@ -190,8 +247,10 @@
                     <a href="/panchangam" class="action-card-compact">
                         <div class="action-icon-compact">📅</div>
                         <div class="action-content">
-                            <h4 class="action-title-compact">{% if language == 'ta' %}பஞ்சாங்கம்{% else %}Panchangam{% endif %}</h4>
-                            <p class="action-desc-compact">{% if language == 'ta' %}புனித நேரம்{% else %}Sacred timings{% endif %}</p>
+                            <h4 class="action-title-compact">{% if language == 'ta' %}பஞ்சாங்கம்{% else %}Panchangam{%
+                                endif %}</h4>
+                            <p class="action-desc-compact">{% if language == 'ta' %}புனித நேரம்{% else %}Sacred
+                                timings{% endif %}</p>
                         </div>
                         <span class="action-arrow-compact">→</span>
                     </a>
@@ -199,8 +258,10 @@
                     <a href="/chat" class="action-card-compact">
                         <div class="action-icon-compact">🤖</div>
                         <div class="action-content">
-                            <h4 class="action-title-compact">{% if language == 'ta' %}AI உரையாடல்{% else %}AI Chat{% endif %}</h4>
-                            <p class="action-desc-compact">{% if language == 'ta' %}ML வழிகாட்டி{% else %}ML guidance{% endif %}</p>
+                            <h4 class="action-title-compact">{% if language == 'ta' %}AI உரையாடல்{% else %}AI Chat{%
+                                endif %}</h4>
+                            <p class="action-desc-compact">{% if language == 'ta' %}ML வழிகாட்டி{% else %}ML guidance{%
+                                endif %}</p>
                         </div>
                         <span class="action-arrow-compact">→</span>
                     </a>
@@ -211,8 +272,9 @@
 
         <!-- Explore More - COMPACT -->
         <div class="explore-section-compact">
-            <h3 class="section-title-compact">{% if language == 'ta' %}மேலும் ஆராயுங்கள்{% else %}Explore More{% endif %}</h3>
-            
+            <h3 class="section-title-compact">{% if language == 'ta' %}மேலும் ஆராயுங்கள்{% else %}Explore More{% endif
+                %}</h3>
+
             <div class="explore-grid-compact">
                 <a href="/cosmic-card" class="explore-item-compact">
                     <span class="explore-icon-compact">🎴</span>
@@ -251,7 +313,7 @@
             <h3 class="share-title">
                 {% if language == 'ta' %}பகிரவும் & பதிவிறக்கவும்{% else %}Share & Download{% endif %}
             </h3>
-            
+
             <div class="share-buttons">
                 <a href="/api/download-chart-pdf" class="share-btn share-btn-primary" download>
                     <span class="share-btn-icon">📄</span>
@@ -274,486 +336,486 @@
 </section>
 
 <style>
-/* Breadcrumb */
-.breadcrumb {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0.8rem 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-}
-
-.breadcrumb a {
-    color: rgba(255,255,255,0.5);
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.breadcrumb a:hover {
-    color: #FFD700;
-}
-
-.breadcrumb-sep {
-    color: rgba(255,255,255,0.3);
-}
-
-.breadcrumb-current {
-    color: #FFD700;
-}
-
-/* Dashboard */
-.dashboard {
-    padding: 1rem 2rem 3rem;
-}
-
-.dashboard-container {
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 6rem 2rem;
-}
-
-.empty-icon {
-    font-size: 5rem;
-    margin-bottom: 2rem;
-    opacity: 0.7;
-}
-
-.empty-title {
-    font-family: 'Cinzel', serif;
-    font-size: 2rem;
-    color: #FFD700;
-    margin-bottom: 1rem;
-}
-
-.empty-text {
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 2rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.empty-btn {
-    display: inline-block;
-    padding: 1rem 2.5rem;
-    background: rgba(255,215,0,0.1);
-    border: 1px solid rgba(255,215,0,0.3);
-    border-radius: 8px;
-    color: #FFD700;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s;
-}
-
-.empty-btn:hover {
-    background: rgba(255,215,0,0.15);
-    border-color: #FFD700;
-}
-
-/* Welcome - COMPACT */
-.dashboard-welcome {
-    margin-bottom: 1.5rem;
-}
-
-.welcome-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.8rem;
-    color: #FFFFFF;
-    margin-bottom: 0.3rem;
-}
-
-.welcome-subtitle {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.9rem;
-}
-
-/* Main Grid Layout */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-/* Left Column */
-.left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-/* Profile Card - COMPACT */
-.profile-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 1.5rem;
-}
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    padding-bottom: 1.2rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.profile-avatar {
-    width: 60px;
-    height: 60px;
-    background: rgba(255,215,0,0.1);
-    border: 2px solid rgba(255,215,0,0.3);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-}
-
-.profile-name {
-    font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
-    color: #FFD700;
-    margin-bottom: 0.2rem;
-}
-
-.profile-meta {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-}
-
-.profile-grid-compact {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-}
-
-.profile-item-compact {
-    text-align: center;
-}
-
-.profile-label {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 0.3rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.profile-value {
-    font-size: 0.95rem;
-    color: #FFFFFF;
-    font-weight: 500;
-}
-
-/* Guidance Card - COMPACT */
-.guidance-card {
-    background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,140,0,0.04));
-    border: 1px solid rgba(255,215,0,0.2);
-    border-radius: 12px;
-    padding: 1.3rem;
-}
-
-.guidance-header {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.8rem;
-}
-
-.guidance-icon {
-    font-size: 1.3rem;
-}
-
-.guidance-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: #FFD700;
-}
-
-.guidance-text {
-    color: rgba(255,255,255,0.8);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-}
-
-.guidance-highlights {
-    display: flex;
-    gap: 2rem;
-}
-
-.highlight-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-}
-
-.highlight-label {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.highlight-value {
-    font-size: 0.85rem;
-    color: #FFD700;
-    font-weight: 600;
-}
-
-/* Right Column */
-.right-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.section-title-compact {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 1rem;
-}
-
-/* Actions Grid - COMPACT */
-.actions-grid-compact {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-}
-
-.action-card-compact {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 1.2rem 1rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    transition: all 0.3s ease;
-}
-
-.action-card-compact:hover {
-    transform: translateY(-3px);
-    border-color: rgba(255,215,0,0.3);
-    background: rgba(255,255,255,0.06);
-}
-
-.action-icon-compact {
-    font-size: 2rem;
-    flex-shrink: 0;
-}
-
-.action-content {
-    flex: 1;
-}
-
-.action-title-compact {
-    font-family: 'Cinzel', serif;
-    font-size: 0.95rem;
-    color: #FFD700;
-    margin-bottom: 0.2rem;
-}
-
-.action-desc-compact {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
-}
-
-.action-arrow-compact {
-    color: rgba(255,215,0,0.6);
-    font-size: 1.2rem;
-    transition: transform 0.3s;
-}
-
-.action-card-compact:hover .action-arrow-compact {
-    transform: translateX(5px);
-}
-
-/* Explore Section - COMPACT */
-.explore-section-compact {
-    margin-top: 2rem;
-}
-
-.explore-grid-compact {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0.8rem;
-}
-
-.explore-item-compact {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    padding: 0.9rem 0.6rem;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.7);
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.explore-item-compact:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,215,0,0.2);
-}
-
-.explore-icon-compact {
-    font-size: 1.5rem;
-}
-
-/* Share Actions */
-.share-actions {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-}
-
-.share-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.9);
-    margin-bottom: 1rem;
-}
-
-.share-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.share-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.9rem 1.5rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    border: none;
-    font-family: inherit;
-}
-
-.share-btn-primary {
-    background: rgba(255,215,0,0.1);
-    border: 1px solid rgba(255,215,0,0.3);
-    color: #FFD700;
-}
-
-.share-btn-primary:hover {
-    background: rgba(255,215,0,0.15);
-    border-color: #FFD700;
-    transform: translateY(-2px);
-}
-
-.share-btn-whatsapp {
-    background: rgba(37,211,102,0.1);
-    border: 1px solid rgba(37,211,102,0.3);
-    color: #25D366;
-}
-
-.share-btn-whatsapp:hover {
-    background: rgba(37,211,102,0.15);
-    border-color: #25D366;
-    transform: translateY(-2px);
-}
-
-.share-btn-icon {
-    font-size: 1.2rem;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
+    /* Breadcrumb */
+    .breadcrumb {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0.8rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
     }
 
-    .actions-grid-compact {
-        grid-template-columns: repeat(3, 1fr);
+    .breadcrumb a {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        transition: color 0.3s;
     }
 
-    .explore-grid-compact {
-        grid-template-columns: repeat(3, 1fr);
+    .breadcrumb a:hover {
+        color: #FFD700;
     }
-}
 
-@media (max-width: 768px) {
+    .breadcrumb-sep {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .breadcrumb-current {
+        color: #FFD700;
+    }
+
+    /* Dashboard */
     .dashboard {
-        padding: 1rem 1rem 2rem;
+        padding: 1rem 2rem 3rem;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 6rem 2rem;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 2rem;
+        opacity: 0.7;
+    }
+
+    .empty-title {
+        font-family: 'Cinzel', serif;
+        font-size: 2rem;
+        color: #FFD700;
+        margin-bottom: 1rem;
+    }
+
+    .empty-text {
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .empty-btn {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        border-radius: 8px;
+        color: #FFD700;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .empty-btn:hover {
+        background: rgba(255, 215, 0, 0.15);
+        border-color: #FFD700;
+    }
+
+    /* Welcome - COMPACT */
+    .dashboard-welcome {
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.8rem;
+        color: #FFFFFF;
+        margin-bottom: 0.3rem;
+    }
+
+    .welcome-subtitle {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+    }
+
+    /* Main Grid Layout */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Left Column */
+    .left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Profile Card - COMPACT */
+    .profile-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 1.2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 215, 0, 0.1);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    .profile-name {
+        font-family: 'Cinzel', serif;
+        font-size: 1.3rem;
+        color: #FFD700;
+        margin-bottom: 0.2rem;
+    }
+
+    .profile-meta {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
     }
 
     .profile-grid-compact {
-        grid-template-columns: repeat(2, 1fr);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
     }
 
+    .profile-item-compact {
+        text-align: center;
+    }
+
+    .profile-label {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 0.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .profile-value {
+        font-size: 0.95rem;
+        color: #FFFFFF;
+        font-weight: 500;
+    }
+
+    /* Guidance Card - COMPACT */
+    .guidance-card {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 140, 0, 0.04));
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 12px;
+        padding: 1.3rem;
+    }
+
+    .guidance-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .guidance-icon {
+        font-size: 1.3rem;
+    }
+
+    .guidance-title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.1rem;
+        color: #FFD700;
+    }
+
+    .guidance-text {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .guidance-highlights {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .highlight-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .highlight-label {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .highlight-value {
+        font-size: 0.85rem;
+        color: #FFD700;
+        font-weight: 600;
+    }
+
+    /* Right Column */
+    .right-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .section-title-compact {
+        font-family: 'Cinzel', serif;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 1rem;
+    }
+
+    /* Actions Grid - COMPACT */
     .actions-grid-compact {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .action-card-compact {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 1.2rem 1rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .action-card-compact:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 215, 0, 0.3);
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .action-icon-compact {
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    .action-content {
+        flex: 1;
+    }
+
+    .action-title-compact {
+        font-family: 'Cinzel', serif;
+        font-size: 0.95rem;
+        color: #FFD700;
+        margin-bottom: 0.2rem;
+    }
+
+    .action-desc-compact {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .action-arrow-compact {
+        color: rgba(255, 215, 0, 0.6);
+        font-size: 1.2rem;
+        transition: transform 0.3s;
+    }
+
+    .action-card-compact:hover .action-arrow-compact {
+        transform: translateX(5px);
+    }
+
+    /* Explore Section - COMPACT */
+    .explore-section-compact {
+        margin-top: 2rem;
     }
 
     .explore-grid-compact {
-        grid-template-columns: repeat(2, 1fr);
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.8rem;
     }
-    
-    .share-buttons {
+
+    .explore-item-compact {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        padding: 0.9rem 0.6rem;
+        text-decoration: none;
+        display: flex;
         flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+        text-align: center;
+        transition: all 0.3s ease;
     }
-    
+
+    .explore-item-compact:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 215, 0, 0.2);
+    }
+
+    .explore-icon-compact {
+        font-size: 1.5rem;
+    }
+
+    /* Share Actions */
+    .share-actions {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+    }
+
+    .share-title {
+        font-family: 'Cinzel', serif;
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 1rem;
+    }
+
+    .share-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
     .share-btn {
-        width: 100%;
-        justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.9rem 1.5rem;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+        font-family: inherit;
     }
-}
+
+    .share-btn-primary {
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: #FFD700;
+    }
+
+    .share-btn-primary:hover {
+        background: rgba(255, 215, 0, 0.15);
+        border-color: #FFD700;
+        transform: translateY(-2px);
+    }
+
+    .share-btn-whatsapp {
+        background: rgba(37, 211, 102, 0.1);
+        border: 1px solid rgba(37, 211, 102, 0.3);
+        color: #25D366;
+    }
+
+    .share-btn-whatsapp:hover {
+        background: rgba(37, 211, 102, 0.15);
+        border-color: #25D366;
+        transform: translateY(-2px);
+    }
+
+    .share-btn-icon {
+        font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actions-grid-compact {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .explore-grid-compact {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard {
+            padding: 1rem 1rem 2rem;
+        }
+
+        .profile-grid-compact {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .actions-grid-compact {
+            grid-template-columns: 1fr;
+        }
+
+        .explore-grid-compact {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .share-buttons {
+            flex-direction: column;
+        }
+
+        .share-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
 
 <script>
-function shareWhatsApp() {
-    {% if user_chart %}
-    var rasiName = "{{ user_chart.rasi.english_name if user_chart.rasi.english_name else user_chart.rasi.englishName }}";
-    var nakName = "{{ user_chart.nakshatra.name }}";
-    var userName = "{{ profile.name if profile else 'User' }}";
-    
-    {% if language == 'ta' %}
-    var message = "🌟 என் ஜோதிட விவரங்கள்\n\n" +
-                  "👤 பெயர்: " + userName + "\n" +
-                  "🌙 ராசி: " + rasiName + "\n" +
-                  "⭐ நட்சத்திரம்: " + nakName + "\n\n" +
-                  "AstroGuy AI மூலம் உருவாக்கப்பட்டது\n" +
-                  "🔗 astroguy.ai";
-    {% else %}
-    var message = "🌟 My Astrology Details\n\n" +
-                  "👤 Name: " + userName + "\n" +
-                  "🌙 Rasi: " + rasiName + "\n" +
-                  "⭐ Nakshatra: " + nakName + "\n\n" +
-                  "Generated by AstroGuy AI\n" +
-                  "🔗 astroguy.ai";
-    {% endif %}
-    
-    var whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(message);
-    window.open(whatsappUrl, '_blank');
-    {% else %}
-    alert("{% if language == 'ta' %}முதலில் உங்கள் ஜாதகத்தை உருவாக்கவும்{% else %}Please generate your chart first{% endif %}");
-    {% endif %}
-}
+    function shareWhatsApp() {
+        /* {% if user_chart %} */
+        var rasiName = "{{ user_chart.rasi.english_name if user_chart.rasi.english_name else user_chart.rasi.englishName }}";
+        var nakName = "{{ user_chart.nakshatra.name }}";
+        var userName = "{{ profile.name if profile else 'User' }}";
+
+        /* {% if language == 'ta' %} */
+        var message = "🌟 என் ஜோதிட விவரங்கள்\n\n" +
+            "👤 பெயர்: " + userName + "\n" +
+            "🌙 ராசி: " + rasiName + "\n" +
+            "⭐ நட்சத்திரம்: " + nakName + "\n\n" +
+            "AstroGuy AI மூலம் உருவாக்கப்பட்டது\n" +
+            "🔗 astroguy.ai";
+        /* {% else %} */
+        var message = "🌟 My Astrology Details\n\n" +
+            "👤 Name: " + userName + "\n" +
+            "🌙 Rasi: " + rasiName + "\n" +
+            "⭐ Nakshatra: " + nakName + "\n\n" +
+            "Generated by AstroGuy AI\n" +
+            "🔗 astroguy.ai";
+        /* {% endif %} */
+
+        var whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(message);
+        window.open(whatsappUrl, '_blank');
+        /* {% else %} */
+        alert("{% if language == 'ta' %}முதலில் உங்கள் ஜாதகத்தை உருவாக்கவும்{% else %}Please generate your chart first{% endif %}");
+        /* {% endif %} */
+    }
 </script>
 
 {% endblock %}
