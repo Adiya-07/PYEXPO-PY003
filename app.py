@@ -82,6 +82,7 @@ def birthchart():
 def predictions():
     from datetime import timedelta
     uc = chart(); preds = []
+    monthly_pred = None
     if uc:
         l = lang()
         MOON_EMOJIS = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"]
@@ -95,6 +96,16 @@ def predictions():
             {"ce":"Day of reflection. Review progress and set new intentions.","le":"Quiet togetherness is more valuable than grand gestures.","he":"Rest is productive. Sleep early, avoid screens.","fe":"Good day to track expenses and improve savings.","ct":"சிந்தனையின் நாள். முன்னேற்றத்தை மதிப்பீடு செய்யுங்கள்.","lt":"அமைதியான ஒன்றிணைவு இன்று மிகவும் மதிப்புமிக்கது.","ht":"ஓய்வு உற்பத்திகரமானது.","ft":"செலவுகளை கண்காணிக்கவும்."},
             {"ce":"Week ends high. Celebrate small wins and plan ahead.","le":"Joyful energy. Laughter and fun bring you closer.","he":"Excellent wellbeing. Treat yourself to something good.","fe":"Review the week's finances and plan the month ahead.","ct":"வாரம் உயர்வில் முடிகிறது. சிறிய வெற்றிகளை கொண்டாடுங்கள்.","lt":"மகிழ்ச்சியான ஆற்றல். சிரிப்பு உங்களை நெருக்கமாக்குகிறது.","ht":"சிறந்த நலன். ஏதாவது புத்துணர்ச்சிகரமானதை அனுபவியுங்கள்.","ft":"வாரத்தின் நிதியை மதிப்பாய்வு செய்யுங்கள்."},
         ]
+        MONTHLY = {
+            "ce":"This month brings steady progress in your career. Focus on long-term goals.",
+            "le":"Relationships require patience this month. Open communication is key.",
+            "he":"Prioritize a balanced routine. Mental well-being is just as important.",
+            "fe":"Unexpected expenses may arise. Review your budget and save accordingly.",
+            "ct":"இந்த மாதம் உங்கள் தொழிலில் சீரான முன்னேற்றத்தைத் தரும். நீண்டகால இலக்குகளில் கவனம் செலுத்துங்கள்.",
+            "lt":"இந்த மாதம் உறவுகளுக்கு பொறுமை தேவை. திறந்த தொடர்பு முக்கியம்.",
+            "ht":"சீரான வழக்கத்திற்கு முன்னுரிமை கொடுங்கள். மன நலனும் அதே அளவு முக்கியம்.",
+            "ft":"எதிர்பாராத செலவுகள் வரலாம். உங்கள் பட்ஜெட்டை மதிப்பாய்வு செய்து அதற்கேற்ப சேமிக்கவும்."
+        }
         for i in range(7):
             try: dt = datetime.now() + timedelta(days=i)
             except: dt = datetime.now()
@@ -104,8 +115,26 @@ def predictions():
             else:
                 areas = [("Career","💼",e["ce"]),("Love","❤️",e["le"]),("Health","🏥",e["he"]),("Finance","💰",e["fe"])]
             preds.append({"date":dt.strftime("%A, %d %b"),"moon_emoji":MOON_EMOJIS[i%8],"nakshatra":NAKS_7[i],"areas":areas})
+
+        m_data = MONTHLY
+        if l == "ta":
+            m_areas = [("தொழில்","💼",m_data["ct"]),("காதல்","❤️",m_data["lt"]),("ஆரோக்கியம்","🏥",m_data["ht"]),("நிதி","💰",m_data["ft"])]
+        else:
+            m_areas = [("Career","💼",m_data["ce"]),("Love","❤️",m_data["le"]),("Health","🏥",m_data["he"]),("Finance","💰",m_data["fe"])]
+        
+        current_month = datetime.now().strftime("%B %Y")
+        if l == "ta":
+            ta_months = {"January":"ஜனவரி", "February":"பிப்ரவரி", "March":"மார்ச்", "April":"ஏப்ரல்", "May":"மே", "June":"ஜூன்", "July":"ஜூலை", "August":"ஆகஸ்ட்", "September":"செப்டம்பர்", "October":"அக்டோபர்", "November":"நவம்பர்", "December":"டிசம்பர்"}
+            m_name, y_str = current_month.split()
+            current_month = f"{ta_months.get(m_name, m_name)} {y_str}"
+            
+        monthly_pred = {
+            "month_year": current_month,
+            "areas": m_areas
+        }
+
     return render_template("predictions.html", translations=t(), language=lang(),
-                           user_chart=uc, predictions=preds)
+                           user_chart=uc, predictions=preds, monthly_prediction=monthly_pred)
 
 @app.route("/finance")
 def finance():
