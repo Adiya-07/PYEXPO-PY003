@@ -25,7 +25,7 @@ from reportlab.lib import colors
 from reportlab.pdfgen import canvas as pdf_canvas
 from io import BytesIO
 from flask import send_file
-
+from utils.panchangam import get_panchangam, get_year_panchangam, filter_auspicious_days
 from utils.astrology       import calculate_birth_chart, calculate_compatibility, HOROSCOPE, RASIS
 from utils.panchangam      import get_panchangam
 from utils.chatbot         import get_chatbot_response
@@ -384,10 +384,47 @@ def chat():
 
 @app.route("/panchangam")
 def panchangam():
+    view = request.args.get('view', 'today')
+    date_str = request.args.get('date', None)
+    
+    # Parse specific date if provided
+    if date_str:
+        try:
+            from datetime import datetime
+            target_date = datetime.strptime(date_str, '%Y-%m-%d')
+        except:
+            from datetime import datetime
+            target_date = datetime.now()
+    else:
+        from datetime import datetime
+        target_date = datetime.now()
+    
+    # Import enhanced functions
+    from utils.panchangam import get_panchangam, get_year_panchangam, filter_auspicious_days
+    
+    # Get today's panchangam
+    panchangam_data = get_panchangam(target_date)
+    
+    # Generate 360-day calendar if needed
+    calendar_data = []
+    if view in ['calendar', 'auspicious', 'festivals']:
+        full_calendar = get_year_panchangam(year=target_date.year)
+        
+        if view == 'auspicious':
+            calendar_data = filter_auspicious_days(full_calendar, criteria='auspicious')
+        elif view == 'festivals':
+            calendar_data = filter_auspicious_days(full_calendar, criteria='festivals')
+        else:
+            calendar_data = full_calendar
+    
     return render_template(
         "panchangam.html",
-        translations=t(), language=lang(),
-        panchangam=get_panchangam(), current_user=cur_user(),
+        panchangam=panchangam_data,
+        calendar=calendar_data,
+        view=view,
+        translations=t(),
+        language=lang(),
+        current_user=cur_user(),
     )
 
 
@@ -567,6 +604,132 @@ def api_compat():
         return jsonify({"success": True, "result": result, "chart1": c1, "chart2": c2})
     except Exception as e:
         app.logger.error(traceback.format_exc())
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+# ── Data APIs (for real backend data in chatbot) ────────────────────────
+
+@app.route("/api/get-rasi-info", methods=["POST"])
+def api_get_rasi_info():
+    """Get horoscope and rasi-specific data"""
+    try:
+        d = request.get_json()
+        rasi_name = d.get("rasi", "").strip()
+        language = d.get("language", "en")
+        
+        if not rasi_name or rasi_name not in HOROSCOPE:
+            return jsonify({"success": False, "error": "Invalid Rasi"}), 400
+        
+        from utils.astrology import get_zodiac_display_name
+        display_name = get_zodiac_display_name(rasi_name, language)
+        
+        horoscope_data = HOROSCOPE[rasi_name]
+        return jsonify({
+            "success": True,
+            "rasi": display_name,
+            "horoscope": horoscope_data,
+            "language": language
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/get-planet-meanings", methods=["POST"])
+def api_get_planet_meanings():
+    """Get planet meanings from user's birth chart"""
+    try:
+        d = request.get_json()
+        uc = d.get("userChart")
+        language = d.get("language", "en")
+        
+        if not uc:
+            return jsonify({"success": False, "error": "No chart data"}), 400
+        
+        from utils.birth_chart_svg import PLANET_HOUSE_MEANINGS, PLANET_HOUSE_MEANINGS_TA, PLANET_INFO, PLANET_INFO_TA
+        
+        # Get all planet positions and their meanings
+        planet_data = []
+        planets = uc.get('planets', {})
+        
+        for planet_name, planet_info in planets.items():
+            house = planet_info.get('house', 0)
+            key = f"{planet_name}_{house}"
+            
+            meanings_dict = PLANET_HOUSE_MEANINGS_TA if language == 'ta' else PLANET_HOUSE_MEANINGS
+            house_meaning = meanings_dict.get(key, "")
+            
+            planet_data.append({
+                "planet": planet_name,
+                "house": house,
+                "meaning": house_meaning,
+                "sign": planet_info.get('sign', ''),
+                "degree": planet_info.get('degree', 0),
+            })
+        
+        return jsonify({
+            "success": True,
+            "planets": planet_data,
+            "language": language
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/get-horoscope-prediction", methods=["POST"])
+def api_get_horoscope_prediction():
+    """Get horoscope predictions for user's rasi"""
+    try:
+        d = request.get_json()
+        uc = d.get("userChart")
+        language = d.get("language", "en")
+        
+        if not uc or not uc.get('rasi'):
+            return jsonify({"success": False, "error": "No chart data"}), 400
+        
+        from utils.astrology import get_zodiac_display_name
+        rasi_name = uc['rasi'].get('englishName', '')
+        display_name = get_zodiac_display_name(rasi_name, language)
+        
+        prediction_data = HOROSCOPE.get(rasi_name, {})
+        
+        return jsonify({
+            "success": True,
+            "rasi": display_name,
+            "predictions": prediction_data,
+            "language": language
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/get-nakshatra-details", methods=["POST"])
+def api_get_nakshatra_details():
+    """Get detailed nakshatra information"""
+    try:
+        d = request.get_json()
+        uc = d.get("userChart")
+        language = d.get("language", "en")
+        
+        if not uc or not uc.get('nakshatra'):
+            return jsonify({"success": False, "error": "No nakshatra data"}), 400
+        
+        nak = uc['nakshatra']
+        nakshatra_info = {
+            "name": nak.get('name', ''),
+            "tamilName": nak.get('tamilName', ''),
+            "lord": nak.get('lord', ''),
+            "pada": nak.get('pada', ''),
+            "yoni": nak.get('yoni', ''),
+            "gana": nak.get('gana', ''),
+            "power": nak.get('power', '')
+        }
+        
+        return jsonify({
+            "success": True,
+            "nakshatra": nakshatra_info,
+            "language": language
+        })
+    except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
 
